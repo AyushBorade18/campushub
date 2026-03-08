@@ -92,21 +92,30 @@ export default function CommunityPage() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { setError('Not logged in!'); setPosting(false); return }
 
+    // upload media first to get URL
+    let mediaUrl = null
+    let finalMediaType = mediaType || null
+    if (mediaFile) {
+      const ext = mediaFile.name.split('.').pop()
+      const path = `community/${session.user.id}/${Date.now()}.${ext}`
+      const { data: uploadData } = await supabase.storage.from('posts').upload(path, mediaFile, { upsert: true })
+      if (uploadData) {
+        const { data: { publicUrl } } = supabase.storage.from('posts').getPublicUrl(path)
+        mediaUrl = publicUrl
+      }
+    }
+
     const { error: err } = await supabase.from('community_posts').insert({
       user_id: session.user.id,
       title: title.trim(),
       content: content.trim(),
       category,
       address: address.trim() || null,
+      media_url: mediaUrl,
+      media_type: finalMediaType,
     })
 
     if (err) { setError('Failed: ' + err.message); setPosting(false); return }
-
-    // upload media if any
-    if (mediaFile) {
-      const path = `community/${session.user.id}/${Date.now()}`
-      await supabase.storage.from('posts').upload(path, mediaFile, { upsert: true })
-    }
 
     setTitle(''); setContent(''); setCategory('general'); setAddress('')
     setMediaFile(null); setMediaPreview(''); setMediaType('')

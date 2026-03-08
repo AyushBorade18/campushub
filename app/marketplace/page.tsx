@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 const TYPE_COLOR: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', borrow: '#f59e0b', lost: '#ef4444', found: '#8b5cf6' }
 const TYPE_BG: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#ede9fe' }
 const TYPE_LABEL: Record<string, string> = { sell: 'For Sale', buy: 'Wanted', borrow: 'Borrow/Lend', lost: 'Lost', found: 'Found' }
-const CATEGORIES = ['All', 'Books', 'Electronics', 'Lab Equipment', 'Clothing', 'Accessories', 'Documents', 'Furniture', 'Other']
+const CATEGORIES = ['All', 'Books', 'Electronics', 'Lab Equipment', 'Clothing', 'Accessories', 'Documents', 'Furniture', 'Stationery', 'Other']
 const TABS = [
   { id: 'all',    label: 'All Items',     icon: '🗂' },
   { id: 'sell',   label: 'Buy & Sell',    icon: '🛍' },
@@ -135,7 +135,7 @@ function MarketplaceContent() {
 // LISTING CARD
 // ---------------------------------------------------------------
 function ListingCard({ item, currentUserId, onView, onMessage, onDelete }: any) {
-  const catIcon: Record<string, string> = { Books: '📚', Electronics: '💻', 'Lab Equipment': '🧪', Clothing: '👔', Documents: '📄', Furniture: '🪑' }
+  const catIcon: Record<string, string> = { Books: '📚', Electronics: '💻', 'Lab Equipment': '🧪', Clothing: '👔', Documents: '📄', Furniture: '🪑', Stationery: '✏️' }
   return (
     <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', transition: 'transform 0.15s, box-shadow 0.15s', cursor: 'pointer' }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' }}
