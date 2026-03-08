@@ -218,7 +218,7 @@ export default function CommunityPage() {
       {/* Modal */}
       {showModal && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.55)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'20px' }}>
-          <div style={{ background:'#fff', borderRadius:'20px', padding:'28px', width:'100%', maxWidth:'520px', boxShadow:'0 25px 60px rgba(0,0,0,0.2)', maxHeight:'90vh', overflowY:'auto' }}>
+          <div className='community-modal' style={{ background:'#fff', borderRadius:'20px', padding:'28px', width:'100%', maxWidth:'520px', boxShadow:'0 25px 60px rgba(0,0,0,0.2)', maxHeight:'90vh', overflowY:'auto' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px' }}>
               <h3 style={{ margin:0, fontSize:'18px', fontWeight:'800' }}>✏️ Create Post</h3>
               <button onClick={() => setShowModal(false)} style={{ background:'#f1f5f9', border:'none', borderRadius:'8px', width:'32px', height:'32px', cursor:'pointer', fontSize:'16px' }}>✕</button>
@@ -305,6 +305,11 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
+          <style>{`
+        @media (max-width: 768px) {
+          .community-modal { max-width: 100% !important; width: 100% !important; margin: 0 !important; border-radius: 16px !important; }
+        }
+      `}</style>
     </MainLayout>
   )
 }

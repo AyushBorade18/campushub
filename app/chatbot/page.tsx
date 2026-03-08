@@ -232,11 +232,11 @@ export default function AIPage() {
 
   return (
     <MainLayout>
-      <div style={{ display: 'flex', height: 'calc(100vh - 80px)', gap: '14px' }}>
+      <div className="chatbot-container" style={{ display: 'flex', height: 'calc(100vh - 80px)', gap: '14px' }}>
 
         {/* Chat History Sidebar */}
         {sidebarOpen && (
-          <div style={{ width: '230px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="chatbot-sidebar" style={{ width: '230px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button onClick={newChat}
               style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(79,70,229,0.3)' }}>
               <span style={{ fontSize: '18px' }}>✏️</span> New Chat
@@ -410,6 +410,13 @@ export default function AIPage() {
         @keyframes bounce {
           0%, 80%, 100% { transform: translateY(0) }
           40% { transform: translateY(-8px) }
+        }
+      `}</style>
+          <style>{`
+        @media (max-width: 768px) {
+          .chatbot-container { height: auto !important; flex-direction: column !important; }
+          .chatbot-sidebar { width: 100% !important; flex-direction: row !important; flex-wrap: wrap; }
+          .chatbot-sidebar > div { flex: 1; min-width: 200px; max-height: 200px; }
         }
       `}</style>
     </MainLayout>

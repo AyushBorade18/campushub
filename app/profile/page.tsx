@@ -82,7 +82,7 @@ export default function ProfilePage() {
         {editing && (
           <div style={{ background: '#fff', borderRadius: '16px', padding: '24px', marginBottom: '20px', border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: '700' }}>Edit Your Profile</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div className='form-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               {[['Full Name', 'full_name'], ['Branch / Major', 'major']].map(([label, key]) => (
                 <div key={key}>
                   <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>{label}</label>
@@ -108,7 +108,7 @@ export default function ProfilePage() {
         )}
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+        <div className='stats-grid' style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
           {[['Listings', myListings.filter(l => l.status === 'active').length, '#6366f1'], ['Total Posted', myListings.length, '#10b981'], ['Sold/Closed', myListings.filter(l => l.status !== 'active').length, '#f59e0b'], ['Year', profile?.year?.split(' ')[0] || '—', '#8b5cf6']].map(([l, v, c]: any) => (
             <div key={l} style={{ background: '#fff', borderRadius: '14px', padding: '16px', textAlign: 'center', border: '1px solid #f1f5f9' }}>
               <div style={{ fontSize: '24px', fontWeight: '800', color: c }}>{v}</div>
@@ -146,6 +146,13 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+          <style>{`
+        @media (max-width: 768px) {
+          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .form-grid { grid-template-columns: 1fr !important; }
+          .branch-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+      `}</style>
     </MainLayout>
   )
 }

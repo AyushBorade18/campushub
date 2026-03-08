@@ -23,6 +23,7 @@ export default function MessagesPage() {
   const [unsentMsgIds, setUnsentMsgIds] = useState<Set<string>>(new Set())
   const [hiddenConvIds, setHiddenConvIds] = useState<Set<string>>(new Set())
   const [showDeleteChatConfirm, setShowDeleteChatConfirm] = useState(false)
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // LocalStorage keys per user
@@ -137,9 +138,9 @@ export default function MessagesPage() {
         <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '13px' }}>Direct messages from marketplace & community</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', height: 'calc(100vh - 155px)', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+      <div className="messages-container" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', height: 'calc(100vh - 155px)', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
         {/* Conversation List */}
-        <div style={{ borderRight: '1px solid #f1f5f9', overflowY: 'auto', background: '#f8fafc' }}>
+        <div className="conv-list" style={{ borderRight: '1px solid #f1f5f9', overflowY: 'auto', background: '#f8fafc' }}>
           <div style={{ padding: '16px', borderBottom: '1px solid #f1f5f9' }}>
             <div style={{ fontSize: '14px', fontWeight: '700', color: '#0f172a' }}>Conversations</div>
           </div>
@@ -153,7 +154,7 @@ export default function MessagesPage() {
             </div>
           ) : (
             conversations.map(conv => (
-              <button key={conv.other_user_id} onClick={() => { setActiveConv(conv); loadMessages(conv) }}
+              <button key={conv.other_user_id} onClick={() => { setActiveConv(conv); loadMessages(conv); setMobileView('chat') }}
                 style={{ width: '100%', display: 'flex', gap: '12px', padding: '14px 16px', border: 'none', borderBottom: '1px solid #f1f5f9', cursor: 'pointer', background: activeConv?.other_user_id === conv.other_user_id ? '#e0e7ff' : '#fff', textAlign: 'left', alignItems: 'flex-start', transition: 'background 0.1s' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: avatarColor(conv.other_name), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>{initials(conv.other_name)}</div>
                 <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -171,15 +172,16 @@ export default function MessagesPage() {
 
         {/* Chat Window */}
         {!activeConv ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', gap: '12px' }}>
+          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', gap: '12px' }}>
             <div style={{ fontSize: '56px' }}>💬</div>
             <div style={{ fontWeight: '700', fontSize: '18px', color: '#475569' }}>Select a conversation</div>
             <div style={{ fontSize: '13px' }}>Or message someone from the Marketplace</div>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column' }}>
             {/* Header */}
             <div style={{ padding: '14px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button className="back-btn" onClick={() => setMobileView('list')} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#6366f1', padding: '0', marginRight: '4px' }}>←</button>
               <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: avatarColor(activeConv.other_name), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '700', color: '#fff' }}>{initials(activeConv.other_name)}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: '700', color: '#0f172a' }}>{activeConv.other_name}</div>
@@ -257,6 +259,19 @@ export default function MessagesPage() {
           </div>
         )}
       </div>
+          <style>{`
+        @media (max-width: 768px) {
+          .messages-container { grid-template-columns: 1fr !important; height: auto !important; }
+          .conv-list { display: ${"{mobileView === 'list' ? 'block' : 'none'}"} !important; }
+          .chat-panel { display: ${"{mobileView === 'chat' ? 'flex' : 'none'}"} !important; min-height: calc(100vh - 180px); }
+          .back-btn { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .conv-list { display: block !important; }
+          .chat-panel { display: flex !important; }
+          .back-btn { display: none !important; }
+        }
+      `}</style>
     </MainLayout>
   )
 }
