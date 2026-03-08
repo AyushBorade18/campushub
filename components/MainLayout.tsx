@@ -7,6 +7,7 @@ import Sidebar from './Sidebar'
 export default function MainLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [userName, setUserName] = useState('')
   const [userYear, setUserYear] = useState('')
   const [loading, setLoading] = useState(true)
@@ -45,12 +46,21 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} userName={userName} userYear={userYear} />
-      <main style={{ marginLeft: `${sidebarW}px`, flex: 1, padding: '24px 28px', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }} />
+      )}
+
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} userName={userName} userYear={userYear} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+
+      <main style={{ marginLeft: `${sidebarW}px`, flex: 1, padding: '24px 28px', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc', minHeight: '100vh' }} className="main-content">
         {/* Top bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <div style={{ fontSize: '13px', color: '#94a3b8' }}>
-            {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button onClick={() => setMobileOpen(true)} className="hamburger-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px', padding: '4px', display: 'none', color: '#0f172a' }}>☰</button>
+            <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+              {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
@@ -60,6 +70,13 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         </div>
         {children}
       </main>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .main-content { margin-left: 0 !important; padding: 16px !important; }
+          .hamburger-btn { display: block !important; }
+        }
+      `}</style>
     </div>
   )
 }
