@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "campushub",
+  "compatibility_date": "2025-09-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://vatkdqnjrzfioslpwnyb.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhdGtkcW5qcnpmaW9zbHB3bnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NjM1ODIsImV4cCI6MjA4ODMzOTU4Mn0.sBGpVRoLH0lZMXNlqDdDo8BRd-PUE5C4JBj9kvZf1n8",
+    "GROQ_API_KEY": "your_groq_key_here"
+  }
+}
