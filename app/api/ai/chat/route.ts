@@ -85,11 +85,11 @@ CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
 - OPEN: Rs 2,12,165 (Tuition 1,79,130 + Development 26,870 + Eligibility 600 + Exam 2,420 + Misc 2,444 + Insurance 701)
 - OPEN OMS (Outside Maharashtra): Rs 2,12,665
 - OBC: Rs 1,22,600 (Tuition 89,565 + Development 26,870 + others)
-- SEBC (Maratha Arakshan): In CAP round = same as OBC = Rs 1,22,600. In ACAP round = same as OPEN = Rs 2,12,165. SEBC is only for Maratha reservation category.
+- SEBC (Maratha Arakshan): In CAP round = Rs 1,22,600. In ACAP round = Rs 2,12,165. SEBC is only for Maratha reservation category.
 - NT: Rs 33,035 (only Development fees + others)
 - SBC: Rs 33,035
-- SC: Rs 6,165 (Tuition NIL, Development NIL)
-- ST: Rs 6,165
+- SC: Rs 6,165 (Tuition=0, Development=0, only Eligibility + Exam + Misc + Insurance)
+- ST: Rs 6,165  (Tuition=0, Development=0, only Eligibility + Exam + Misc + Insurance)
 - OBC-GIRLS: Rs 33,035
 - PH/PWD/ORPHAN: Rs 33,035
 
