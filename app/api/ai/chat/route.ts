@@ -25,7 +25,7 @@ async function searchRAG(query: string): Promise<string> {
     const { data, error } = await (supabase as any).rpc('search_rag_documents', {
       query_embedding: embedding,
       match_count: 4,
-      similarity_threshold: 0.25
+      similarity_threshold: 0.15
     })
     if (error || !data?.length) return ''
     return data.map((d: any) => `[${d.title}]\n${d.content}`).join('\n\n---\n\n')
@@ -70,7 +70,7 @@ ${ragContext
 2. For branch-specific questions, tailor answers to ${userBranch}
 3. NEVER invent exam mark breakdowns or question formats not in the context
 4. Be friendly, use emojis, keep answers structured
-5. If unsure: "Check the VIT notice board or ask your teacher"
+5. STRICT RULE: If information is NOT in the RAG context or User Identity, you MUST say "I don't have verified information about this — please check vit.edu or ask your department directly." NEVER guess or make up faculty names, subjects they teach, or any specific details.
 
 ### CURRENT VIT PUNE INFO
 - Today: March 9, 2026 | Semester II in progress
