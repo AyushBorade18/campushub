@@ -25,7 +25,7 @@ async function searchRAG(query: string): Promise<string> {
     const { data, error } = await (supabase as any).rpc('search_rag_documents', {
       query_embedding: embedding,
       match_count: 4,
-      similarity_threshold: 0.15
+      similarity_threshold: 0.10
     })
     if (error || !data?.length) return ''
     return data.map((d: any) => `[${d.title}]\n${d.content}`).join('\n\n---\n\n')
@@ -70,7 +70,7 @@ ${ragContext
 2. For branch-specific questions, tailor answers to ${userBranch}
 3. NEVER invent exam mark breakdowns or question formats not in the context
 4. Be friendly, use emojis, keep answers structured
-5. STRICT RULE: If information is NOT in the RAG context or User Identity, you MUST say "I don't have verified information about this — please check vit.edu or ask your department directly." NEVER guess or make up faculty names, subjects they teach, or any specific details.
+5. If unsure: "Check the VIT notice board or ask your teacher"
 
 ### CURRENT VIT PUNE INFO
 - Today: March 9, 2026 | Semester II in progress
@@ -78,7 +78,31 @@ ${ragContext
 - End-Sem: 8–24 June 2026
 - Minimum attendance: 75%
 - Mess: Breakfast 7–9 AM | Lunch 12:30–2:30 PM | Dinner 7:30–9:30 PM
-- Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM`
+- Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM
+
+### VIT PUNE FEES STRUCTURE 2025-26 (ALWAYS ANSWER FROM THIS)
+CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
+- OPEN: Rs 2,12,165 (Tuition 1,79,130 + Development 26,870 + Eligibility 600 + Exam 2,420 + Misc 2,444 + Insurance 701)
+- OPEN OMS (Outside Maharashtra): Rs 2,12,665
+- OBC: Rs 1,22,600 (Tuition 89,565 + Development 26,870 + others)
+- NT: Rs 33,035 (only Development fees + others)
+- SBC: Rs 33,035
+- SC: Rs 6,165 (Tuition NIL, Development NIL)
+- ST: Rs 6,165
+- OBC-GIRLS: Rs 33,035
+- PH/PWD/ORPHAN: Rs 33,035
+
+Management/Institute Level Seats (Self-Finance):
+- Top branches (CE, IT, CSE-AI, AI&DS, CSE-AIML): Rs 6,24,165 (Tuition 5,37,390 + Dev 80,610 + others)
+- Mid branches (CSE IoT-CS-BT, CS-DS, CE-SE, E-TC, Mechanical): Rs 4,18,165 (Tuition 3,58,260 + Dev 53,740 + others)
+- Lower branches (Civil, Instrumentation): Rs 2,12,165 (same as CAP OPEN)
+- NRI Seats: USD 12,000 per year + Rs 6,665 other charges
+- CIWGC: CE = USD 2,400 | IT/CSE-AI/CSE-AIML/AI&DS = USD 1,800 | Others = USD 1,200
+
+### SGPA/CGPA GRADES
+A+(AA)=10, A(AB)=9, B+(BB)=8, B(BC)=7, C+(CC)=6, C(CD)=5, D(DD)=4, F(FF)=0
+SGPA = Total Grade Points ÷ Total Credits in semester
+CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)`
 }
 
 export async function POST(req: NextRequest) {
