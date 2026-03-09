@@ -135,7 +135,7 @@ export default function CommunityPage() {
 
   return (
     <MainLayout>
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'16px', flexWrap:'wrap', gap:'10px' }}>
+      <div className='community-header' style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'16px', flexWrap:'wrap', gap:'10px' }}>
         <div>
           <h2 style={{ margin:0, fontSize:'22px', fontWeight:'800', color:'#0f172a' }}>Community Board</h2>
           <p style={{ margin:'3px 0 0', color:'#64748b', fontSize:'13px' }}>VIT Pune · Share hostel, mess, events & campus updates</p>
@@ -147,7 +147,7 @@ export default function CommunityPage() {
       </div>
 
       {/* Filters */}
-      <div style={{ display:'flex', gap:'8px', marginBottom:'18px', overflowX:'auto', paddingBottom:'4px' }}>
+      <div className='community-filters' style={{ display:'flex', gap:'8px', marginBottom:'18px', overflowX:'auto', paddingBottom:'4px', flexWrap:'wrap' }}>
         {CATEGORIES.map(c => (
           <button key={c.id} onClick={() => setFilter(c.id)}
             style={{ background:filter===c.id?'#6366f1':'#fff', color:filter===c.id?'#fff':'#64748b', border:`1.5px solid ${filter===c.id?'#6366f1':'#e2e8f0'}`, borderRadius:'20px', padding:'7px 16px', cursor:'pointer', fontSize:'13px', fontWeight:'600', whiteSpace:'nowrap' }}>
@@ -317,6 +317,17 @@ export default function CommunityPage() {
           <style>{`
         @media (max-width: 768px) {
           .community-modal { max-width: 100% !important; width: 100% !important; margin: 0 !important; border-radius: 16px !important; }
+        }
+      `}</style>
+          <style>{`
+        @media (max-width: 768px) {
+          .community-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+          .community-header button { width: 100% !important; }
+          .community-filters { flex-wrap: wrap !important; gap: 6px !important; }
+          .community-modal { max-width: 95vw !important; width: 95vw !important; padding: 16px !important; margin: 10px !important; }
+          .community-modal-overlay { padding: 10px !important; align-items: flex-start !important; padding-top: 20px !important; }
+          .post-card { padding: 14px !important; }
+          .post-header { flex-direction: column !important; gap: 8px !important; }
         }
       `}</style>
     </MainLayout>

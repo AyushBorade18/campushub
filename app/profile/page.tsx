@@ -52,9 +52,9 @@ export default function ProfilePage() {
     <MainLayout>
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
         {/* Profile Hero */}
-        <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '20px', padding: '28px 28px 0', marginBottom: '20px', overflow: 'hidden', position: 'relative' }}>
+        <div className='profile-hero' style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '20px', padding: '28px 28px 0', marginBottom: '20px', overflow: 'hidden', position: 'relative' }}>
           <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '140px', height: '140px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-end' }}>
+          <div className='profile-hero-inner' style={{ display: 'flex', gap: '20px', alignItems: 'flex-end' }}>
             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', border: '3px solid rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: '800', color: '#fff', flexShrink: 0 }}>{initials}</div>
             <div style={{ flex: 1, paddingBottom: '24px' }}>
               <h2 style={{ margin: 0, color: '#fff', fontSize: '22px', fontWeight: '800' }}>{profile?.full_name || 'Student'}</h2>
@@ -128,7 +128,7 @@ export default function ProfilePage() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {myListings.map(item => (
-                <div key={item.id} style={{ display: 'flex', gap: '14px', padding: '14px', border: '1px solid #f1f5f9', borderRadius: '12px', alignItems: 'center' }}>
+                <div key={item.id} className='listing-item' style={{ display: 'flex', gap: '14px', padding: '14px', border: '1px solid #f1f5f9', borderRadius: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: TYPE_BG[item.type] || '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
                     {item.category === 'Books' ? '📚' : item.category === 'Electronics' ? '💻' : item.category === 'Documents' ? '📄' : '📦'}
                   </div>
@@ -150,7 +150,11 @@ export default function ProfilePage() {
         @media (max-width: 768px) {
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .form-grid { grid-template-columns: 1fr !important; }
-          .branch-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .profile-hero { padding: 20px 16px 0 !important; }
+          .profile-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+          .listing-item { flex-wrap: wrap !important; gap: 8px !important; }
+          .listing-item .listing-title { font-size: 13px !important; }
+          .profile-edit-btn { margin-top: 0 !important; }
         }
       `}</style>
     </MainLayout>
