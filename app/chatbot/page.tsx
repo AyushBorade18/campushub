@@ -204,6 +204,7 @@ export default function AIPage() {
           history: msgs.filter(m => m.role !== 'system').slice(-10),
           docContent: docText || undefined,
           docName: docName || undefined,
+          userId: userId || undefined,
         })
       })
       const data = await r.json()
