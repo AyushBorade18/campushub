@@ -1,5 +1,2 @@
 import type { OpenNextConfig } from "@opennextjs/cloudflare";
-
-export default {
-  default: {},
-} satisfies OpenNextConfig;
+export default { default: {} } satisfies OpenNextConfig;
