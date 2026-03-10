@@ -7,13 +7,27 @@ type Msg = { role: 'user' | 'assistant' | 'system'; text: string }
 type ChatSession = { id: string; title: string; msgs: Msg[]; createdAt: number }
 
 const CS_BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY']
+const ENTC_BRANCHES = ['ENTC','INSTRUMENTATION']
+
+const getModuleOptions = (branch: string) => {
+  if (CS_BRANCHES.includes(branch)) return [
+    { value: 'module_1', label: 'Module 1 — Linear Algebra, COA, Web Dev, IKS' },
+    { value: 'module_2', label: 'Module 2 — Calculus, Python, Data Analysis, UHV' },
+  ]
+  if (ENTC_BRANCHES.includes(branch)) return [
+    { value: 'module_1', label: 'Module 1 — Linear Algebra, Electronic Circuits, IKS' },
+    { value: 'module_2', label: 'Module 2 — Calculus, Digital Logic Design, UHV' },
+  ]
+  return []
+}
 
 function getQuickAsks(branch: string, module: string) {
   const isCS = CS_BRANCHES.includes(branch)
-  const isENTC = ['ENTC','INSTRUMENTATION'].includes(branch)
+  const isENTC = ENTC_BRANCHES.includes(branch)
   const isMod1 = module === 'module_1'
   const isMod2 = module === 'module_2'
 
+  // Common for ALL branches
   const common = [
     { icon: '📅', label: 'Exam Dates',   q: 'What are all exam dates and important deadlines this semester?' },
     { icon: '🗓️', label: 'Study Plan',  q: 'Make a 2-week study plan for all my subjects before end-sem exams' },
@@ -21,48 +35,58 @@ function getQuickAsks(branch: string, module: string) {
     { icon: '📊', label: 'Marks Scheme', q: 'Explain the marks and assessment scheme for all my subjects' },
   ]
 
+  // CS/IT/AI — Module 1: Linear Algebra, COA, Web Dev, IKS, PSP, Student Activity
   if (isCS && isMod1) return [
-    { icon: '💻', label: 'PSP / C',         q: 'Explain the complete PSP C language syllabus with all units' },
-    { icon: '🖥️', label: 'COA Syllabus',   q: 'Give me the full COA syllabus and important exam topics' },
-    { icon: '📐', label: 'Linear Algebra',  q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
-    { icon: '🌐', label: 'Web Dev',         q: 'What is the Web Development exam pattern and important topics?' },
+    { icon: '💻', label: 'PSP / C',        q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '📐', label: 'Linear Algebra', q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
+    { icon: '🖥️', label: 'COA',           q: 'Give me the full COA syllabus and important exam topics' },
+    { icon: '🌐', label: 'Web Dev',        q: 'What is the Web Development exam pattern and important topics?' },
+    { icon: '🏛️', label: 'IKS',           q: 'What are the important topics in Indian Knowledge System exam?' },
+    { icon: '🎭', label: 'Student Activity', q: 'What is Student Activity and how is it assessed?' },
     ...common,
   ]
 
+  // CS/IT/AI — Module 2: Calculus, Python, Data Analysis, UHV, AE, Env Studies
   if (isCS && isMod2) return [
-    { icon: '💻', label: 'PSP / C',         q: 'Explain the complete PSP C language syllabus with all units' },
-    { icon: '🐍', label: 'Python',          q: 'Give me the complete Python for Engineers syllabus and exam topics' },
-    { icon: '📊', label: 'Data Analysis',   q: 'What are the important topics in Data Analysis exam?' },
-    { icon: '📐', label: 'Calculus',        q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
+    { icon: '⚙️', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
+    { icon: '📐', label: 'Calculus',         q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
+    { icon: '🐍', label: 'Python',           q: 'Give me the complete Python for Engineers syllabus and exam topics' },
+    { icon: '📊', label: 'Data Analysis',    q: 'What are the important topics in Data Analysis exam?' },
+    { icon: '🧘', label: 'UHV',             q: 'What are the important topics in Universal Human Values exam?' },
+    { icon: '🌿', label: 'Env Studies',      q: 'What are the important topics in Environmental Studies exam?' },
     ...common,
   ]
 
+  // ENTC/Instrumentation — Module 1: Linear Algebra, EC, IKS, PSP, Student Activity
   if (isENTC && isMod1) return [
     { icon: '💻', label: 'PSP / C',            q: 'Explain the complete PSP C language syllabus with all units' },
-    { icon: '⚡', label: 'Electronic Circuits', q: 'What are the important topics in Electronic Circuits exam?' },
     { icon: '📐', label: 'Linear Algebra',      q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
-    { icon: '🔧', label: 'Applied Electro',     q: 'What are the key topics in Applied Electromechanics?' },
+    { icon: '⚡', label: 'Electronic Circuits', q: 'What are the important topics in Electronic Circuits exam?' },
+    { icon: '🏛️', label: 'IKS',               q: 'What are the important topics in Indian Knowledge System exam?' },
+    { icon: '🎭', label: 'Student Activity',    q: 'What is Student Activity and how is it assessed?' },
     ...common,
   ]
 
+  // ENTC/Instrumentation — Module 2: Calculus, DLD, UHV, AE, Env Studies
   if (isENTC && isMod2) return [
-    { icon: '💻', label: 'PSP / C',    q: 'Explain the complete PSP C language syllabus with all units' },
-    { icon: '🔢', label: 'DLD',        q: 'What are the important topics in Digital Logic Design?' },
-    { icon: '📐', label: 'Calculus',   q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
-    { icon: '🔧', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
+    { icon: '⚙️', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
+    { icon: '📐', label: 'Calculus',        q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
+    { icon: '🔢', label: 'DLD',             q: 'What are the important topics in Digital Logic Design?' },
+    { icon: '🧘', label: 'UHV',            q: 'What are the important topics in Universal Human Values exam?' },
+    { icon: '🌿', label: 'Env Studies',     q: 'What are the important topics in Environmental Studies exam?' },
     ...common,
   ]
 
-  // Default — no branch/module set yet or Mechanical/Civil
+  // Default — no branch/module set, or Mechanical/Civil
   return [
     { icon: '📅', label: 'Exam Dates',    q: 'What are all exam dates and important deadlines this semester?' },
-    { icon: '📋', label: 'Assignments',   q: 'What are the assignment deadlines this semester?' },
     { icon: '💻', label: 'PSP / C',       q: 'Explain the complete PSP C language syllabus with all units' },
     { icon: '🗓️', label: 'Study Plan',   q: 'Make a 2-week study plan for all subjects before end-sem exams' },
     { icon: '🎉', label: 'Holidays',      q: 'What are the upcoming holidays this semester?' },
     { icon: '📊', label: 'Marks Scheme',  q: 'Explain the marks and assessment scheme for all my subjects' },
     { icon: '🏛️', label: 'About VIT',    q: 'Tell me about VIT Pune — history, rankings, facilities' },
     { icon: '💰', label: 'Fee Structure', q: 'What is the fee structure of VIT Pune?' },
+    { icon: '🎓', label: 'Clubs',         q: 'What are the technical and co-curricular clubs at VIT Pune?' },
   ]
 }
 

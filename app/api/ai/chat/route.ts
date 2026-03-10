@@ -134,33 +134,59 @@ CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NO
 - EC = Electronic Circuits (E&TC/Instrumentation only)
 - Engg Graphics = Engineering Graphics (E&TC/Mechanical/Civil only — NOT for CS/IT/AI branches)
 
-### FY B.TECH MODULE STRUCTURE — CS/IT/AI BRANCHES (CSE, IT, AI&DS, CSE-AI, CSE-AIML, CS-DS, CS-SE etc.)
+### FY B.TECH MODULE STRUCTURE — COMPLETE & CORRECT
 
-COMMON SUBJECTS (all students, both modules):
-- PSP (Problem Solving & Programming)
-- Applied Electromechanics (AE)
-- Environmental Studies
-- ASEP (Applied Science & Engineering Project)
-- RAD (Reasoning & Aptitude Development)
-- General Proficiency (GP)
-- Scientific Research Methods (SRM)
-- Student Activity (SA)
+**CS/IT/AI BRANCHES (CSE, IT, AI&DS, CSE-AI, CSE-AIML, CS-DS, CS-SE, CSE-IOT & CYBERSECURITY):**
 
-MODULE 1 subjects (CS/IT/AI branches):
+MODULE 1 subjects:
 - Linear Algebra (BSE Maths)
+- PSP (Problem Solving & Programming)
 - COA (Computer Organization & Architecture)
 - Web Development (BSE/VSEC)
 - IKS (Indian Knowledge System)
+- Student Activity
 
-MODULE 2 subjects (CS/IT/AI branches):
+MODULE 2 subjects:
 - Calculus (BSE Maths)
+- Applied Electromechanics (AE)
 - Python for Engineers
 - Data Analysis (BSE/VSEC)
 - UHV (Universal Human Values)
+- Environmental Studies
 
-E&TC / INSTRUMENTATION branches have: Electronic Circuits, Digital Logic Design, Engineering Graphics (CS/IT/AI branches do NOT have these)
+COMMON subjects (both modules, CS/IT/AI):
+- ASEP-1 (Sem 1) / ASEP-2 (Sem 2)
+- RAD-1 (Sem 1) / RAD-2 (Sem 2)
+- GP-1 (Sem 1) / GP-2 (Sem 2)
+- SRM-1 (Sem 1) / SRM-2 (Sem 2)
+- Engineering Graphics: NOT for CS/IT/AI branches
 
-IMPORTANT: When making study plans, ALWAYS ask "Are you in Module 1 or Module 2?" if not already known from profile. Never include Module 1 subjects in a Module 2 student's plan and vice versa.
+**ENTC / INSTRUMENTATION BRANCHES:**
+
+MODULE 1 subjects:
+- Linear Algebra (BSE Maths)
+- PSP (Problem Solving & Programming)
+- Electronic Circuits (PCC)
+- IKS (Indian Knowledge System)
+- Student Activity
+
+MODULE 2 subjects:
+- Calculus (BSE Maths)
+- Applied Electromechanics (AE)
+- Digital Logic Design / DLD (BSE/VSEC)
+- UHV (Universal Human Values)
+- Environmental Studies
+
+COMMON subjects (both modules, ENTC/Instrumentation):
+- Engineering Graphics (common for ENTC, Mechanical, Civil, Instrumentation only)
+- ASEP-1/2, RAD-1/2, GP-1/2, SRM-1/2
+
+**MECHANICAL / CIVIL BRANCHES:**
+- No module system
+- Engineering Graphics is a common subject
+- ASEP-1/2, RAD-1/2, GP-1/2, SRM-1/2 are common
+
+IMPORTANT: When making study plans or listing subjects, ONLY include subjects from the student's module. NEVER mix Module 1 and Module 2 subjects. NEVER suggest Engineering Graphics to CS/IT/AI students.
 
 ### FY B.TECH MARKS STRUCTURE (OFFICIAL - FROM VIT ASSESSMENT DOCUMENT)
 
