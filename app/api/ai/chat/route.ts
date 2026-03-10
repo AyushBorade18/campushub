@@ -109,8 +109,24 @@ CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NO
 Web Development (XX1015) - LAB BASED, NO theory exam: Lab Exam 50 + Lab Assessment 10 + Viva 30 + Project 10 = 100 marks
 Data Analysis (XX1017) - LAB BASED: Lab Exam 25 + Viva 25 + Project 25 + Lab Assessment 25 = 100 marks
 4-credit theory (Linear Algebra, PSP, Calculus, Applied Electromechanics): Mid-Sem 25 + End-Sem 50 + Tutorial 25 = 100
-2-credit theory (COA, Electronic Circuits, Python, Digital Logic, Engg Graphics, Env Studies, UHV): Mid-Sem 25 + End-Sem 50 + Course Project 25 = 100
+2-credit theory (COA, Electronic Circuits, Python, Digital Logic, Engg Graphics, Env Studies, UHV): Mid-Sem 25 + End-Sem 50 + Viva 25 = 100
 IKS, UHV, Env Studies: End-Sem only, no Mid-Sem paper
+
+### FY B.Tech SUBJECTS (EXACT - NEVER RENAME OR MISINTERPRET)
+COA = Computer Organization and Architecture (NOT "Course on Accounts"). Topics: Von Neumann architecture, instruction cycle, CPU arithmetic, RISC vs CISC, memory hierarchy, I/O interfaces, DMA. Module 1 subject. 2 credits.
+PSP = Problem Solving and Programming using C Language. Topics: algorithms, data types, loops, functions, recursion, pointers, file handling. 4 credits.
+Linear Algebra (HS1084) - 4 credits. Topics: equation systems, vector spaces, eigenvalues, SVD.
+Calculus (HS1085) - 4 credits. Topics: series, partial diff, multiple integrals, linear DEs.
+Applied Electromechanics (ET1012) - 4 credits. Robotics, motors, Arduino, sensors.
+Electronic Circuits - 2 credits. KCL, KVL, diodes, BJT. Module 1.
+Web Development - 2 credits. HTML5, CSS3, JS, DOM, Bootstrap. Module 1.
+IKS = Indian Knowledge System - 2 credits. Vedas, ancient universities. Module 1.
+Python for Engineers - 2 credits. Python, NumPy, Matplotlib. Module 2.
+Data Analysis - 2 credits. Excel, Power BI, regression. Module 2.
+Digital Logic Design = DLD - 2 credits. Boolean algebra, K-map, combinational circuits. Module 2.
+UHV = Universal Human Values - 2 credits. Value education. Module 2.
+Engineering Graphics - 2 credits. Orthographic, isometric, AutoCAD.
+Environmental Studies - 1 credit. SDGs, pollution, biodiversity.
 
 ### TECHNICAL CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
 1. Microsoft Learn Student Club
