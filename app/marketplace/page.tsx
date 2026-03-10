@@ -155,9 +155,16 @@ function ListingCard({ item, currentUserId, onView, onMessage, onDelete }: any) 
         <p style={{ margin: '0 0 10px', fontSize: '12px', color: '#64748b', lineHeight: '1.5', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>{item.description}</p>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          {item.price > 0 ? <span style={{ fontSize: '17px', fontWeight: '800', color: '#6366f1' }}>₹{item.price?.toLocaleString()}</span>
-            : item.price === 0 ? <span style={{ fontSize: '14px', fontWeight: '700', color: '#10b981' }}>Free</span>
-            : <span style={{ fontSize: '12px', color: '#94a3b8' }}>—</span>}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+            {item.price > 0 ? <span style={{ fontSize: '17px', fontWeight: '800', color: '#6366f1' }}>₹{item.price?.toLocaleString()}</span>
+              : item.price === 0 ? <span style={{ fontSize: '14px', fontWeight: '700', color: '#10b981' }}>Free</span>
+              : <span style={{ fontSize: '12px', color: '#94a3b8' }}>—</span>}
+            {item.type === 'borrow' && item.rent_duration && (
+              <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: '700' }}>
+                /{item.rent_duration === 'per_hour' ? 'hr' : 'day'}
+              </span>
+            )}
+          </div>
           {item.condition && <span style={{ fontSize: '10px', color: '#94a3b8', background: '#f8fafc', padding: '2px 7px', borderRadius: '4px' }}>{item.condition}</span>}
         </div>
 
@@ -236,7 +243,7 @@ function ItemDetailModal({ item, currentUserId, onClose, onMessage, onDelete }: 
 // LIST ITEM MODAL
 // ---------------------------------------------------------------
 function ListItemModal({ onClose, onSuccess }: any) {
-  const [form, setForm] = useState({ type: 'sell', title: '', description: '', price: '', category: 'Books', condition: 'Good', location_last_seen: '' })
+  const [form, setForm] = useState({ type: 'sell', title: '', description: '', price: '', category: 'Books', condition: 'Good', location_last_seen: '', rent_duration: 'per_day' })
   const [aiLoading, setAiLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
@@ -294,6 +301,7 @@ function ListItemModal({ onClose, onSuccess }: any) {
       description: form.description, price: form.price ? parseFloat(form.price) : null,
       category: form.category, condition: form.condition, image_url: imageUrl,
       location_last_seen: form.location_last_seen || null,
+      rent_duration: form.type === 'borrow' ? form.rent_duration : null,
     })
     setSaving(false)
     setDone(true)
@@ -372,20 +380,32 @@ function ListItemModal({ onClose, onSuccess }: any) {
                   min={0}
                   onChange={e => {
                     const val = e.target.value
-                    // Block negative values completely
                     if (val === '' || parseFloat(val) >= 0) setForm(f => ({ ...f, price: val }))
                   }}
                   onKeyDown={e => {
-                    // Block minus, plus, e (scientific notation)
                     if (e.key === '-' || e.key === '+' || e.key === 'e' || e.key === 'E') e.preventDefault()
                   }}
                   onBlur={e => {
-                    // On blur, if value is negative force it to 0
                     const val = parseFloat(e.target.value)
                     if (!isNaN(val) && val < 0) setForm(f => ({ ...f, price: '0' }))
                   }}
                   placeholder="Enter price (min ₹0)"
                   style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${form.price !== '' && parseFloat(form.price) < 0 ? '#ef4444' : '#e2e8f0'}`, borderRadius: '10px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} />
+              </div>
+            )}
+
+            {/* Rent Duration — only for borrow */}
+            {form.type === 'borrow' && (
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '5px', display: 'block' }}>Rent Duration</label>
+                <select value={form.rent_duration} onChange={e => setForm(f => ({ ...f, rent_duration: e.target.value }))}
+                  style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontSize: '13px', outline: 'none', background: '#fff', boxSizing: 'border-box' }}>
+                  <option value="per_hour">⏱ Per Hour</option>
+                  <option value="per_day">📅 Per Day</option>
+                </select>
+                <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                  {form.rent_duration === 'per_hour' ? `Price will show as ₹${form.price || '0'}/hour` : `Price will show as ₹${form.price || '0'}/day`}
+                </div>
               </div>
             )}
 

@@ -53,6 +53,7 @@ export default function CommunityPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [currentUserId, setCurrentUserId] = useState('')
+  const [msgPost, setMsgPost] = useState<any>(null)
   const mediaRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -193,6 +194,12 @@ export default function CommunityPage() {
                     <span style={{ background:bg, color:fg, borderRadius:'8px', padding:'4px 12px', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap' }}>
                       {CATEGORIES.find(c => c.id===post.category)?.icon} {CATEGORIES.find(c => c.id===post.category)?.label}
                     </span>
+                    {currentUserId && currentUserId !== post.user_id && (
+                      <button onClick={() => setMsgPost(post)}
+                        style={{ background:'#ede9fe', border:'none', borderRadius:'8px', padding:'4px 12px', cursor:'pointer', color:'#6366f1', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap' }}>
+                        💬 Message
+                      </button>
+                    )}
                     {currentUserId === post.user_id && (
                       <button onClick={() => deletePost(post.id)}
                         title="Delete post"
@@ -314,9 +321,8 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
+      {msgPost && <CommunityMsgModal post={msgPost} onClose={() => setMsgPost(null)} />}
           <style>{`
-        @media (max-width: 768px) {
-          .community-modal { max-width: 100% !important; width: 100% !important; margin: 0 !important; border-radius: 16px !important; }
         }
       `}</style>
           <style>{`
@@ -331,5 +337,61 @@ export default function CommunityPage() {
         }
       `}</style>
     </MainLayout>
+  )
+}
+
+function CommunityMsgModal({ post, onClose }: any) {
+  const name = post.profiles?.full_name || 'this student'
+  const [msg, setMsg] = useState(`Hi ${name}! I saw your post "${post.title}" and wanted to ask you more about it.`)
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  const send = async () => {
+    if (!msg.trim()) return
+    setSending(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setSending(false); return }
+    await supabase.from('direct_messages').insert({
+      sender_id: user.id,
+      receiver_id: post.user_id,
+      content: msg,
+    })
+    setSending(false)
+    setSent(true)
+  }
+
+  return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:1001, display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }} onClick={onClose}>
+      <div style={{ background:'#fff', borderRadius:'20px', maxWidth:'440px', width:'100%', padding:'28px' }} onClick={e => e.stopPropagation()}>
+        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'20px' }}>
+          <h3 style={{ margin:0, fontSize:'18px', fontWeight:'800' }}>💬 Message {name}</h3>
+          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:'20px', cursor:'pointer', color:'#94a3b8' }}>✕</button>
+        </div>
+        {sent ? (
+          <div style={{ textAlign:'center', padding:'20px' }}>
+            <div style={{ fontSize:'48px', marginBottom:'8px' }}>✅</div>
+            <div style={{ fontWeight:'700', color:'#10b981', fontSize:'16px' }}>Message Sent!</div>
+            <div style={{ color:'#64748b', fontSize:'13px', marginTop:'4px', marginBottom:'16px' }}>{name} will be notified</div>
+            <button onClick={onClose} style={{ background:'#6366f1', color:'#fff', border:'none', borderRadius:'10px', padding:'10px 24px', fontWeight:'700', cursor:'pointer' }}>Done</button>
+          </div>
+        ) : (
+          <>
+            <div style={{ background:'#f8fafc', borderRadius:'12px', padding:'12px 14px', marginBottom:'14px' }}>
+              <div style={{ fontSize:'11px', color:'#94a3b8', marginBottom:'3px' }}>About post</div>
+              <div style={{ fontWeight:'700', color:'#0f172a', fontSize:'14px' }}>{post.title}</div>
+              {post.content && <div style={{ color:'#64748b', fontSize:'12px', marginTop:'3px' }}>{post.content.slice(0, 80)}{post.content.length > 80 ? '…' : ''}</div>}
+            </div>
+            <textarea value={msg} onChange={e => setMsg(e.target.value)} rows={4}
+              style={{ width:'100%', padding:'11px 14px', border:'1.5px solid #e2e8f0', borderRadius:'12px', fontSize:'13px', resize:'vertical', outline:'none', boxSizing:'border-box', fontFamily:'inherit', marginBottom:'12px' }} />
+            <div style={{ display:'flex', gap:'10px' }}>
+              <button onClick={onClose} style={{ flex:1, background:'#f1f5f9', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'600', cursor:'pointer', color:'#64748b' }}>Cancel</button>
+              <button onClick={send} disabled={sending} style={{ flex:2, background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'700', cursor:'pointer', color:'#fff', opacity:sending?0.7:1 }}>
+                {sending ? 'Sending…' : 'Send Message'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
