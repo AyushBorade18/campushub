@@ -36,7 +36,7 @@ async function getUserProfile(userId: string) {
   try {
     const { data } = await supabase
       .from('profiles')
-      .select('full_name, major, year, college_email')
+      .select('full_name, major, year, college_email, module')
       .eq('id', userId)
       .single()
     return data
@@ -47,6 +47,15 @@ function buildSystemPrompt(profile: any, ragContext: string): string {
   const userName = profile?.full_name || 'Student'
   const userBranch = profile?.major || 'B.Tech'
   const userYear = profile?.year || '1st Year'
+  const userModule = profile?.module === 'module_1' && ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY'].includes(profile?.major)
+    ? 'Module 1 — Linear Algebra, COA, Web Development, IKS'
+    : profile?.module === 'module_2' && ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY'].includes(profile?.major)
+    ? 'Module 2 — Calculus, Python for Engineers, Data Analysis, UHV'
+    : profile?.module === 'module_1' && ['ENTC','INSTRUMENTATION'].includes(profile?.major)
+    ? 'Module 1 — Linear Algebra, Electronic Circuits, IKS'
+    : profile?.module === 'module_2' && ['ENTC','INSTRUMENTATION'].includes(profile?.major)
+    ? 'Module 2 — Calculus, Digital Logic Design, UHV'
+    : null
 
   return `### ROLE
 You are "CampusHub AI" — the personalized intelligent assistant for VIT Pune (Vishwakarma Institute of Technology).
@@ -56,6 +65,7 @@ You are currently speaking with:
 - Name: ${userName}
 - Branch: ${userBranch}  
 - Year: ${userYear}
+${userModule ? `- Module: ${userModule}` : '- Module: Not set (ask the user if they are in Module 1 or Module 2 when making study plans)'}
 - Current Semester: Semester II (March 2026)
 
 When asked "what is my name", "what branch am I in", "who am I" — answer using the identity above. NEVER say you don't have access to personal details.
@@ -68,6 +78,7 @@ ${ragContext
 ### RULES
 1. Address the user as ${userName} naturally and personally
 2. For branch-specific questions, tailor answers to ${userBranch}
+3. ${userModule ? `The student is in ${userModule} — ONLY include their module subjects in study plans. Never mention subjects from the other module.` : 'Module is not set — ask "Are you in Module 1 or Module 2?" before making any study plans.'}
 3. NEVER invent exam mark breakdowns or question formats not in the context
 4. Be friendly, use emojis, keep answers structured
 5. If unsure: "Check the VIT notice board or ask your teacher"

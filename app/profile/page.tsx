@@ -7,6 +7,23 @@ const TYPE_COLOR: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', bo
 const TYPE_BG: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#ede9fe' }
 const TYPE_LABEL: Record<string, string> = { sell: 'For Sale', buy: 'Wanted', borrow: 'Borrow/Lend', lost: 'Lost', found: 'Found' }
 
+const BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY','ENTC','MECHANICAL','CIVIL','INSTRUMENTATION']
+
+const CS_BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY']
+const ENTC_BRANCHES = ['ENTC','INSTRUMENTATION']
+
+const getModuleOptions = (branch: string) => {
+  if (CS_BRANCHES.includes(branch)) return [
+    { value: 'module_1', label: 'Module 1 — Linear Algebra, COA, Web Dev, IKS' },
+    { value: 'module_2', label: 'Module 2 — Calculus, Python, Data Analysis, UHV' },
+  ]
+  if (ENTC_BRANCHES.includes(branch)) return [
+    { value: 'module_1', label: 'Module 1 — Linear Algebra, Electronic Circuits, IKS' },
+    { value: 'module_2', label: 'Module 2 — Calculus, Digital Logic Design, UHV' },
+  ]
+  return [] // Mechanical/Civil — no module system
+}
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null)
   const [myListings, setMyListings] = useState<any[]>([])
@@ -32,7 +49,7 @@ export default function ProfilePage() {
     setSaving(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from('profiles').update({ full_name: form.full_name, major: form.major, year: form.year }).eq('id', user.id)
+    await supabase.from('profiles').update({ full_name: form.full_name, major: form.major, year: form.year, module: form.module }).eq('id', user.id)
     setProfile(form)
     setSaving(false)
     setEditing(false)
@@ -60,7 +77,7 @@ export default function ProfilePage() {
               <h2 style={{ margin: 0, color: '#fff', fontSize: '22px', fontWeight: '800' }}>{profile?.full_name || 'Student'}</h2>
               <div style={{ color: '#c7d2fe', fontSize: '13px', marginTop: '3px' }}>{profile?.college_email}</div>
               <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
-                {['VIT Pune', profile?.major, profile?.year].filter(Boolean).map(v => (
+                {['VIT Pune', profile?.major, profile?.year, profile?.module ? (profile.module === 'module_1' ? 'Module 1' : 'Module 2') : null].filter(Boolean).map(v => (
                   <span key={v} style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', borderRadius: '6px', padding: '3px 10px', fontSize: '12px', fontWeight: '600' }}>{v}</span>
                 ))}
               </div>
@@ -83,13 +100,19 @@ export default function ProfilePage() {
           <div style={{ background: '#fff', borderRadius: '16px', padding: '24px', marginBottom: '20px', border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: '700' }}>Edit Your Profile</h3>
             <div className='form-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              {[['Full Name', 'full_name'], ['Branch / Major', 'major']].map(([label, key]) => (
-                <div key={key}>
-                  <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>{label}</label>
-                  <input value={form[key] || ''} onChange={e => setForm((f: any) => ({ ...f, [key]: e.target.value }))}
-                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-              ))}
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>Full Name</label>
+                <input value={form.full_name || ''} onChange={e => setForm((f: any) => ({ ...f, full_name: e.target.value }))}
+                  style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} />
+              </div>
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>Branch</label>
+                <select value={form.major || ''} onChange={e => setForm((f: any) => ({ ...f, major: e.target.value, module: '' }))}
+                  style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '13px', outline: 'none', background: '#fff', boxSizing: 'border-box' }}>
+                  <option value=''>Select Branch</option>
+                  {BRANCHES.map(b => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </div>
               <div>
                 <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>Year</label>
                 <select value={form.year || '1st Year'} onChange={e => setForm((f: any) => ({ ...f, year: e.target.value }))}
@@ -97,6 +120,16 @@ export default function ProfilePage() {
                   {['1st Year','2nd Year','3rd Year','4th Year'].map(y => <option key={y}>{y}</option>)}
                 </select>
               </div>
+              {getModuleOptions(form.major || '').length > 0 && (
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '4px', display: 'block' }}>Module (FY Only)</label>
+                  <select value={form.module || ''} onChange={e => setForm((f: any) => ({ ...f, module: e.target.value }))}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '13px', outline: 'none', background: '#fff', boxSizing: 'border-box' }}>
+                    <option value=''>Select Module</option>
+                    {getModuleOptions(form.major || '').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                </div>
+              )}
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
               <button onClick={() => setEditing(false)} style={{ flex: 1, background: '#f1f5f9', border: 'none', borderRadius: '10px', padding: '10px', fontWeight: '600', cursor: 'pointer', color: '#64748b' }}>Cancel</button>
