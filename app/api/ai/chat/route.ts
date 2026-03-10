@@ -85,11 +85,11 @@ CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
 - OPEN: Rs 2,12,165 (Tuition 1,79,130 + Development 26,870 + Eligibility 600 + Exam 2,420 + Misc 2,444 + Insurance 701)
 - OPEN OMS (Outside Maharashtra): Rs 2,12,665
 - OBC: Rs 1,22,600 (Tuition 89,565 + Development 26,870 + others)
-- SEBC (Maratha Arakshan): In CAP round = Rs 1,22,600. In ACAP round = Rs 2,12,165. SEBC is only for Maratha reservation category.
+- SEBC (Maratha Arakshan): In CAP round = same as OBC = Rs 1,22,600. In ACAP round = same as OPEN = Rs 2,12,165. SEBC is only for Maratha reservation category.
 - NT: Rs 33,035 (only Development fees + others)
 - SBC: Rs 33,035
-- SC: Rs 6,165 (Tuition=0, Development=0, only Eligibility + Exam + Misc + Insurance)
-- ST: Rs 6,165  (Tuition=0, Development=0, only Eligibility + Exam + Misc + Insurance)
+- SC: Rs 6,165 (Tuition NIL, Development NIL)
+- ST: Rs 6,165
 - OBC-GIRLS: Rs 33,035
 - PH/PWD/ORPHAN: Rs 33,035
 
@@ -103,7 +103,57 @@ Management/Institute Level Seats (Self-Finance):
 ### SGPA/CGPA GRADES
 A+(AA)=10, A(AB)=9, B+(BB)=8, B(BC)=7, C+(CC)=6, C(CD)=5, D(DD)=4, F(FF)=0
 SGPA = Total Grade Points ÷ Total Credits in semester
-CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)`
+CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)
+
+### SUBJECT MARKS STRUCTURE (FY B.Tech)
+Web Development (XX1015) - LAB BASED, NO theory exam: Lab Exam 50 + Lab Assessment 10 + Viva 30 + Project 10 = 100 marks
+Data Analysis (XX1017) - LAB BASED: Lab Exam 25 + Viva 25 + Project 25 + Lab Assessment 25 = 100 marks
+4-credit theory (Linear Algebra, PSP, Calculus, Applied Electromechanics): Mid-Sem 25 + End-Sem 50 + Tutorial 25 = 100
+2-credit theory (COA, Electronic Circuits, Python, Digital Logic, Engg Graphics, Env Studies, UHV): Mid-Sem 25 + End-Sem 50 + Course Project 25 = 100
+IKS, UHV, Env Studies: End-Sem only, no Mid-Sem paper
+
+### TECHNICAL CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
+1. Microsoft Learn Student Club
+2. GedIT Coding Club
+3. Google Developer Student Clubs (GDSC)
+4. IEEE VIT Pune
+5. CSI VIT Pune (Computer Society of India)
+6. ISA VIT Pune (Instrumentation Society of America)
+7. TRF - The Robotics Forum
+8. Team Endurance Racing
+9. Team Griffin India (drones)
+10. Team Veloce Racing
+11. Team Vishwanetrutvam
+12. Team Quark
+13. Ekasutram
+14. Club Catalyst (entrepreneurship)
+15. Game Dev+
+16. CHESA (chess)
+17. Reality Spectra (AR/VR)
+18. InnovSphere
+19. Personality Development Club
+20. Indus Connect
+Overall Incharge: Dr. Vikas Kolekar, Computer Engineering dept.
+
+### CO-CURRICULAR CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
+Pi Editorial Board, Antariksh Club, EPEC, SW & D, Light-hearted Lounge, C-Cube, Reality Spectra, RangManch (drama/theatre), Abhivridhhi, Team Eklavya (sports), The Investment Forum, VEDC (Vishwakarma Entrepreneurship Development Cell), Speaker's Club
+Coordinator: Dr. Kaushalya Thopate | dean.studactivities@vit.edu | +91 9960158822
+
+### ONLINE EXAM INSTRUCTIONS
+Portal: https://epvit.vierp.in/ | Must use LAPTOP only (no phone/tablet)
+Join Google Meet first, then start exam | Camera must be ON always
+Tab switching = immediate exam termination | No re-exam if missed
+Result shown immediately after MCQ exam on screen
+
+### OFFLINE EXAM RULES
+Arrive 30 min early | I-CARD compulsory | No mobile in exam hall
+Cannot enter after 30 min | Cannot leave in first 30 min or last 10 min
+No written material, calculators, or electronic gadgets allowed
+
+### STRICT HALLUCINATION RULE
+NEVER invent club names, faculty names, subject names, or any specific details not listed above.
+If asked about something NOT in this prompt or RAG context, say: "I don't have verified information about this — please check vit.edu or ask your department directly."
+Do NOT guess or make up answers for faculty names, specific timetables, or internal college details.`
 }
 
 export async function POST(req: NextRequest) {
