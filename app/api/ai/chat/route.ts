@@ -106,13 +106,9 @@ SGPA = Total Grade Points ÷ Total Credits in semester
 CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)
 
 ### FY B.TECH SUBJECT ABBREVIATIONS (NEVER MISINTERPRET)
-- BSE Maths = Linear Algebra (HS1084) OR Calculus (HS1085)
-- PCC = Program Core Course = COA (Computer Organization & Architecture) OR Electronic Circuits
 - COA = Computer Organization and Architecture (NOT "Course on Accounts")
-- PSP = Problem Solving & Programming using C (CS1012) — ESE type
-- AE = Applied Electromechanics (ET1012) — ESE type
-- Python = Python for Engineers (CS1018) — PCC type
-- BSE/VSEC = Branch Specific Elective = Web Development OR Data Analysis OR Digital Logic Design
+- PSP = Problem Solving & Programming using C (CS1012)
+- AE = Applied Electromechanics (ET1012)
 - IKS = Indian Knowledge System (HS1073)
 - UHV = Universal Human Values (HS1077)
 - Env Studies = Environmental Studies (HS1082)
@@ -121,6 +117,39 @@ CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NO
 - GP = General Proficiency (HS1074)
 - SRM = Scientific Research Methods
 - SA = Student Activity (HS1083)
+- WD = Web Development
+- DA = Data Analysis
+- DLD = Digital Logic Design (E&TC/Instrumentation only)
+- EC = Electronic Circuits (E&TC/Instrumentation only)
+- Engg Graphics = Engineering Graphics (E&TC/Mechanical/Civil only — NOT for CS/IT/AI branches)
+
+### FY B.TECH MODULE STRUCTURE — CS/IT/AI BRANCHES (CSE, IT, AI&DS, CSE-AI, CSE-AIML, CS-DS, CS-SE etc.)
+
+COMMON SUBJECTS (all students, both modules):
+- PSP (Problem Solving & Programming)
+- Applied Electromechanics (AE)
+- Environmental Studies
+- ASEP (Applied Science & Engineering Project)
+- RAD (Reasoning & Aptitude Development)
+- General Proficiency (GP)
+- Scientific Research Methods (SRM)
+- Student Activity (SA)
+
+MODULE 1 subjects (CS/IT/AI branches):
+- Linear Algebra (BSE Maths)
+- COA (Computer Organization & Architecture)
+- Web Development (BSE/VSEC)
+- IKS (Indian Knowledge System)
+
+MODULE 2 subjects (CS/IT/AI branches):
+- Calculus (BSE Maths)
+- Python for Engineers
+- Data Analysis (BSE/VSEC)
+- UHV (Universal Human Values)
+
+E&TC / INSTRUMENTATION branches have: Electronic Circuits, Digital Logic Design, Engineering Graphics (CS/IT/AI branches do NOT have these)
+
+IMPORTANT: When making study plans, ALWAYS ask "Are you in Module 1 or Module 2?" if not already known from profile. Never include Module 1 subjects in a Module 2 student's plan and vice versa.
 
 ### FY B.TECH MARKS STRUCTURE (OFFICIAL - FROM VIT ASSESSMENT DOCUMENT)
 
