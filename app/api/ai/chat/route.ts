@@ -105,28 +105,82 @@ A+(AA)=10, A(AB)=9, B+(BB)=8, B(BC)=7, C+(CC)=6, C(CD)=5, D(DD)=4, F(FF)=0
 SGPA = Total Grade Points ÷ Total Credits in semester
 CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)
 
-### SUBJECT MARKS STRUCTURE (FY B.Tech)
-Web Development (XX1015) - LAB BASED, NO theory exam: Lab Exam 50 + Lab Assessment 10 + Viva 30 + Project 10 = 100 marks
-Data Analysis (XX1017) - LAB BASED: Lab Exam 25 + Viva 25 + Project 25 + Lab Assessment 25 = 100 marks
-4-credit theory (Linear Algebra, PSP, Calculus, Applied Electromechanics): Mid-Sem 25 + End-Sem 50 + Tutorial 25 = 100
-2-credit theory (COA, Electronic Circuits, Python, Digital Logic, Engg Graphics, Env Studies, UHV): Mid-Sem 25 + End-Sem 50 + Viva 25 = 100
-IKS, UHV, Env Studies: End-Sem only, no Mid-Sem paper
+### FY B.TECH SUBJECT ABBREVIATIONS (NEVER MISINTERPRET)
+- BSE Maths = Linear Algebra (HS1084) OR Calculus (HS1085)
+- PCC = Program Core Course = COA (Computer Organization & Architecture) OR Electronic Circuits
+- COA = Computer Organization and Architecture (NOT "Course on Accounts")
+- PSP = Problem Solving & Programming using C (CS1012) — ESE type
+- AE = Applied Electromechanics (ET1012) — ESE type
+- Python = Python for Engineers (CS1018) — PCC type
+- BSE/VSEC = Branch Specific Elective = Web Development OR Data Analysis OR Digital Logic Design
+- IKS = Indian Knowledge System (HS1073)
+- UHV = Universal Human Values (HS1077)
+- Env Studies = Environmental Studies (HS1082)
+- ASEP = Applied Science & Engineering Project
+- RAD = Reasoning and Aptitude Development (HS1072)
+- GP = General Proficiency (HS1074)
+- SRM = Scientific Research Methods
+- SA = Student Activity (HS1083)
 
-### FY B.Tech SUBJECTS (EXACT - NEVER RENAME OR MISINTERPRET)
-COA = Computer Organization and Architecture (NOT "Course on Accounts"). Topics: Von Neumann architecture, instruction cycle, CPU arithmetic, RISC vs CISC, memory hierarchy, I/O interfaces, DMA. Module 1 subject. 2 credits.
-PSP = Problem Solving and Programming using C Language. Topics: algorithms, data types, loops, functions, recursion, pointers, file handling. 4 credits.
-Linear Algebra (HS1084) - 4 credits. Topics: equation systems, vector spaces, eigenvalues, SVD.
-Calculus (HS1085) - 4 credits. Topics: series, partial diff, multiple integrals, linear DEs.
-Applied Electromechanics (ET1012) - 4 credits. Robotics, motors, Arduino, sensors.
-Electronic Circuits - 2 credits. KCL, KVL, diodes, BJT. Module 1.
-Web Development - 2 credits. HTML5, CSS3, JS, DOM, Bootstrap. Module 1.
-IKS = Indian Knowledge System - 2 credits. Vedas, ancient universities. Module 1.
-Python for Engineers - 2 credits. Python, NumPy, Matplotlib. Module 2.
-Data Analysis - 2 credits. Excel, Power BI, regression. Module 2.
-Digital Logic Design = DLD - 2 credits. Boolean algebra, K-map, combinational circuits. Module 2.
-UHV = Universal Human Values - 2 credits. Value education. Module 2.
-Engineering Graphics - 2 credits. Orthographic, isometric, AutoCAD.
-Environmental Studies - 1 credit. SDGs, pollution, biodiversity.
+### FY B.TECH MARKS STRUCTURE (OFFICIAL - FROM VIT ASSESSMENT DOCUMENT)
+
+**BSE Maths — Linear Algebra (HS1084) / Calculus (HS1085):**
+Mid-Sem Written Exam: 30 → 25 marks
+End-Sem Written Exam: 100 → 50 marks
+Assignment/Tutorial (In-Semester): 100 → 25 marks
+TOTAL = 100 marks
+
+**PCC — COA (CS1016 etc.) / Electronic Circuits (ET1016):**
+Mid-Sem Written Exam: 30 → 25 marks
+End-Sem Written Exam: 100 → 50 marks
+Comprehensive Viva Voce (End-Sem): 100 → 25 marks
+TOTAL = 100 marks
+
+**PCC — Python for Engineers (CS1018):**
+Mid-Sem Written Exam: 30 → 25 marks
+End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
+Course Project (End-Sem): 100 → 25 marks
+TOTAL = 100 marks
+
+**ESE — Applied Electromechanics (ET1012):**
+NO Mid-Sem exam
+End-Sem Written Exam: 100 → 50 marks
+End-Sem LAB: 100 → 25 marks
+Course Project (End-Sem): 100 → 25 marks
+TOTAL = 100 marks
+
+**ESE — PSP / Problem Solving & Programming (CS1012):**
+Mid-Sem Written Exam: 30 → 25 marks
+End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
+Course Project (End-Sem): 100 → 25 marks
+TOTAL = 100 marks
+
+**BSE/VSEC — Web Development / Data Analysis / Digital Logic Design:**
+End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
+Course Project (End-Sem): 100 → 50 marks
+TOTAL = 100 marks (NO Mid-Sem, NO theory exam)
+
+**IKS — Indian Knowledge System (HS1073):**
+End-Sem MCQ Exam: 100 marks
+TOTAL = 100 marks (End-Sem MCQ only, NO Mid-Sem)
+
+**UHV — Universal Human Values (HS1077):**
+End-Sem MCQ Exam: 100 marks
+TOTAL = 100 marks (End-Sem MCQ only, NO Mid-Sem)
+
+**Environmental Studies (HS1082):**
+End-Sem MCQ Exam: 100 → 50 marks
+PPT (In-Semester): 50 marks
+TOTAL = 100 marks (NO Mid-Sem written exam)
+
+**Student Activity (HS1083) / SRM / GP / RAD:**
+Activity Presentation and Internal Review (End-Sem): 100 marks
+TOTAL = 100 marks
+
+**ASEP — Applied Science & Engineering Project:**
+Mid-Sem Activity Presentation & Internal Review: 50 → 30 marks
+End-Sem Activity Presentation & External Review: 100 → 70 marks
+TOTAL = 100 marks
 
 ### TECHNICAL CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
 1. Microsoft Learn Student Club
