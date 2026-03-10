@@ -6,16 +6,65 @@ import { supabase } from '@/lib/supabase'
 type Msg = { role: 'user' | 'assistant' | 'system'; text: string }
 type ChatSession = { id: string; title: string; msgs: Msg[]; createdAt: number }
 
-const QUICK_ASKS = [
-  { icon: '📅', label: 'Exam Dates',       q: 'What are all exam dates and important deadlines this semester?' },
-  { icon: '📋', label: 'Assignments',       q: 'What are the assignment deadlines this semester?' },
-  { icon: '💻', label: 'PSP / C Language', q: 'Explain the complete PSP C language syllabus with all 3 units' },
-  { icon: '🖥️', label: 'COA Syllabus',     q: 'Give me the full COA syllabus and important exam topics' },
-  { icon: '📐', label: 'Linear Algebra',    q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
-  { icon: '🌐', label: 'Web Dev',           q: 'What is the Web Development exam pattern and important topics?' },
-  { icon: '🗓️', label: 'Study Plan',       q: 'Make a 2-week study plan for all subjects before end-sem exams' },
-  { icon: '🎉', label: 'Holidays',          q: 'What are the upcoming holidays this semester?' },
-]
+const CS_BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY']
+
+function getQuickAsks(branch: string, module: string) {
+  const isCS = CS_BRANCHES.includes(branch)
+  const isENTC = ['ENTC','INSTRUMENTATION'].includes(branch)
+  const isMod1 = module === 'module_1'
+  const isMod2 = module === 'module_2'
+
+  const common = [
+    { icon: '📅', label: 'Exam Dates',   q: 'What are all exam dates and important deadlines this semester?' },
+    { icon: '🗓️', label: 'Study Plan',  q: 'Make a 2-week study plan for all my subjects before end-sem exams' },
+    { icon: '🎉', label: 'Holidays',     q: 'What are the upcoming holidays this semester?' },
+    { icon: '📊', label: 'Marks Scheme', q: 'Explain the marks and assessment scheme for all my subjects' },
+  ]
+
+  if (isCS && isMod1) return [
+    { icon: '💻', label: 'PSP / C',         q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '🖥️', label: 'COA Syllabus',   q: 'Give me the full COA syllabus and important exam topics' },
+    { icon: '📐', label: 'Linear Algebra',  q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
+    { icon: '🌐', label: 'Web Dev',         q: 'What is the Web Development exam pattern and important topics?' },
+    ...common,
+  ]
+
+  if (isCS && isMod2) return [
+    { icon: '💻', label: 'PSP / C',         q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '🐍', label: 'Python',          q: 'Give me the complete Python for Engineers syllabus and exam topics' },
+    { icon: '📊', label: 'Data Analysis',   q: 'What are the important topics in Data Analysis exam?' },
+    { icon: '📐', label: 'Calculus',        q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
+    ...common,
+  ]
+
+  if (isENTC && isMod1) return [
+    { icon: '💻', label: 'PSP / C',            q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '⚡', label: 'Electronic Circuits', q: 'What are the important topics in Electronic Circuits exam?' },
+    { icon: '📐', label: 'Linear Algebra',      q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
+    { icon: '🔧', label: 'Applied Electro',     q: 'What are the key topics in Applied Electromechanics?' },
+    ...common,
+  ]
+
+  if (isENTC && isMod2) return [
+    { icon: '💻', label: 'PSP / C',    q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '🔢', label: 'DLD',        q: 'What are the important topics in Digital Logic Design?' },
+    { icon: '📐', label: 'Calculus',   q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
+    { icon: '🔧', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
+    ...common,
+  ]
+
+  // Default — no branch/module set yet or Mechanical/Civil
+  return [
+    { icon: '📅', label: 'Exam Dates',    q: 'What are all exam dates and important deadlines this semester?' },
+    { icon: '📋', label: 'Assignments',   q: 'What are the assignment deadlines this semester?' },
+    { icon: '💻', label: 'PSP / C',       q: 'Explain the complete PSP C language syllabus with all units' },
+    { icon: '🗓️', label: 'Study Plan',   q: 'Make a 2-week study plan for all subjects before end-sem exams' },
+    { icon: '🎉', label: 'Holidays',      q: 'What are the upcoming holidays this semester?' },
+    { icon: '📊', label: 'Marks Scheme',  q: 'Explain the marks and assessment scheme for all my subjects' },
+    { icon: '🏛️', label: 'About VIT',    q: 'Tell me about VIT Pune — history, rankings, facilities' },
+    { icon: '💰', label: 'Fee Structure', q: 'What is the fee structure of VIT Pune?' },
+  ]
+}
 
 const getStorageKey = (userId: string) => `campushub_chats_${userId}`
 
@@ -71,6 +120,7 @@ function timeAgo(ts: number) {
 
 export default function AIPage() {
   const [userId, setUserId] = useState<string>('')
+  const [profile, setProfile] = useState<any>(null)
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
   const [msgs, setMsgs] = useState<Msg[]>([])
@@ -86,7 +136,7 @@ export default function AIPage() {
 
   // Load user chats + listen for account switches
   useEffect(() => {
-    function loadChatsForUser(uid: string) {
+    async function loadChatsForUser(uid: string) {
       setUserId(uid)
       setSessions([])
       setMsgs([])
@@ -95,6 +145,13 @@ export default function AIPage() {
         const saved = localStorage.getItem(getStorageKey(uid))
         if (saved) setSessions(JSON.parse(saved))
       } catch {}
+      // Fetch profile for personalization
+      if (uid && uid !== 'guest') {
+        const { data: p } = await supabase.from('profiles').select('full_name, major, module, year').eq('id', uid).single()
+        setProfile(p || null)
+      } else {
+        setProfile(null)
+      }
     }
 
     // Load on mount
@@ -328,11 +385,15 @@ export default function AIPage() {
                     <div style={{ fontSize: '48px', marginBottom: '10px' }}>🤖</div>
                     <div style={{ fontSize: '20px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>AI Campus Assistant</div>
                     <div style={{ fontSize: '13px', color: '#64748b', maxWidth: '380px', lineHeight: '1.7' }}>
-                      I know your <strong>complete VIT Pune semester</strong> — all subjects, exam dates, deadlines, and campus info.
+                      {profile?.full_name ? (
+                        <>Hey <strong>{profile.full_name.split(' ')[0]}</strong>! I know your <strong>{profile.major || 'VIT Pune'} {profile.module ? `(${profile.module === 'module_1' ? 'Module 1' : 'Module 2'})` : ''}</strong> full semester — subjects, exam dates, marks scheme &amp; more.</>
+                      ) : (
+                        <>I know your <strong>complete VIT Pune semester</strong> — all subjects, exam dates, deadlines, and campus info.</>
+                      )}
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '500px' }}>
-                    {QUICK_ASKS.map(s => (
+                    {getQuickAsks(profile?.major || '', profile?.module || '').map(s => (
                       <button key={s.q} onClick={() => send(s.q)}
                         style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '11px 13px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
                         onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
