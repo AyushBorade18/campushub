@@ -43,7 +43,43 @@ async function getUserProfile(userId: string) {
   } catch { return null }
 }
 
-function buildSystemPrompt(profile: any, ragContext: string): string {
+async function getMarketplaceListings(): Promise<string> {
+  try {
+    const { data } = await supabase
+      .from('listings')
+      .select('title, description, price, type, category, status, created_at')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(50)
+    if (!data?.length) return 'No active listings on marketplace currently.'
+    const grouped: Record<string, any[]> = {}
+    data.forEach(l => {
+      const key = l.type || 'other'
+      if (!grouped[key]) grouped[key] = []
+      grouped[key].push(l)
+    })
+    return Object.entries(grouped).map(([type, items]) => {
+      const label = type === 'sell' ? '🛒 FOR SALE' : type === 'buy' ? '🔍 WANTED' : type === 'borrow' ? '🤝 BORROW/LEND' : type === 'lost' ? '🔴 LOST' : type === 'found' ? '🟢 FOUND' : type.toUpperCase()
+      return `${label}:\n` + items.map(l =>
+        `- ${l.title}${l.price > 0 ? ` (₹${l.price})` : ' (Free/Contact)'}${l.category ? ` [${l.category}]` : ''}${l.description ? ` — ${l.description.slice(0, 80)}` : ''}`
+      ).join('\n')
+    }).join('\n\n')
+  } catch { return '' }
+}
+
+async function getCommunityPosts(): Promise<string> {
+  try {
+    const { data } = await supabase
+      .from('posts')
+      .select('content, created_at')
+      .order('created_at', { ascending: false })
+      .limit(20)
+    if (!data?.length) return 'No recent community posts.'
+    return data.map(p => `- ${p.content?.slice(0, 120)}${p.content?.length > 120 ? '…' : ''}`).join('\n')
+  } catch { return '' }
+}
+
+function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: string, communityData: string): string {
   const userName = profile?.full_name || 'Student'
   const userBranch = profile?.major || 'B.Tech'
   const userYear = profile?.year || '1st Year'
@@ -289,7 +325,15 @@ No written material, calculators, or electronic gadgets allowed
 ### STRICT HALLUCINATION RULE
 NEVER invent club names, faculty names, subject names, or any specific details not listed above.
 If asked about something NOT in this prompt or RAG context, say: "I don't have verified information about this — please check vit.edu or ask your department directly."
-Do NOT guess or make up answers for faculty names, specific timetables, or internal college details.`
+Do NOT guess or make up answers for faculty names, specific timetables, or internal college details.
+
+### LIVE MARKETPLACE LISTINGS (REAL DATA FROM CAMPUSHUB)
+${marketplaceData || 'No active listings currently.'}
+When asked about marketplace, ONLY mention items from the list above. NEVER invent listings. If nothing matches, say "No listings found for that right now — check the Marketplace page directly."
+
+### RECENT COMMUNITY POSTS (REAL DATA FROM CAMPUSHUB)
+${communityData || 'No recent community posts.'}
+When asked about community posts, ONLY reference posts from the list above. NEVER invent posts.`
 }
 
 export async function POST(req: NextRequest) {
@@ -312,8 +356,16 @@ export async function POST(req: NextRequest) {
     // 2. RAG — search relevant campus knowledge
     const ragContext = await searchRAG(message)
 
-    // 3. Build personalized system prompt
-    const systemPrompt = buildSystemPrompt(profile, ragContext)
+    // 3. Fetch live marketplace + community data
+    const isMarketplaceQuery = /market|buy|sell|borrow|listing|available|price|item|object|thing|purchase|lend|lost|found/i.test(message)
+    const isCommunityQuery = /community|post|discussion|notice|announcement|recent|latest/i.test(message)
+    const [marketplaceData, communityData] = await Promise.all([
+      isMarketplaceQuery ? getMarketplaceListings() : Promise.resolve(''),
+      isCommunityQuery ? getCommunityPosts() : Promise.resolve(''),
+    ])
+
+    // 4. Build personalized system prompt
+    const systemPrompt = buildSystemPrompt(profile, ragContext, marketplaceData, communityData)
 
     const userMessage = docContent
       ? `I uploaded "${docName}":\n---\n${docContent.slice(0, 8000)}\n---\nQuestion: ${message}`
