@@ -172,34 +172,33 @@ ${ragContext
 - Mess: Breakfast 7–9 AM | Lunch 12:30–2:30 PM | Dinner 7:30–9:30 PM
 - Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM
 
-### VIT PUNE ACADEMIC CALENDAR — HOLIDAYS & IMPORTANT DATES 2025-26
+### VIT PUNE ACADEMIC CALENDAR — HOLIDAYS 2025-26
 
-HOLIDAY LOGIC (VERY IMPORTANT):
-- If asked "upcoming holidays" or "holidays left" → show ONLY holidays AFTER today's date above
-- If asked "previous holidays" or "past holidays" → show ONLY holidays BEFORE today's date
-- If asked "all holidays this semester" → show ALL holidays for the relevant semester
-- Always compare holiday date against today's exact date before answering
+${(() => {
+  const today = new Date(); today.setHours(0,0,0,0)
+  const all = [
+    { d: new Date('2025-10-02'), label: '02/10/2025 (Thu) — Mahatma Gandhi Jayanti & Vijaya Dashami / Dasara' },
+    { d: new Date('2025-10-20'), label: '20/10/2025–25/10/2025 (Mon–Sat) — Diwali Break' },
+    { d: new Date('2025-11-05'), label: '05/11/2025 (Wed) — Guru Nanak Jayanti' },
+    { d: new Date('2025-12-25'), label: '25/12/2025 (Thu) — Christmas' },
+    { d: new Date('2026-01-26'), label: '26/01/2026 (Mon) — Republic Day' },
+    { d: new Date('2026-02-19'), label: '19/02/2026 (Thu) — Chhatrapati Shivaji Maharaj Jayanti' },
+    { d: new Date('2026-03-03'), label: '03/03/2026 (Tue) — Dhulivandan (Holi second day)' },
+    { d: new Date('2026-03-19'), label: '19/03/2026 (Thu) — Gudi Padwa' },
+    { d: new Date('2026-03-21'), label: '21/03/2026 (Sat) — Ramzan Id' },
+    { d: new Date('2026-03-26'), label: '26/03/2026 (Thu) — Ram Navami' },
+    { d: new Date('2026-03-31'), label: '31/03/2026 (Tue) — Mahaveer Janma Kalyanak' },
+    { d: new Date('2026-04-03'), label: '03/04/2026 (Fri) — Good Friday' },
+    { d: new Date('2026-04-14'), label: '14/04/2026 (Tue) — Dr. Babasaheb Ambedkar Jayanti' },
+    { d: new Date('2026-05-01'), label: '01/05/2026 (Fri) — Maharashtra Day / Buddha Poornima / Labour Day' },
+    { d: new Date('2026-05-28'), label: '28/05/2026 (Thu) — Bakri Id' },
+  ]
+  const upcoming = all.filter(h => h.d >= today).map(h => `- ${h.label}`)
+  const past = all.filter(h => h.d < today).map(h => `- ${h.label}`)
+  return `UPCOMING HOLIDAYS (from today ${today.toLocaleDateString('en-GB')}):\n${upcoming.length ? upcoming.join('\n') : 'No more holidays this academic year.'}\n\nPAST HOLIDAYS (already gone):\n${past.length ? past.join('\n') : 'None yet.'}`
+})()}
 
-**SEMESTER I HOLIDAYS (2025):**
-- 02/10/2025 (Thu) — Mahatma Gandhi Jayanti & Vijaya Dashami / Dasara
-- 20/10/2025–25/10/2025 (Mon–Sat) — Diwali Break
-- 05/11/2025 (Wed) — Guru Nanak Jayanti
-- 25/12/2025 (Thu) — Christmas
-
-**SEMESTER II HOLIDAYS (2026):**
-- 26/01/2026 (Mon) — Republic Day
-- 19/02/2026 (Thu) — Chhatrapati Shivaji Maharaj Jayanti
-- 03/03/2026 (Tue) — Dhulivandan (Holi second day)
-- 19/03/2026 (Thu) — Gudi Padwa
-- 21/03/2026 (Sat) — Ramzan Id
-- 26/03/2026 (Thu) — Ram Navami
-- 31/03/2026 (Tue) — Mahaveer Janma Kalyanak
-- 03/04/2026 (Fri) — Good Friday
-- 14/04/2026 (Tue) — Dr. Babasaheb Ambedkar Jayanti
-- 01/05/2026 (Fri) — Maharashtra Day / Buddha Poornima / Labour Day
-- 28/05/2026 (Thu) — Bakri Id
-
-When asked about holidays, list ALL of the above with exact dates. NEVER say you don't know the holidays.
+When asked "upcoming holidays" → use UPCOMING list above. When asked "past holidays" → use PAST list above. When asked "all holidays" → list both.
 
 ### VIT PUNE FEES STRUCTURE 2025-26 (ALWAYS ANSWER FROM THIS)
 CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
