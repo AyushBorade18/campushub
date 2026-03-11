@@ -57,8 +57,19 @@ export default function NotesPage() {
 
   async function loadNotes() {
     setLoading(true)
-    const { data } = await supabase.from('notes').select('*, profiles(full_name)').eq('status','active').order('created_at',{ascending:false})
-    setNotes(data || [])
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*, profiles!notes_user_id_fkey(full_name)')
+      .eq('status','active')
+      .order('created_at',{ascending:false})
+    if (error) console.error('Notes fetch error:', error)
+    // Fallback: if join fails, fetch without join
+    if (error || !data) {
+      const { data: plain } = await supabase.from('notes').select('*').eq('status','active').order('created_at',{ascending:false})
+      setNotes(plain || [])
+    } else {
+      setNotes(data || [])
+    }
     setLoading(false)
   }
 
@@ -274,7 +285,11 @@ function UploadModal({profile,userId,onClose,onSuccess}:any) {
       price: parseFloat(form.price)||0, file_url: publicUrl,
       file_name: file.name, tags, status:'active'
     })
-    if (dbErr) { setError('Database error: '+dbErr.message); setSaving(false); return }
+    if (dbErr) {
+      console.error('DB insert error:', dbErr)
+      setError(`Database error: ${dbErr.message} (code: ${dbErr.code})`)
+      setSaving(false); return
+    }
     setSaving(false); setDone(true)
   }
 
