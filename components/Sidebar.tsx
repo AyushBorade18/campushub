@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 
 const NAV = [
   { href: '/dashboard',   icon: '⊞',  label: 'Dashboard'      },
+  { href: '/timetable',   icon: '📅',  label: 'Timetable'      },
   { href: '/marketplace', icon: '🛍',  label: 'Marketplace'    },
   { href: '/community',   icon: '💬',  label: 'Community'      },
   { href: '/chatbot',     icon: '🤖',  label: 'AI Assistant'   },

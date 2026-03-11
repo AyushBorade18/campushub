@@ -79,7 +79,30 @@ async function getCommunityPosts(): Promise<string> {
   } catch { return '' }
 }
 
-function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: string, communityData: string): string {
+async function getUserTimetable(userId: string): Promise<string> {
+  try {
+    const { data } = await supabase
+      .from('timetable_slots')
+      .select('day, slot_start, slot_end, subject_name, slot_type')
+      .eq('user_id', userId)
+      .order('day').order('slot_start')
+    if (!data?.length) return ''
+    const days = ['monday','tuesday','wednesday','thursday','friday','saturday']
+    const SLOT_LABEL: Record<string,string> = {
+      '08:00':'8AM','09:00':'9AM','10:00':'10AM','11:00':'11AM',
+      '12:00':'12PM','13:00':'1PM','14:00':'2PM','15:00':'3PM',
+      '16:00':'4PM','17:00':'5PM','18:00':'6PM'
+    }
+    return days.map(day => {
+      const daySlots = data.filter(s => s.day === day)
+      if (!daySlots.length) return null
+      const slotStr = daySlots.map(s => `${SLOT_LABEL[s.slot_start]}–${SLOT_LABEL[s.slot_end]}: ${s.subject_name}${s.slot_type==='lab'?' (Lab)':''}`).join(', ')
+      return `${day.charAt(0).toUpperCase()+day.slice(1)}: ${slotStr}`
+    }).filter(Boolean).join('\n')
+  } catch { return '' }
+}
+
+function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: string, communityData: string, timetableData: string): string {
   const userName = profile?.full_name || 'Student'
   const userBranch = profile?.major || 'B.Tech'
   const userYear = profile?.year || '1st Year'
@@ -333,7 +356,10 @@ When asked about marketplace, ONLY mention items from the list above. NEVER inve
 
 ### RECENT COMMUNITY POSTS (REAL DATA FROM CAMPUSHUB)
 ${communityData || 'No recent community posts.'}
-When asked about community posts, ONLY reference posts from the list above. NEVER invent posts.`
+When asked about community posts, ONLY reference posts from the list above. NEVER invent posts.
+
+### STUDENT'S PERSONAL TIMETABLE (REAL DATA)
+${timetableData ? `The student has set up their timetable:\n${timetableData}\n\nUse this to:\n- Answer "what do I have today/tomorrow?"\n- Suggest free slots for studying\n- Build study plans around their actual free slots\n- Warn about upcoming exams vs their available study time` : 'Timetable not set up yet — if asked about schedule, suggest the student visits the Timetable page to set it up.'}`
 }
 
 export async function POST(req: NextRequest) {
@@ -356,16 +382,18 @@ export async function POST(req: NextRequest) {
     // 2. RAG — search relevant campus knowledge
     const ragContext = await searchRAG(message)
 
-    // 3. Fetch live marketplace + community data
+    // 3. Fetch live marketplace + community + timetable data
     const isMarketplaceQuery = /market|buy|sell|borrow|listing|available|price|item|object|thing|purchase|lend|lost|found/i.test(message)
     const isCommunityQuery = /community|post|discussion|notice|announcement|recent|latest/i.test(message)
-    const [marketplaceData, communityData] = await Promise.all([
+    const isTimetableQuery = /timetable|schedule|today|tomorrow|free|slot|class|lecture|when do i|what do i have/i.test(message)
+    const [marketplaceData, communityData, timetableData] = await Promise.all([
       isMarketplaceQuery ? getMarketplaceListings() : Promise.resolve(''),
       isCommunityQuery ? getCommunityPosts() : Promise.resolve(''),
+      (isTimetableQuery && userId) ? getUserTimetable(userId) : Promise.resolve(''),
     ])
 
     // 4. Build personalized system prompt
-    const systemPrompt = buildSystemPrompt(profile, ragContext, marketplaceData, communityData)
+    const systemPrompt = buildSystemPrompt(profile, ragContext, marketplaceData, communityData, timetableData)
 
     const userMessage = docContent
       ? `I uploaded "${docName}":\n---\n${docContent.slice(0, 8000)}\n---\nQuestion: ${message}`
