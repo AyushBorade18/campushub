@@ -81,14 +81,35 @@ export default function NotesPage() {
     return matchSearch && matchSubject && matchPrice
   })
 
+  const [buyModal, setBuyModal] = useState<any>(null)
+  const [dmSent, setDmSent] = useState(false)
+
   async function handleDownload(note: any) {
-    if (!currentUserId) return
-    // Record download
+    if (!currentUserId) { alert('Please log in to download notes.'); return }
+    // Owner can always access their own notes
+    if (note.user_id === currentUserId) {
+      window.open(note.file_url, '_blank'); return
+    }
+    // Paid note — block and show buy modal
+    if (note.price > 0) {
+      setBuyModal(note); setDmSent(false); return
+    }
+    // Free note — download directly
     await supabase.from('note_downloads').upsert({ note_id: note.id, user_id: currentUserId })
     await supabase.from('notes').update({ downloads: (note.downloads||0)+1 }).eq('id',note.id)
-    // Open PDF
     window.open(note.file_url, '_blank')
     setNotes(prev => prev.map(n => n.id === note.id ? {...n, downloads:(n.downloads||0)+1} : n))
+  }
+
+  async function sendBuyRequest(note: any) {
+    if (!currentUserId) return
+    const msg = `💰 Hi! I'd like to buy your notes "${note.title}" (${note.subject}) for ₹${note.price}. Could you share the PDF once payment is done? Please let me know your UPI/payment details.`
+    await supabase.from('direct_messages').insert({
+      sender_id: currentUserId,
+      receiver_id: note.user_id,
+      content: msg,
+    })
+    setDmSent(true)
   }
 
   async function deleteNote(id: string) {
@@ -154,7 +175,7 @@ export default function NotesPage() {
 
                 {/* PDF Preview Banner */}
                 <div style={{height:'90px',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
-                  <div style={{fontSize:'40px'}}>📄</div>
+                  <div style={{fontSize:'40px'}}>{note.price > 0 && note.user_id !== currentUserId ? '🔒' : '📄'}</div>
                   <div style={{position:'absolute',top:'10px',right:'10px',background:note.price===0?'#10b981':'#f59e0b',color:'#fff',borderRadius:'8px',padding:'3px 10px',fontSize:'11px',fontWeight:'800'}}>
                     {note.price===0 ? 'FREE' : `₹${note.price}`}
                   </div>
@@ -184,8 +205,8 @@ export default function NotesPage() {
                 </div>
 
                 <div style={{padding:'0 16px 14px'}}>
-                  <button onClick={()=>handleDownload(note)} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'10px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
-                    {note.price===0 ? '⬇ Download Free' : `⬇ Buy ₹${note.price}`}
+                  <button onClick={()=>handleDownload(note)} style={{width:'100%',background: note.price > 0 && note.user_id !== currentUserId ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'10px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
+                    {note.price===0 ? '⬇ Download Free' : note.user_id === currentUserId ? '⬇ My Note' : `🔒 Buy ₹${note.price}`}
                   </button>
                 </div>
               </div>
@@ -230,6 +251,37 @@ export default function NotesPage() {
             <button onClick={()=>{handleDownload(activeNote);setActiveNote(null)}} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'13px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
               {activeNote.price===0 ? '⬇ Download for Free' : `⬇ Buy for ₹${activeNote.price}`}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Buy Modal */}
+      {buyModal && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:2000,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}} onClick={()=>setBuyModal(null)}>
+          <div style={{background:'#fff',borderRadius:'20px',maxWidth:'400px',width:'100%',padding:'28px',textAlign:'center'}} onClick={e=>e.stopPropagation()}>
+            {dmSent ? (
+              <>
+                <div style={{fontSize:'56px',marginBottom:'12px'}}>✅</div>
+                <div style={{fontSize:'18px',fontWeight:'900',marginBottom:'8px'}}>Request Sent!</div>
+                <div style={{color:'#64748b',fontSize:'13px',lineHeight:1.6,marginBottom:'20px'}}>
+                  A message has been sent to the uploader.<br/>Check your <strong>Messages</strong> tab for their reply and payment details.
+                </div>
+                <button onClick={()=>setBuyModal(null)} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'700',cursor:'pointer'}}>Got it!</button>
+              </>
+            ) : (
+              <>
+                <div style={{fontSize:'48px',marginBottom:'12px'}}>🔒</div>
+                <div style={{fontSize:'18px',fontWeight:'900',marginBottom:'6px'}}>{buyModal.title}</div>
+                <div style={{color:'#6366f1',fontWeight:'700',fontSize:'14px',marginBottom:'12px'}}>₹{buyModal.price} · {buyModal.subject}</div>
+                <div style={{color:'#64748b',fontSize:'13px',lineHeight:1.6,marginBottom:'20px',background:'#f8fafc',borderRadius:'12px',padding:'14px'}}>
+                  This is a paid note. Clicking below will send a DM to the uploader with your buy request. They will share their UPI and send you the PDF after payment.
+                </div>
+                <div style={{display:'flex',gap:'10px'}}>
+                  <button onClick={()=>setBuyModal(null)} style={{flex:1,background:'#f1f5f9',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'600',cursor:'pointer',color:'#64748b'}}>Cancel</button>
+                  <button onClick={()=>sendBuyRequest(buyModal)} style={{flex:2,background:'linear-gradient(135deg,#f59e0b,#d97706)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'800',cursor:'pointer'}}>💬 Send Buy Request</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
