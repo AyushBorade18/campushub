@@ -33,56 +33,62 @@ function getQuickAsks(branch: string, module: string) {
     { icon: '🗓️', label: 'Study Plan',  q: 'Make a 2-week study plan for all my subjects before end-sem exams' },
     { icon: '🎉', label: 'Holidays',     q: 'What are the upcoming holidays this semester?' },
     { icon: '📊', label: 'Marks Scheme', q: 'Explain the marks and assessment scheme for all my subjects' },
+    { icon: '📅', label: "Today's Classes", q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace', q: 'What items are currently available on the marketplace?' },
   ]
 
-  // CS/IT/AI — Module 1: Linear Algebra, COA, Web Dev, IKS, PSP, Student Activity
+  // CS/IT/AI — Module 1
   if (isCS && isMod1) return [
     { icon: '💻', label: 'PSP / C',        q: 'Explain the complete PSP C language syllabus with all units' },
     { icon: '📐', label: 'Linear Algebra', q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
     { icon: '🖥️', label: 'COA',           q: 'Give me the full COA syllabus and important exam topics' },
     { icon: '🌐', label: 'Web Dev',        q: 'What is the Web Development exam pattern and important topics?' },
-    { icon: '🏛️', label: 'IKS',           q: 'What is exam pattern for Indian Knowledge System?' },
+    { icon: '📅', label: "Today's Classes", q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace',   q: 'What items are currently available on the marketplace?' },
     { icon: '🎭', label: 'Student Activity', q: 'What is Student Activity and how is it assessed?' },
-    ...common,
+    ...common.slice(0, 4),
   ]
 
-  // CS/IT/AI — Module 2: Calculus, Python, Data Analysis, UHV, AE, Env Studies
+  // CS/IT/AI — Module 2
   if (isCS && isMod2) return [
     { icon: '⚙️', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
     { icon: '📐', label: 'Calculus',         q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
     { icon: '🐍', label: 'Python',           q: 'Give me the complete Python for Engineers syllabus and exam topics' },
     { icon: '📊', label: 'Data Analysis',    q: 'What are the important topics in Data Analysis exam?' },
-    { icon: '🧘', label: 'UHV',             q: 'What are the important topics in Universal Human Values exam?' },
+    { icon: '📅', label: "Today's Classes",  q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace',     q: 'What items are currently available on the marketplace?' },
     { icon: '🌿', label: 'Env Studies',      q: 'What are the important topics in Environmental Studies exam?' },
-    ...common,
+    ...common.slice(0, 4),
   ]
 
-  // ENTC/Instrumentation — Module 1: Linear Algebra, EC, IKS, PSP, Student Activity
+  // ENTC/Instrumentation — Module 1
   if (isENTC && isMod1) return [
     { icon: '💻', label: 'PSP / C',            q: 'Explain the complete PSP C language syllabus with all units' },
     { icon: '📐', label: 'Linear Algebra',      q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
     { icon: '⚡', label: 'Electronic Circuits', q: 'What are the important topics in Electronic Circuits exam?' },
-    { icon: '🏛️', label: 'IKS',               q: 'What are the important topics in Indian Knowledge System exam?' },
+    { icon: '📅', label: "Today's Classes",     q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace',        q: 'What items are currently available on the marketplace?' },
     { icon: '🎭', label: 'Student Activity',    q: 'What is Student Activity and how is it assessed?' },
-    ...common,
+    ...common.slice(0, 4),
   ]
 
-  // ENTC/Instrumentation — Module 2: Calculus, DLD, UHV, AE, Env Studies
+  // ENTC/Instrumentation — Module 2
   if (isENTC && isMod2) return [
     { icon: '⚙️', label: 'Applied Electro', q: 'What are the key topics in Applied Electromechanics?' },
     { icon: '📐', label: 'Calculus',        q: 'Explain key Calculus topics — series, partial derivatives, integrals' },
     { icon: '🔢', label: 'DLD',             q: 'What are the important topics in Digital Logic Design?' },
-    { icon: '🧘', label: 'UHV',            q: 'What are the important topics in Universal Human Values exam?' },
+    { icon: '📅', label: "Today's Classes", q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace',    q: 'What items are currently available on the marketplace?' },
     { icon: '🌿', label: 'Env Studies',     q: 'What are the important topics in Environmental Studies exam?' },
-    ...common,
+    ...common.slice(0, 4),
   ]
 
   // Default — no branch/module set, or Mechanical/Civil
   return [
     { icon: '📅', label: 'Exam Dates',    q: 'What are all exam dates and important deadlines this semester?' },
     { icon: '💻', label: 'PSP / C',       q: 'Explain the complete PSP C language syllabus with all units' },
-    { icon: '🗓️', label: 'Study Plan',   q: 'Make a 2-week study plan for all subjects before end-sem exams' },
-    { icon: '🎉', label: 'Holidays',      q: 'What are the upcoming holidays this semester?' },
+    { icon: '📅', label: "Today's Classes", q: "What is my timetable for today?" },
+    { icon: '🛍️', label: 'Marketplace',  q: 'What items are currently available on the marketplace?' },
     { icon: '📊', label: 'Marks Scheme',  q: 'Explain the marks and assessment scheme for all my subjects' },
     { icon: '🏛️', label: 'About VIT',    q: 'Tell me about VIT Pune — history, rankings, facilities' },
     { icon: '💰', label: 'Fee Structure', q: 'What is the fee structure of VIT Pune?' },
@@ -424,25 +430,7 @@ export default function AIPage() {
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '500px' }}>
-                    {(todaySlots.length > 0
-                      ? [
-                          // Today's subjects first
-                          ...todaySlots
-                            .filter((s, i, arr) => arr.findIndex(x => x.subject_name === s.subject_name) === i) // dedupe
-                            .slice(0, 4)
-                            .map(s => ({
-                              icon: s.slot_type === 'lab' ? '🔬' : '📖',
-                              label: s.subject_name,
-                              q: `Explain the syllabus and important topics for ${s.subject_name}`
-                            })),
-                          // Fill remaining with common buttons
-                          { icon: '📅', label: 'Exam Dates', q: 'What are all exam dates and important deadlines this semester?' },
-                          { icon: '📊', label: 'Marks Scheme', q: 'Explain the marks and assessment scheme for all my subjects' },
-                          { icon: '🗓️', label: 'Study Plan', q: 'Make a 2-week study plan for all subjects before end-sem exams' },
-                          { icon: '🎉', label: 'Holidays', q: 'What are the upcoming holidays this semester?' },
-                        ].slice(0, 6)
-                      : getQuickAsks(profile?.major || '', profile?.module || '')
-                    ).map(s => (
+                    {getQuickAsks(profile?.major || '', profile?.module || '').map(s => (
                       <button key={s.q} onClick={() => send(s.q)}
                         style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '11px 13px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
                         onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
