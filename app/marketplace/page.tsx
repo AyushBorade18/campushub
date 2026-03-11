@@ -296,13 +296,32 @@ function ListItemModal({ onClose, onSuccess }: any) {
       }
     }
 
-    await supabase.from('listings').insert({
+    const { data: newListing } = await supabase.from('listings').insert({
       user_id: user.id, type: form.type, title: form.title,
       description: form.description, price: form.price ? parseFloat(form.price) : null,
       category: form.category, condition: form.condition, image_url: imageUrl,
       location_last_seen: form.location_last_seen || null,
       rent_duration: form.type === 'borrow' ? form.rent_duration : null,
-    })
+    }).select().single()
+
+    // 🔍 Auto-match lost/found listings
+    if ((form.type === 'lost' || form.type === 'found') && newListing) {
+      fetch('/api/lost-found-match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listingId: newListing.id,
+          type: form.type,
+          title: form.title,
+          description: form.description,
+          userId: user.id,
+        })
+      }).then(r => r.json()).then(result => {
+        if (result.matched) {
+          alert(`🎉 We found ${result.matches} possible match${result.matches > 1 ? 'es' : ''}! We've sent them a message. Check your Messages tab too.`)
+        }
+      }).catch(() => {}) // Silent fail — don't block UX
+    }
     setSaving(false)
     setDone(true)
     onSuccess()
