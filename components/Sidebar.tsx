@@ -7,6 +7,7 @@ const NAV = [
   { href: '/dashboard',   icon: '⊞',  label: 'Dashboard'      },
   { href: '/timetable',   icon: '📅',  label: 'Timetable'      },
   { href: '/marketplace', icon: '🛍',  label: 'Marketplace'    },
+  { href: '/notes',       icon: '📚',  label: 'Notes'          },
   { href: '/community',   icon: '💬',  label: 'Community'      },
   { href: '/chatbot',     icon: '🤖',  label: 'AI Assistant'   },
   { href: '/messages',    icon: '✉️',  label: 'Messages'       },
