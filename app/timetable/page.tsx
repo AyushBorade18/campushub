@@ -473,11 +473,19 @@ function TodaySummary({ slots, offDays }: any) {
       ) : (
         <>
           <div style={{ display:'flex', flexWrap:'wrap', gap:'8px', marginBottom:'12px' }}>
-            {todaySlots.map((s: any) => (
-              <div key={s.id} style={{ background:'rgba(255,255,255,0.15)', borderRadius:'10px', padding:'7px 13px', fontSize:'12.5px', fontWeight:'700' }}>
-                {SLOT_LABEL[s.slot_start]} · {s.subject_name}
-              </div>
-            ))}
+            {todaySlots.map((s: any) => {
+              // Extract hours directly from HH:MM strings — e.g. "10:00"→10, "12:00"→12
+              const startHour = parseInt(s.slot_start.split(':')[0])
+              const endHour = s.slot_type === 'lab' && s.slot_end
+                ? parseInt(s.slot_end.split(':')[0])
+                : startHour + 1
+              const timeLabel = `${startHour}-${endHour}`
+              return (
+                <div key={s.id} style={{ background:'rgba(255,255,255,0.15)', borderRadius:'10px', padding:'7px 13px', fontSize:'12.5px', fontWeight:'700' }}>
+                  {timeLabel} · {s.subject_name}
+                </div>
+              )
+            })}
           </div>
           {freeSlots.length > 0 && (
             <div style={{ fontSize:'12px', opacity:0.8, borderTop:'1px solid rgba(255,255,255,0.2)', paddingTop:'10px' }}>
