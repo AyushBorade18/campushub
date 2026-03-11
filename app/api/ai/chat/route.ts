@@ -107,9 +107,12 @@ async function getUserTimetable(userId: string): Promise<string> {
     const timetableStr = allDays.slice(1).map(day => {
       const daySlots = data.filter(s => s.day === day)
       if (!daySlots.length) return null
-      const slotStr = daySlots.map(s =>
-        `${SLOT_LABEL[s.slot_start]}: ${s.subject_name}${s.slot_type==='lab'?' (Lab 2hr)':''}`
-      ).join(', ')
+      const slotStr = daySlots.map(s => {
+        const startLabel = SLOT_LABEL[s.slot_start] || s.slot_start
+        const endLabel = SLOT_LABEL[s.slot_end] || s.slot_end
+        const timeRange = s.slot_type === 'lab' ? `${startLabel.replace(/ AM| PM/,'')}–${endLabel}` : startLabel
+        return `${timeRange}: ${s.subject_name}${s.slot_type === 'lab' ? ' (Lab)' : ''}`
+      }).join(', ')
       return `${day.charAt(0).toUpperCase()+day.slice(1)}: ${slotStr}`
     }).filter(Boolean).join('\n')
     return header + timetableStr
