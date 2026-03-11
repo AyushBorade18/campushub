@@ -151,7 +151,7 @@ export default function TimetablePage() {
   const [saved, setSaved] = useState(false)
   const [dbError, setDbError] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [view, setView] = useState<'build' | 'preview'>('build')
+  const [view, setView] = useState<'build' | 'preview'>('preview')
 
   useEffect(() => {
     const load = async () => {
