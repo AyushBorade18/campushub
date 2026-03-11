@@ -171,6 +171,29 @@ ${ragContext
 - Mess: Breakfast 7–9 AM | Lunch 12:30–2:30 PM | Dinner 7:30–9:30 PM
 - Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM
 
+### VIT PUNE ACADEMIC CALENDAR — HOLIDAYS & IMPORTANT DATES 2025-26
+
+**SEMESTER I HOLIDAYS (2025):**
+- 02/10/2025 (Thu) — Mahatma Gandhi Jayanti & Vijaya Dashami / Dasara
+- 20/10/2025–25/10/2025 (Mon–Sat) — Diwali Break
+- 05/11/2025 (Wed) — Guru Nanak Jayanti
+- 25/12/2025 (Thu) — Christmas
+
+**SEMESTER II HOLIDAYS (2026):**
+- 26/01/2026 (Mon) — Republic Day
+- 19/02/2026 (Thu) — Chhatrapati Shivaji Maharaj Jayanti
+- 03/03/2026 (Tue) — Dhulivandan (Holi second day)
+- 19/03/2026 (Thu) — Gudi Padwa
+- 21/03/2026 (Sat) — Ramzan Id
+- 26/03/2026 (Thu) — Ram Navami
+- 31/03/2026 (Tue) — Mahaveer Janma Kalyanak
+- 03/04/2026 (Fri) — Good Friday
+- 14/04/2026 (Tue) — Dr. Babasaheb Ambedkar Jayanti
+- 01/05/2026 (Fri) — Maharashtra Day / Buddha Poornima / Labour Day
+- 28/05/2026 (Thu) — Bakri Id
+
+When asked about holidays, list ALL of the above with exact dates. NEVER say you don't know the holidays.
+
 ### VIT PUNE FEES STRUCTURE 2025-26 (ALWAYS ANSWER FROM THIS)
 CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
 - OPEN: Rs 2,12,165 (Tuition 1,79,130 + Development 26,870 + Eligibility 600 + Exam 2,420 + Misc 2,444 + Insurance 701)
