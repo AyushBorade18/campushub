@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
+
+// Service role client — bypasses RLS for server-side reads
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 async function generateEmbedding(text: string): Promise<number[]> {
   const hfKey = process.env.HUGGINGFACE_API_KEY
@@ -34,7 +41,7 @@ async function searchRAG(query: string): Promise<string> {
 
 async function getUserProfile(userId: string) {
   try {
-    const { data } = await supabase
+    const { data } = await supabaseAdmin
       .from('profiles')
       .select('full_name, major, year, college_email, module')
       .eq('id', userId)
@@ -45,7 +52,7 @@ async function getUserProfile(userId: string) {
 
 async function getMarketplaceListings(): Promise<string> {
   try {
-    const { data } = await supabase
+    const { data } = await supabaseAdmin
       .from('listings')
       .select('title, description, price, type, category, status, created_at')
       .eq('status', 'active')
@@ -69,8 +76,8 @@ async function getMarketplaceListings(): Promise<string> {
 
 async function getCommunityPosts(): Promise<string> {
   try {
-    const { data } = await supabase
-      .from('posts')
+    const { data } = await supabaseAdmin
+      .from('community_posts')
       .select('content, created_at')
       .order('created_at', { ascending: false })
       .limit(20)
@@ -81,12 +88,12 @@ async function getCommunityPosts(): Promise<string> {
 
 async function getUserTimetable(userId: string): Promise<string> {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('timetable_slots')
       .select('day, slot_start, slot_end, subject_name, slot_type')
       .eq('user_id', userId)
       .order('day').order('slot_start')
-    if (!data?.length) return ''
+    if (error || !data?.length) return ''
     const allDays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
     const SLOT_LABEL: Record<string,string> = {
       '08:00':'8-9 AM','09:00':'9-10 AM','10:00':'10-11 AM','11:00':'11-12 PM',
