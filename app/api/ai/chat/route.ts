@@ -87,18 +87,25 @@ async function getUserTimetable(userId: string): Promise<string> {
       .eq('user_id', userId)
       .order('day').order('slot_start')
     if (!data?.length) return ''
-    const days = ['monday','tuesday','wednesday','thursday','friday','saturday']
+    const allDays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
     const SLOT_LABEL: Record<string,string> = {
-      '08:00':'8AM','09:00':'9AM','10:00':'10AM','11:00':'11AM',
-      '12:00':'12PM','13:00':'1PM','14:00':'2PM','15:00':'3PM',
-      '16:00':'4PM','17:00':'5PM','18:00':'6PM'
+      '08:00':'8-9 AM','09:00':'9-10 AM','10:00':'10-11 AM','11:00':'11-12 PM',
+      '12:00':'12-1 PM','13:00':'1-2 PM','14:00':'2-3 PM','15:00':'3-4 PM',
+      '16:00':'4-5 PM','17:00':'5-6 PM','18:00':'6 PM'
     }
-    return days.map(day => {
+    const now = new Date()
+    const todayName = allDays[now.getDay()]
+    const tomorrowName = allDays[(now.getDay() + 1) % 7]
+    const header = `Today is ${todayName.charAt(0).toUpperCase()+todayName.slice(1)}. Tomorrow is ${tomorrowName.charAt(0).toUpperCase()+tomorrowName.slice(1)}. NO room numbers are stored — NEVER invent them.\n\n`
+    const timetableStr = allDays.slice(1).map(day => {
       const daySlots = data.filter(s => s.day === day)
       if (!daySlots.length) return null
-      const slotStr = daySlots.map(s => `${SLOT_LABEL[s.slot_start]}–${SLOT_LABEL[s.slot_end]}: ${s.subject_name}${s.slot_type==='lab'?' (Lab)':''}`).join(', ')
+      const slotStr = daySlots.map(s =>
+        `${SLOT_LABEL[s.slot_start]}: ${s.subject_name}${s.slot_type==='lab'?' (Lab 2hr)':''}`
+      ).join(', ')
       return `${day.charAt(0).toUpperCase()+day.slice(1)}: ${slotStr}`
     }).filter(Boolean).join('\n')
+    return header + timetableStr
   } catch { return '' }
 }
 
@@ -359,7 +366,7 @@ ${communityData || 'No recent community posts.'}
 When asked about community posts, ONLY reference posts from the list above. NEVER invent posts.
 
 ### STUDENT'S PERSONAL TIMETABLE (REAL DATA)
-${timetableData ? `The student has set up their timetable:\n${timetableData}\n\nUse this to:\n- Answer "what do I have today/tomorrow?"\n- Suggest free slots for studying\n- Build study plans around their actual free slots\n- Warn about upcoming exams vs their available study time` : 'Timetable not set up yet — if asked about schedule, suggest the student visits the Timetable page to set it up.'}`
+${timetableData ? `The student has set up their timetable:\n${timetableData}\n\nUse this to:\n- Answer "what do I have today/tomorrow?"\n- Suggest free slots for studying\n- Build study plans around their actual free slots\n- Warn about upcoming exams vs their available study time\n\nSTRICT TIMETABLE RULES:\n- ONLY mention subjects listed above. NEVER add subjects not in the timetable.\n- NEVER invent room numbers, lecture halls, or locations — the timetable has NO room info.\n- NEVER invent times — only use the exact slot times listed above.\n- If asked about room/location, say "Room info is not saved in your timetable."` : 'Timetable not set up yet — if asked about schedule, suggest the student visits the Timetable page to set it up.'}`
 }
 
 export async function POST(req: NextRequest) {
@@ -385,7 +392,7 @@ export async function POST(req: NextRequest) {
     // 3. Fetch live marketplace + community + timetable data
     const isMarketplaceQuery = /market|buy|sell|borrow|listing|available|price|item|object|thing|purchase|lend|lost|found/i.test(message)
     const isCommunityQuery = /community|post|discussion|notice|announcement|recent|latest/i.test(message)
-    const isTimetableQuery = /timetable|schedule|today|tomorrow|free|slot|class|lecture|when do i|what do i have/i.test(message)
+    const isTimetableQuery = /timetable|schedule|today|tomorrow|yesterday|free|slot|class|lecture|when do i|what do i have|monday|tuesday|wednesday|thursday|friday|saturday/i.test(message)
     const [marketplaceData, communityData, timetableData] = await Promise.all([
       isMarketplaceQuery ? getMarketplaceListings() : Promise.resolve(''),
       isCommunityQuery ? getCommunityPosts() : Promise.resolve(''),
