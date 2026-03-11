@@ -44,6 +44,8 @@ export default function MessagesPage() {
         setUnsentMsgIds(new Set(unsent))
         setHiddenConvIds(new Set(hidden))
         loadConversations(user.id, new Set(hidden))
+        // Mark all message notifications as read
+        supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('type', 'message').eq('read', false)
       }
     }
     init()

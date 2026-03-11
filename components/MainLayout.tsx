@@ -3,6 +3,7 @@ import { useState, useEffect, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Sidebar from './Sidebar'
+import NotificationBell from './NotificationBell'
 
 export default function MainLayout({ children, noPadding }: { children: ReactNode, noPadding?: boolean }) {
   const router = useRouter()
@@ -10,6 +11,7 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
   const [mobileOpen, setMobileOpen] = useState(false)
   const [userName, setUserName] = useState('')
   const [userYear, setUserYear] = useState('')
+  const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,6 +20,7 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
         router.push('/auth/login')
         return
       }
+      setUserId(data.session.user.id)
       supabase.from('profiles').select('full_name, year').eq('id', data.session.user.id).single()
         .then(({ data: profile }) => {
           if (profile) {
@@ -60,8 +63,11 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-          <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-            👋 {userName || 'Student'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {userId && <NotificationBell userId={userId} />}
+            <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+              👋 {userName || 'Student'}
+            </div>
           </div>
         </div>
 

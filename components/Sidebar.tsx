@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useState, useEffect } from 'react'
 
 const NAV = [
   { href: '/dashboard',   icon: '⊞',  label: 'Dashboard'      },
@@ -19,6 +20,35 @@ type Props = { collapsed: boolean; setCollapsed: (v: boolean) => void; userName:
 export default function Sidebar({ collapsed, setCollapsed, userName, userYear, mobileOpen, setMobileOpen }: Props) {
   const path = usePathname()
   const router = useRouter()
+  const [unreadMessages, setUnreadMessages] = useState(0)
+
+  useEffect(() => {
+    const loadUnread = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { count } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('type', 'message')
+        .eq('read', false)
+      setUnreadMessages(count || 0)
+    }
+    loadUnread()
+
+    // Realtime — update badge instantly
+    const setup = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const channel = supabase
+        .channel('sidebar-unread-' + user.id)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
+          () => loadUnread()
+        ).subscribe()
+      return () => supabase.removeChannel(channel)
+    }
+    setup()
+  }, [path]) // re-check when navigating (clears when user visits /messages)
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -56,7 +86,33 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
                 transition: 'all 0.15s',
               }}>
                 <span style={{ fontSize: '18px', flexShrink: 0, width: '24px', textAlign: 'center' }}>{item.icon}</span>
-                {(!collapsed || isMobile) && <span style={{ fontSize: '13.5px', fontWeight: '600', whiteSpace: 'nowrap' }}>{item.label}</span>}
+                {(!collapsed || isMobile) && (
+                  <span style={{ fontSize: '13.5px', fontWeight: '600', whiteSpace: 'nowrap', flex: 1 }}>{item.label}</span>
+                )}
+                {/* Unread badge on Messages */}
+                {item.href === '/messages' && unreadMessages > 0 && (!collapsed || isMobile) && (
+                  <span style={{
+                    background: active ? 'rgba(255,255,255,0.3)' : '#ef4444',
+                    color: '#fff', borderRadius: '999px',
+                    fontSize: '10px', fontWeight: '800',
+                    minWidth: '18px', height: '18px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '0 5px', lineHeight: 1,
+                  }}>
+                    {unreadMessages > 99 ? '99+' : unreadMessages}
+                  </span>
+                )}
+                {/* Collapsed badge */}
+                {item.href === '/messages' && unreadMessages > 0 && collapsed && !isMobile && (
+                  <span style={{
+                    position: 'absolute', top: '2px', right: '2px',
+                    background: '#ef4444', color: '#fff', borderRadius: '50%',
+                    fontSize: '9px', fontWeight: '800', width: '14px', height: '14px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {unreadMessages > 9 ? '9+' : unreadMessages}
+                  </span>
+                )}
               </div>
             </Link>
           )
