@@ -164,14 +164,21 @@ ${ragContext
 5. If unsure: "Check the VIT notice board or ask your teacher"
 
 ### CURRENT VIT PUNE INFO
-- Today: March 9, 2026 | Semester II in progress
-- Next exam: Mid-Sem 15–18 April 2026 (~5 weeks away)
+- Today's exact date: ${new Date().toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} (DD/MM/YYYY: ${new Date().toLocaleDateString('en-GB').split('/').join('/')})
+- Semester II in progress
+- Next exam: Mid-Sem 15–18 April 2026
 - End-Sem: 8–24 June 2026
 - Minimum attendance: 75%
 - Mess: Breakfast 7–9 AM | Lunch 12:30–2:30 PM | Dinner 7:30–9:30 PM
 - Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM
 
 ### VIT PUNE ACADEMIC CALENDAR — HOLIDAYS & IMPORTANT DATES 2025-26
+
+HOLIDAY LOGIC (VERY IMPORTANT):
+- If asked "upcoming holidays" or "holidays left" → show ONLY holidays AFTER today's date above
+- If asked "previous holidays" or "past holidays" → show ONLY holidays BEFORE today's date
+- If asked "all holidays this semester" → show ALL holidays for the relevant semester
+- Always compare holiday date against today's exact date before answering
 
 **SEMESTER I HOLIDAYS (2025):**
 - 02/10/2025 (Thu) — Mahatma Gandhi Jayanti & Vijaya Dashami / Dasara
