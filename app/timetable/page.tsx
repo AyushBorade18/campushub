@@ -273,25 +273,29 @@ export default function TimetablePage() {
             <p style={{ margin:'4px 0 0', color:'#64748b', fontSize:'13px' }}>Click any slot to assign a subject · Labs auto-span 2 hours</p>
           </div>
           <div style={{ display:'flex', gap:'8px' }}>
+            {view === 'build' && (
+              <button onClick={() => { setView('preview'); setSaved(true); setTimeout(() => setSaved(false), 2500) }}
+                style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', color:'#fff', border:'none', borderRadius:'10px', padding:'9px 18px', fontWeight:'700', cursor:'pointer', fontSize:'13px' }}>
+                💾 Save
+              </button>
+            )}
             <button onClick={() => setView(v => v === 'build' ? 'preview' : 'build')}
-              style={{ background: view==='preview' ? '#6366f1' : '#f1f5f9', color: view==='preview' ? '#fff' : '#374151', border:'none', borderRadius:'10px', padding:'9px 16px', fontWeight:'700', cursor:'pointer', fontSize:'13px' }}>
+              style={{ background: view==='preview' ? '#f1f5f9' : '#f1f5f9', color:'#374151', border:'none', borderRadius:'10px', padding:'9px 16px', fontWeight:'700', cursor:'pointer', fontSize:'13px' }}>
               {view === 'build' ? '👁 Preview' : '✏️ Edit'}
             </button>
           </div>
         </div>
 
-        {saved && <div style={{ background:'#d1fae5', color:'#10b981', padding:'10px 16px', borderRadius:'10px', marginBottom:'14px', fontWeight:'600', fontSize:'13px' }}>✅ Slot saved!</div>}
-
-        {dbError && (
-          <div style={{ background:'#fee2e2', color:'#ef4444', padding:'14px 18px', borderRadius:'12px', marginBottom:'14px', fontWeight:'600', fontSize:'13px', lineHeight:'1.6' }}>
-            ⚠️ <strong>Database table missing!</strong> You need to run the SQL migration first.<br/>
-            Go to <strong>Supabase → SQL Editor</strong> → paste and run <code>timetable_migration.sql</code> → then come back here.
+        {/* Toast notification — disappears after 2.5s */}
+        {saved && (
+          <div style={{ position:'fixed', top:'20px', right:'20px', background:'#0f172a', color:'#fff', padding:'12px 20px', borderRadius:'12px', fontWeight:'600', fontSize:'13px', zIndex:9999, boxShadow:'0 8px 24px rgba(0,0,0,0.2)', display:'flex', alignItems:'center', gap:'8px' }}>
+            ✅ Timetable saved!
           </div>
         )}
 
-        {!dbError && slots.length > 0 && (
-          <div style={{ background:'#f0fdf4', color:'#16a34a', padding:'10px 16px', borderRadius:'10px', marginBottom:'14px', fontWeight:'600', fontSize:'13px', display:'flex', alignItems:'center', gap:'8px' }}>
-            ✅ <strong>{slots.length} slots saved</strong> — AI can now read your timetable
+        {dbError && (
+          <div style={{ background:'#fee2e2', color:'#ef4444', padding:'14px 18px', borderRadius:'12px', marginBottom:'14px', fontWeight:'600', fontSize:'13px', lineHeight:'1.6' }}>
+            ⚠️ <strong>Database table missing!</strong> Go to <strong>Supabase → SQL Editor</strong> → run <code>timetable_migration.sql</code>
           </div>
         )}
 
