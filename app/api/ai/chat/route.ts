@@ -497,17 +497,24 @@ export async function POST(req: NextRequest) {
     ])
 
     // 4. Build personalized system prompt
-    const systemPrompt = buildSystemPrompt(profile, ragContext, marketplaceData, communityData, timetableData)
+    // When a doc is attached, use a slim system prompt to save token budget
+    const systemPrompt = docContent
+      ? `You are CampusHub AI for VIT Pune. User: ${profile?.full_name || 'Student'}, Branch: ${profile?.major || 'B.Tech'}. Answer questions from the uploaded document accurately and concisely.`
+      : buildSystemPrompt(profile, ragContext, marketplaceData, communityData, timetableData)
 
+    // Groq llama-3.1-8b-instant limit: ~6000 TPM
+    // Slim prompt ≈ 60 tokens, leave ~2500 for doc content, rest for answer
+    const MAX_DOC_CHARS = 2000
+    const truncated = docContent && docContent.length > MAX_DOC_CHARS
     const userMessage = docContent
-      ? `I uploaded "${docName}":\n---\n${docContent.slice(0, 8000)}\n---\nQuestion: ${message}`
+      ? `I uploaded "${docName}":\n---\n${docContent.slice(0, MAX_DOC_CHARS)}${truncated ? '\n\n[...document truncated to fit context...]' : ''}\n---\nQuestion: ${message}`
       : message
 
     const messages: { role: string; content: string }[] = [
       { role: 'system', content: systemPrompt }
     ]
 
-    for (const h of history.filter((x: any) => x.role !== 'system').slice(-5)) {
+    for (const h of history.filter((x: any) => x.role !== 'system').slice(docContent ? -2 : -5)) {
       messages.push({ role: h.role === 'assistant' ? 'assistant' : 'user', content: h.text })
     }
     messages.push({ role: 'user', content: userMessage })
