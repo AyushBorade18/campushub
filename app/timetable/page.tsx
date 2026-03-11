@@ -42,6 +42,7 @@ function getSubjectPills(branch: string, module: string) {
     { name: 'PSP', type: 'theory', color: '#6366f1' },
     { name: 'PSP Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Linear Algebra', type: 'theory', color: '#6366f1' },
+    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#6366f1' },
     { name: 'COA', type: 'theory', color: '#6366f1' },
     { name: 'Web Dev', type: 'theory', color: '#6366f1' },
     { name: 'Web Dev Lab', type: 'lab', color: '#4f46e5' },
@@ -53,6 +54,7 @@ function getSubjectPills(branch: string, module: string) {
     { name: 'AE', type: 'theory', color: '#6366f1' },
     { name: 'AE Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Calculus', type: 'theory', color: '#6366f1' },
+    { name: 'Calculus Tutorial', type: 'theory', color: '#6366f1' },
     { name: 'Python', type: 'theory', color: '#6366f1' },
     { name: 'Python Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Data Analysis', type: 'theory', color: '#6366f1' },
@@ -66,6 +68,7 @@ function getSubjectPills(branch: string, module: string) {
     { name: 'PSP', type: 'theory', color: '#6366f1' },
     { name: 'PSP Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Linear Algebra', type: 'theory', color: '#6366f1' },
+    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#6366f1' },
     { name: 'Electronic Circuits', type: 'theory', color: '#6366f1' },
     { name: 'EC Lab', type: 'lab', color: '#4f46e5' },
     { name: 'IKS', type: 'theory', color: '#6366f1' },
@@ -77,6 +80,7 @@ function getSubjectPills(branch: string, module: string) {
     { name: 'AE', type: 'theory', color: '#6366f1' },
     { name: 'AE Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Calculus', type: 'theory', color: '#6366f1' },
+    { name: 'Calculus Tutorial', type: 'theory', color: '#6366f1' },
     { name: 'DLD', type: 'theory', color: '#6366f1' },
     { name: 'DLD Lab', type: 'lab', color: '#4f46e5' },
     { name: 'UHV', type: 'theory', color: '#6366f1' },
@@ -145,6 +149,7 @@ export default function TimetablePage() {
   const [picker, setPicker] = useState<{ day: string; start: string } | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [dbError, setDbError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'build' | 'preview'>('build')
 
@@ -203,12 +208,19 @@ export default function TimetablePage() {
 
     // Insert new slot
     const { data: { user } } = await supabase.auth.getUser()
-    const { data: newSlot } = await supabase.from('timetable_slots').insert({
+    const { data: newSlot, error } = await supabase.from('timetable_slots').insert({
       user_id: user!.id, day, slot_start: start, slot_end: end,
       subject_name: pill.name, slot_type: pill.type
     }).select().single()
 
+    if (error || !newSlot) {
+      setDbError(true)
+      setPicker(null)
+      return
+    }
+    setDbError(false)
     setSlots(prev => [...prev.filter(s => !toRemove.find(r => r.id === s.id)), newSlot])
+    setSaved(true); setTimeout(() => setSaved(false), 2000)
     setPicker(null)
   }
 
@@ -268,7 +280,20 @@ export default function TimetablePage() {
           </div>
         </div>
 
-        {saved && <div style={{ background:'#d1fae5', color:'#10b981', padding:'10px 16px', borderRadius:'10px', marginBottom:'14px', fontWeight:'600', fontSize:'13px' }}>✅ Saved!</div>}
+        {saved && <div style={{ background:'#d1fae5', color:'#10b981', padding:'10px 16px', borderRadius:'10px', marginBottom:'14px', fontWeight:'600', fontSize:'13px' }}>✅ Slot saved!</div>}
+
+        {dbError && (
+          <div style={{ background:'#fee2e2', color:'#ef4444', padding:'14px 18px', borderRadius:'12px', marginBottom:'14px', fontWeight:'600', fontSize:'13px', lineHeight:'1.6' }}>
+            ⚠️ <strong>Database table missing!</strong> You need to run the SQL migration first.<br/>
+            Go to <strong>Supabase → SQL Editor</strong> → paste and run <code>timetable_migration.sql</code> → then come back here.
+          </div>
+        )}
+
+        {!dbError && slots.length > 0 && (
+          <div style={{ background:'#f0fdf4', color:'#16a34a', padding:'10px 16px', borderRadius:'10px', marginBottom:'14px', fontWeight:'600', fontSize:'13px', display:'flex', alignItems:'center', gap:'8px' }}>
+            ✅ <strong>{slots.length} slots saved</strong> — AI can now read your timetable
+          </div>
+        )}
 
         {/* Off Days Selector */}
         <div style={{ background:'#fff', borderRadius:'14px', padding:'16px 20px', marginBottom:'16px', border:'1px solid #f1f5f9', display:'flex', alignItems:'center', gap:'16px', flexWrap:'wrap' }}>
