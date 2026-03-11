@@ -43,7 +43,7 @@ async function getUserProfile(userId: string) {
   try {
     const { data } = await supabaseAdmin
       .from('profiles')
-      .select('full_name, major, year, college_email, module')
+      .select('full_name, major, year, college_email, module, off_days')
       .eq('id', userId)
       .single()
     return data
@@ -137,6 +137,52 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
     ? 'Module 2 — Calculus, Digital Logic Design, UHV'
     : null
 
+  // Compute which days are naturally off for this user
+  const offDaysSetting = profile?.off_days || 'sat_sun'
+  const offDayNames: string[] = offDaysSetting === 'sat_sun' ? ['Saturday','Sunday']
+    : offDaysSetting === 'sun_mon' ? ['Sunday','Monday']
+    : ['Sunday']
+  const offDayNums: number[] = offDaysSetting === 'sat_sun' ? [0,6]
+    : offDaysSetting === 'sun_mon' ? [0,1]
+    : [0]  // 0=Sun,1=Mon,...,6=Sat
+
+  // Compute bridge day opportunities from upcoming holidays
+  const holidayDates = [
+    new Date('2026-03-19'), new Date('2026-03-21'), new Date('2026-03-26'),
+    new Date('2026-03-31'), new Date('2026-04-03'), new Date('2026-04-14'),
+    new Date('2026-05-01'), new Date('2026-05-28'),
+  ]
+  const today = new Date(); today.setHours(0,0,0,0)
+  const upcoming = holidayDates.filter(d => d >= today)
+
+  // For each upcoming holiday, check if taking 1 adjacent working day gives a long streak
+  const bridgeAnalysis: string[] = []
+  for (const hd of upcoming) {
+    const dayOfWeek = hd.getDay() // 0=Sun
+    // Check day before and after
+    for (const offset of [-1, 1]) {
+      const candidate = new Date(hd); candidate.setDate(hd.getDate() + offset)
+      if (offDayNums.includes(candidate.getDay())) continue // already off
+      // Count streak if they take this day off
+      let streak = 1 // the holiday itself
+      let streakDays = [hd]
+      // Expand outward
+      for (let dir of [-1, 1]) {
+        let cur = new Date(hd)
+        while (true) {
+          cur = new Date(cur); cur.setDate(cur.getDate() + dir)
+          if (offDayNums.includes(cur.getDay()) || upcoming.some(u => u.getTime() === cur.getTime()) || cur.getTime() === candidate.getTime()) {
+            streak++; streakDays.push(new Date(cur))
+          } else break
+        }
+      }
+      if (streak >= 3) {
+        const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit' })
+        bridgeAnalysis.push(`Take off ${candidate.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'2-digit', year:'numeric' })} → get ${streak}+ days off in a row (${streakDays.map(fmt).join(', ')} + your ${offDayNames.join('/')})`)
+      }
+    }
+  }
+
   return `### ROLE
 You are "CampusHub AI" — the personalized intelligent assistant for VIT Pune (Vishwakarma Institute of Technology).
 
@@ -145,8 +191,16 @@ You are currently speaking with:
 - Name: ${userName}
 - Branch: ${userBranch}  
 - Year: ${userYear}
-${userModule ? `- Module: ${userModule}` : '- Module: Not set (ask the user if they are in Module 1 or Module 2 when making study plans)'}
+${userModule ? `- Module: ${userModule}` : '- Module: Not set'}
 - Current Semester: Semester II (March 2026)
+- Weekly off days: ${offDayNames.join(' and ')} (every week, always off)
+
+### BRIDGE DAY OPPORTUNITIES (pre-computed for ${userName})
+${bridgeAnalysis.length
+  ? `By taking just ONE leave day, ${userName} can get long breaks:\n` + bridgeAnalysis.map(b => `- ${b}`).join('\n')
+  : 'No major bridge day opportunities in upcoming holidays.'}
+
+Use this section to give PERSONALISED advice when asked about best day to take leave / maximize holidays.
 
 When asked "what is my name", "what branch am I in", "who am I" — answer using the identity above. NEVER say you don't have access to personal details.
 
