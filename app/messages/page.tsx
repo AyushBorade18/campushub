@@ -24,6 +24,7 @@ export default function MessagesPage() {
   const [hiddenConvIds, setHiddenConvIds] = useState<Set<string>>(new Set())
   const [showDeleteChatConfirm, setShowDeleteChatConfirm] = useState(false)
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
+  const [convListOpen, setConvListOpen] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // LocalStorage keys per user
@@ -134,17 +135,28 @@ export default function MessagesPage() {
   return (
     <MainLayout>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '12px' }}>
-      <div>
-        <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
-        <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '13px' }}>Direct messages from marketplace & community</p>
-      </div>
-
-      <div className="messages-container" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', flex: 1, minHeight: 0, boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
-        {/* Conversation List */}
-        <div className="conv-list" style={{ borderRight: '1px solid #f1f5f9', overflowY: 'auto', background: '#f8fafc' }}>
-          <div style={{ padding: '16px', borderBottom: '1px solid #f1f5f9' }}>
-            <div style={{ fontSize: '14px', fontWeight: '700', color: '#0f172a' }}>Conversations</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* ☰ Hamburger toggle for conversation list */}
+          <button onClick={() => setConvListOpen(o => !o)}
+            title={convListOpen ? 'Hide conversations' : 'Show conversations'}
+            style={{ width: '38px', height: '38px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: convListOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', flexShrink: 0 }}>
+            ☰
+          </button>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
+            <p style={{ margin: '2px 0 0', color: '#64748b', fontSize: '13px' }}>Direct messages from marketplace & community</p>
           </div>
+        </div>
+
+      <div className="messages-container" style={{ display: 'grid', gridTemplateColumns: convListOpen ? '280px 1fr' : '0px 1fr', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', flex: 1, minHeight: 0, boxShadow: '0 2px 12px rgba(0,0,0,0.05)', transition: 'grid-template-columns 0.25s ease' }}>
+
+        {/* Conversation List */}
+        <div className="conv-list" style={{ borderRight: convListOpen ? '1px solid #f1f5f9' : 'none', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#f8fafc', minWidth: 0 }}>
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+            <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>💬 Conversations ({conversations.length})</div>
+          </div>
+          {/* Scrollable list */}
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
           {loading ? (
             <div style={{ padding: '30px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>Loading...</div>
           ) : conversations.length === 0 ? (
@@ -169,17 +181,18 @@ export default function MessagesPage() {
               </button>
             ))
           )}
+          </div>
         </div>
 
         {/* Chat Window */}
         {!activeConv ? (
-          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', gap: '12px' }}>
+          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', gap: '12px', overflow: 'hidden' }}>
             <div style={{ fontSize: '56px' }}>💬</div>
             <div style={{ fontWeight: '700', fontSize: '18px', color: '#475569' }}>Select a conversation</div>
             <div style={{ fontSize: '13px' }}>Or message someone from the Marketplace</div>
           </div>
         ) : (
-          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
             {/* Header */}
             <div style={{ padding: '14px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <button className="back-btn" onClick={() => setMobileView('list')} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#6366f1', padding: '0', marginRight: '4px' }}>←</button>
