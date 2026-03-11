@@ -30,8 +30,10 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
     <>
       {/* Logo */}
       <div style={{ padding: '20px 14px 16px', display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid rgba(255,255,255,0.08)', minHeight: '64px' }}>
-        <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🎓</div>
-        {(!collapsed || isMobile) && <span style={{ color: '#fff', fontWeight: '800', fontSize: '17px', whiteSpace: 'nowrap' }}>CampusHub</span>}
+        <Link href="/dashboard" onClick={() => isMobile && setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1 }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🎓</div>
+          {(!collapsed || isMobile) && <span style={{ color: '#fff', fontWeight: '800', fontSize: '17px', whiteSpace: 'nowrap' }}>CampusHub</span>}
+        </Link>
         {isMobile && (
           <button onClick={() => setMobileOpen(false)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#94a3b8', fontSize: '20px', cursor: 'pointer' }}>✕</button>
         )}
