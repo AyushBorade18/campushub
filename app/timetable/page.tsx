@@ -9,9 +9,9 @@ const ALL_SLOTS = [
   '13:00','14:00','15:00','16:00','17:00','18:00'
 ]
 const SLOT_LABEL: Record<string, string> = {
-  '08:00':'8 AM','09:00':'9 AM','10:00':'10 AM','11:00':'11 AM',
-  '12:00':'12 PM','13:00':'1 PM','14:00':'2 PM','15:00':'3 PM',
-  '16:00':'4 PM','17:00':'5 PM','18:00':'6 PM'
+  '08:00':'8-9','09:00':'9-10','10:00':'10-11','11:00':'11-12',
+  '12:00':'12-1','13:00':'1-2','14:00':'2-3','15:00':'3-4',
+  '16:00':'4-5','17:00':'5-6','18:00':'6 PM'
 }
 const ALL_DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday']
 const DAY_LABEL: Record<string,string> = {
@@ -32,7 +32,7 @@ function getSubjectPills(branch: string, module: string) {
   const common = [
     { name: 'ASEP', type: 'lab', color: '#7c3aed' },
     { name: 'RAD', type: 'theory', color: '#0891b2' },
-    { name: 'GP', type: 'theory', color: '#0891b2' },
+    { name: 'GP', type: 'lab', color: '#0891b2' },
     { name: 'SRM', type: 'theory', color: '#0891b2' },
     { name: 'Break / Lunch', type: 'break', color: '#94a3b8' },
     { name: 'Free', type: 'free', color: '#10b981' },
@@ -43,7 +43,6 @@ function getSubjectPills(branch: string, module: string) {
     { name: 'PSP Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Linear Algebra', type: 'theory', color: '#6366f1' },
     { name: 'COA', type: 'theory', color: '#6366f1' },
-    { name: 'COA Lab', type: 'lab', color: '#4f46e5' },
     { name: 'Web Dev', type: 'theory', color: '#6366f1' },
     { name: 'Web Dev Lab', type: 'lab', color: '#4f46e5' },
     { name: 'IKS', type: 'theory', color: '#6366f1' },
