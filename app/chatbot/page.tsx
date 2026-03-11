@@ -45,7 +45,6 @@ function getQuickAsks(branch: string, module: string) {
     { icon: '🌐', label: 'Web Dev',        q: 'What is the Web Development exam pattern and important topics?' },
     { icon: '📅', label: "Today's Classes", q: "What is my timetable for today?" },
     { icon: '🛍️', label: 'Marketplace',   q: 'What items are currently available on the marketplace?' },
-    { icon: '🎭', label: 'Student Activity', q: 'What is Student Activity and how is it assessed?' },
     ...common.slice(0, 4),
   ]
 
@@ -57,7 +56,6 @@ function getQuickAsks(branch: string, module: string) {
     { icon: '📊', label: 'Data Analysis',    q: 'What are the important topics in Data Analysis exam?' },
     { icon: '📅', label: "Today's Classes",  q: "What is my timetable for today?" },
     { icon: '🛍️', label: 'Marketplace',     q: 'What items are currently available on the marketplace?' },
-    { icon: '🌿', label: 'Env Studies',      q: 'What are the important topics in Environmental Studies exam?' },
     ...common.slice(0, 4),
   ]
 
