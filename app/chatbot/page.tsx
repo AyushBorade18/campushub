@@ -41,7 +41,7 @@ function getQuickAsks(branch: string, module: string) {
     { icon: '📐', label: 'Linear Algebra', q: 'Explain eigenvalues and eigenvectors in simple terms with examples' },
     { icon: '🖥️', label: 'COA',           q: 'Give me the full COA syllabus and important exam topics' },
     { icon: '🌐', label: 'Web Dev',        q: 'What is the Web Development exam pattern and important topics?' },
-    { icon: '🏛️', label: 'IKS',           q: 'What are the important topics in Indian Knowledge System exam?' },
+    { icon: '🏛️', label: 'IKS',           q: 'What is exam pattern for Indian Knowledge System?' },
     { icon: '🎭', label: 'Student Activity', q: 'What is Student Activity and how is it assessed?' },
     ...common,
   ]
@@ -145,6 +145,7 @@ function timeAgo(ts: number) {
 export default function AIPage() {
   const [userId, setUserId] = useState<string>('')
   const [profile, setProfile] = useState<any>(null)
+  const [todaySlots, setTodaySlots] = useState<any[]>([])
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
   const [msgs, setMsgs] = useState<Msg[]>([])
@@ -173,8 +174,14 @@ export default function AIPage() {
       if (uid && uid !== 'guest') {
         const { data: p } = await supabase.from('profiles').select('full_name, major, module, year').eq('id', uid).single()
         setProfile(p || null)
+        // Fetch today's timetable slots
+        const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+        const todayName = days[new Date().getDay()]
+        const { data: ts } = await supabase.from('timetable_slots').select('subject_name, slot_start, slot_type').eq('user_id', uid).eq('day', todayName).order('slot_start')
+        setTodaySlots(ts || [])
       } else {
         setProfile(null)
+        setTodaySlots([])
       }
     }
 
@@ -417,7 +424,25 @@ export default function AIPage() {
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '500px' }}>
-                    {getQuickAsks(profile?.major || '', profile?.module || '').map(s => (
+                    {(todaySlots.length > 0
+                      ? [
+                          // Today's subjects first
+                          ...todaySlots
+                            .filter((s, i, arr) => arr.findIndex(x => x.subject_name === s.subject_name) === i) // dedupe
+                            .slice(0, 4)
+                            .map(s => ({
+                              icon: s.slot_type === 'lab' ? '🔬' : '📖',
+                              label: s.subject_name,
+                              q: `Explain the syllabus and important topics for ${s.subject_name}`
+                            })),
+                          // Fill remaining with common buttons
+                          { icon: '📅', label: 'Exam Dates', q: 'What are all exam dates and important deadlines this semester?' },
+                          { icon: '📊', label: 'Marks Scheme', q: 'Explain the marks and assessment scheme for all my subjects' },
+                          { icon: '🗓️', label: 'Study Plan', q: 'Make a 2-week study plan for all subjects before end-sem exams' },
+                          { icon: '🎉', label: 'Holidays', q: 'What are the upcoming holidays this semester?' },
+                        ].slice(0, 6)
+                      : getQuickAsks(profile?.major || '', profile?.module || '')
+                    ).map(s => (
                       <button key={s.q} onClick={() => send(s.q)}
                         style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '11px 13px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
                         onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
