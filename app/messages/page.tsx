@@ -25,7 +25,9 @@ export default function MessagesPage() {
   const [showDeleteChatConfirm, setShowDeleteChatConfirm] = useState(false)
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
   const [convListOpen, setConvListOpen] = useState(true)
+  const [uploading, setUploading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   // LocalStorage keys per user
   const unsentKey = (uid: string) => `campushub_unsent_${uid}`
@@ -100,6 +102,27 @@ export default function MessagesPage() {
     setInput('')
     await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: activeConv.other_user_id, content: text })
     loadConversations(currentUser.id)
+  }
+
+  const sendFile = async (file: File) => {
+    if (!activeConv || !currentUser) return
+    setUploading(true)
+    const ext = file.name.split('.').pop()
+    const path = `messages/${currentUser.id}/${Date.now()}_${file.name}`
+    const { data: uploadData, error } = await supabase.storage.from('message-files').upload(path, file)
+    if (error || !uploadData) {
+      alert('Upload failed — make sure "message-files" storage bucket exists in Supabase.')
+      setUploading(false); return
+    }
+    const { data: { publicUrl } } = supabase.storage.from('message-files').getPublicUrl(path)
+    // Detect type
+    const isImage = file.type.startsWith('image/')
+    const isVideo = file.type.startsWith('video/')
+    const icon = isImage ? '🖼' : isVideo ? '🎥' : '📎'
+    const content = `${icon}__FILE__${publicUrl}__NAME__${file.name}__TYPE__${file.type}`
+    await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: activeConv.other_user_id, content })
+    loadConversations(currentUser.id)
+    setUploading(false)
   }
 
   // Unsend a message — hides it only for current user using localStorage
@@ -249,7 +272,34 @@ export default function MessagesPage() {
                             🗑 Unsend
                           </button>
                         )}
-                        <div style={{ padding: '10px 14px', borderRadius: isMe ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: isMe ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#fff', color: isMe ? '#fff' : '#374151', fontSize: '13.5px', boxShadow: '0 2px 4px rgba(0,0,0,0.06)', border: !isMe ? '1px solid #f1f5f9' : 'none' }}>{msg.content}</div>
+                        <div style={{ padding: msg.content.includes('__FILE__') ? '6px' : '10px 14px', borderRadius: isMe ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: isMe ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#fff', color: isMe ? '#fff' : '#374151', fontSize: '13.5px', boxShadow: '0 2px 4px rgba(0,0,0,0.06)', border: !isMe ? '1px solid #f1f5f9' : 'none', maxWidth: '260px' }}>
+                          {msg.content.includes('__FILE__') ? (() => {
+                            const url = msg.content.split('__FILE__')[1]?.split('__NAME__')[0]
+                            const name = msg.content.split('__NAME__')[1]?.split('__TYPE__')[0]
+                            const type = msg.content.split('__TYPE__')[1] || ''
+                            if (type.startsWith('image/')) return (
+                              <a href={url} target="_blank" rel="noopener noreferrer">
+                                <img src={url} alt={name} style={{ maxWidth: '220px', maxHeight: '200px', borderRadius: '10px', display: 'block' }} />
+                                <div style={{ fontSize: '11px', marginTop: '4px', opacity: 0.8, padding: '0 4px' }}>{name}</div>
+                              </a>
+                            )
+                            if (type.startsWith('video/')) return (
+                              <div>
+                                <video src={url} controls style={{ maxWidth: '220px', maxHeight: '180px', borderRadius: '10px', display: 'block' }} />
+                                <div style={{ fontSize: '11px', marginTop: '4px', opacity: 0.8, padding: '0 4px' }}>{name}</div>
+                              </div>
+                            )
+                            return (
+                              <a href={url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit', padding: '4px' }}>
+                                <span style={{ fontSize: '24px' }}>📎</span>
+                                <div>
+                                  <div style={{ fontSize: '13px', fontWeight: '700' }}>{name}</div>
+                                  <div style={{ fontSize: '11px', opacity: 0.7 }}>Tap to open</div>
+                                </div>
+                              </a>
+                            )
+                          })() : msg.content}
+                        </div>
                       </div>
                       <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '3px', textAlign: isMe ? 'right' : 'left' }}>{formatTime(msg.created_at)}</div>
                     </div>
@@ -265,10 +315,32 @@ export default function MessagesPage() {
             </div>
 
             {/* Input */}
-            <div style={{ padding: '12px 16px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '8px' }}>
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} placeholder="Type a message..."
-                style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '13px', outline: 'none' }} />
-              <button onClick={sendMessage} disabled={!input.trim()} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 16px', cursor: 'pointer', color: '#fff', fontSize: '18px', opacity: !input.trim() ? 0.5 : 1 }}>➤</button>
+            <div style={{ padding: '12px 16px', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {/* File type buttons */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {[
+                  { label: '🖼 Photo', accept: 'image/*' },
+                  { label: '🎥 Video', accept: 'video/*' },
+                  { label: '📎 Document', accept: '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip' },
+                ].map(({ label, accept }) => (
+                  <button key={label} onClick={() => {
+                    const inp = document.createElement('input')
+                    inp.type = 'file'
+                    inp.accept = accept
+                    inp.onchange = (e: any) => { const f = e.target.files?.[0]; if (f) sendFile(f) }
+                    inp.click()
+                  }} disabled={uploading}
+                    style={{ background: '#f1f5f9', border: '1.5px solid #e2e8f0', borderRadius: '8px', padding: '5px 10px', cursor: 'pointer', fontSize: '12px', fontWeight: '600', color: '#374151', opacity: uploading ? 0.5 : 1 }}>
+                    {uploading ? '⏳' : label}
+                  </button>
+                ))}
+              </div>
+              {/* Text input row */}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} placeholder="Type a message..."
+                  style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '13px', outline: 'none' }} />
+                <button onClick={sendMessage} disabled={!input.trim()} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 16px', cursor: 'pointer', color: '#fff', fontSize: '18px', opacity: !input.trim() ? 0.5 : 1 }}>➤</button>
+              </div>
             </div>
           </div>
         )}
