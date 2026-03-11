@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Sidebar from './Sidebar'
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+export default function MainLayout({ children, noPadding }: { children: ReactNode, noPadding?: boolean }) {
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -13,13 +13,11 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
         router.push('/auth/login')
         return
       }
-      // Fetch profile info for sidebar
       supabase.from('profiles').select('full_name, year').eq('id', data.session.user.id).single()
         .then(({ data: profile }) => {
           if (profile) {
@@ -43,37 +41,39 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   }
 
   const sidebarW = collapsed ? 60 : 220
+  const topBarH = 64
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Mobile overlay */}
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {mobileOpen && (
         <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }} />
       )}
 
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} userName={userName} userYear={userYear} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      <main style={{ marginLeft: `${sidebarW}px`, flex: 1, padding: '24px 28px', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc', minHeight: '100vh' }} className="main-content">
+      <div style={{ marginLeft: `${sidebarW}px`, flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc' }} className="main-content">
         {/* Top bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ height: `${topBarH}px`, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 28px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button onClick={() => setMobileOpen(true)} className="hamburger-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px', padding: '4px', display: 'none', color: '#0f172a' }}>☰</button>
             <div style={{ fontSize: '13px', color: '#94a3b8' }}>
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-              👋 {userName || 'Student'}
-            </div>
+          <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+            👋 {userName || 'Student'}
           </div>
         </div>
-        {children}
-      </main>
+
+        {/* Page content */}
+        <main style={{ flex: 1, overflow: noPadding ? 'hidden' : 'auto', padding: noPadding ? '0' : '24px 28px' }}>
+          {children}
+        </main>
+      </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .main-content { margin-left: 0 !important; padding: 16px !important; }
+          .main-content { margin-left: 0 !important; }
           .hamburger-btn { display: block !important; }
         }
       `}</style>
