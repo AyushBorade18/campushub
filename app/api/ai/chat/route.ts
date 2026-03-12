@@ -209,6 +209,8 @@ ${ragContext
   ? `Relevant VIT Pune information retrieved:\n---\n${ragContext}\n---`
   : 'No specific documents matched — use general VIT Pune knowledge.'}
 
+⚠️ IMPORTANT PRIORITY RULE: If RAG content conflicts with the MARKS STRUCTURE or MODULE STRUCTURE sections above, ALWAYS use the marks/module data from this system prompt — it is more accurate and up to date than the RAG. RAG is only for general campus info not covered above.
+
 ### RULES
 1. Address the user as ${userName} naturally and personally
 2. For branch-specific questions, tailor answers to ${userBranch}
