@@ -103,7 +103,13 @@ async function getUserTimetable(userId: string): Promise<string> {
     const now = new Date()
     const todayName = allDays[now.getDay()]
     const tomorrowName = allDays[(now.getDay() + 1) % 7]
-    const header = `Today is ${todayName.charAt(0).toUpperCase()+todayName.slice(1)}. Tomorrow is ${tomorrowName.charAt(0).toUpperCase()+tomorrowName.slice(1)}. NO room numbers are stored — NEVER invent them.\n\n`
+    const todayHasSlots = data.some(s => s.day === todayName)
+    const tomorrowHasSlots = data.some(s => s.day === tomorrowName)
+    const todayNote = todayHasSlots
+      ? ` WARNING: ${todayName.charAt(0).toUpperCase()+todayName.slice(1)} HAS CLASSES in the timetable below - do NOT say it is free.`
+      : ` (no classes today)`
+    const tomorrowNote = tomorrowHasSlots ? ` (has classes)` : ` (no classes)`
+    const header = `Today is ${todayName.charAt(0).toUpperCase()+todayName.slice(1)}.${todayNote} Tomorrow is ${tomorrowName.charAt(0).toUpperCase()+tomorrowName.slice(1)}.${tomorrowNote} NO room numbers are stored - NEVER invent them.\n\nCRITICAL RULE: Timetable data overrides off-day settings. If a day has slots listed below, the student HAS class that day - even on Saturday or any other day.\n\n`
     const timetableStr = allDays.slice(1).map(day => {
       const daySlots = data.filter(s => s.day === day)
       if (!daySlots.length) return null
