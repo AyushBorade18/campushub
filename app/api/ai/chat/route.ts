@@ -141,10 +141,10 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
   const isMod1 = profile?.module === 'module_1'
   const isMod2 = profile?.module === 'module_2'
 
-  const userModule = isCS && isMod1 ? 'Module 1 — Linear Algebra, COA, Web Dev, IKS'
-    : isCS && isMod2 ? 'Module 2 — Calculus, Python, Data Analysis, UHV'
-    : isENTC && isMod1 ? 'Module 1 — Linear Algebra, Electronic Circuits, IKS'
-    : isENTC && isMod2 ? 'Module 2 — Calculus, DLD, UHV'
+  const userModule = isCS && isMod1 ? 'Module 1 — Linear Algebra, PSP (C language), COA, Web Dev, IKS'
+    : isCS && isMod2 ? 'Module 2 — Calculus, Applied Electromechanics, Python for Engineers, Data Analysis, UHV'
+    : isENTC && isMod1 ? 'Module 1 — Linear Algebra, PSP (C language), Electronic Circuits, IKS'
+    : isENTC && isMod2 ? 'Module 2 — Calculus, Applied Electromechanics, DLD, UHV'
     : null
 
   // Detect what the message is about — only inject relevant sections
@@ -172,6 +172,13 @@ USER: ${userName} | Branch: ${userBranch} | Year: ${userYear} | ${userModule ? `
 Off days: ${offDayNames.join(' & ')} | Date: ${today.toLocaleDateString('en-GB', {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'})}
 Sem II in progress | Mid-Sem: 15–18 Apr 2026 | End-Sem: 8–24 Jun 2026 | Min attendance: 75%
 
+CRITICAL SUBJECT RULES — NEVER GET THESE WRONG:
+- PSP (Problem Solving using Programming) = C LANGUAGE in Module 1. NOT Python. Never say PSP uses Python.
+- Python for Engineers = ONLY in Module 2. Never say Module 1 has Python.
+- If user is Module 1: their programming subject is PSP using C language.
+- If user is Module 2: their programming subject is Python for Engineers.
+- These rules override anything else in this prompt including RAG context.
+
 RULES: Only mention subjects from the student's module. Never invent faculty names, room numbers, or details not in this prompt. If unsure, say "Check vit.edu or your department."
 `
 
@@ -187,7 +194,8 @@ ${ragContext}
 MARKS STRUCTURE:
 - BSE Maths (Linear Algebra/Calculus): Mid-Sem 30→25 + End-Sem 100→50 + Assignment 100→25 = 100
 - PCC (COA/Electronic Circuits): Mid-Sem 30→25 + End-Sem Written 100→50 + Viva 100→25 = 100
-- PSP/Python: Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
+- PSP (C language, Module 1): Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
+- Python for Engineers (Module 2): Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
 - AE (Applied Electromechanics): NO Mid-Sem + End-Sem Written 100→50 + LAB 100→25 + Project 100→25 = 100
 - BSE/VSEC (Web Dev/Data Analysis/DLD): End-Sem LAB+Viva 100→50 + Project 100→50 = 100 (NO Mid-Sem)
 - IKS/UHV: End-Sem MCQ 100 only
@@ -201,14 +209,15 @@ MARKS STRUCTURE:
     if (isCS) {
       prompt += `
 CS/IT/AI MODULE SUBJECTS:
-Module 1: Linear Algebra, PSP, COA, Web Dev, IKS, Student Activity
-Module 2: Calculus, Applied Electromechanics, Python, Data Analysis, UHV, Env Studies
+Module 1: Linear Algebra, PSP (C language - NOT Python), COA, Web Dev, IKS, Student Activity
+Module 2: Calculus, Applied Electromechanics, Python for Engineers (NOT C), Data Analysis, UHV, Env Studies
+CRITICAL: PSP in Module 1 = C language programming. Python is ONLY in Module 2.
 Common (both): ASEP, RAD, GP, SRM (NO Engineering Graphics for CS/IT/AI)
 `
     } else if (isENTC) {
       prompt += `
 ENTC/INSTRUMENTATION MODULE SUBJECTS:
-Module 1: Linear Algebra, PSP, Electronic Circuits, IKS, Student Activity
+Module 1: Linear Algebra, PSP (C language - NOT Python), Electronic Circuits, IKS, Student Activity
 Module 2: Calculus, Applied Electromechanics, DLD, UHV, Env Studies
 Common: Engineering Graphics, ASEP, RAD, GP, SRM
 `
