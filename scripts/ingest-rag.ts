@@ -119,7 +119,7 @@ All subjects are out of 100 marks total.
 BSE Maths — Linear Algebra (HS1084) / Calculus (HS1085) — 4 credits:
 Mid-Sem Written Exam: 30 marks paper converted to 25 marks
 End-Sem Written Exam: 100 marks paper converted to 50 marks
-Assignment/Tutorial (In-Semester): 100 marks converted to 25 marks
+Tutorial (In-Semester): 100 marks converted to 25 marks
 TOTAL = 100 marks
 
 PCC — COA / Electronic Circuits — 2 credits:
@@ -147,8 +147,8 @@ End-Sem LAB + Comprehensive Viva Voce: 100 marks converted to 50 marks
 Course Project (End-Sem): 100 marks converted to 50 marks
 TOTAL = 100 marks
 
-IKS — Indian Knowledge System: End-Sem MCQ Exam = 100 marks. No Mid-Sem.
-UHV — Universal Human Values: End-Sem MCQ Exam = 100 marks. No Mid-Sem.
+IKS — Indian Knowledge System: End-Sem Online MCQ = 60 marks total. No Mid-Sem. No conversion.
+UHV — Universal Human Values: End-Sem Online MCQ = 60 marks total. No Mid-Sem. No conversion.
 Environmental Studies: End-Sem MCQ 100 marks converted to 50 + PPT 50 marks = 100 total.
 
 Mid-Sem duration: 1 hour. End-Sem duration: 2.5 hours.`

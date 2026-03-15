@@ -196,13 +196,13 @@ NOTE: Marks are out of a higher value but converted/scaled to lower value for fi
 Format shown: Exam (out of X → converted to Y marks in final)
 
 MODULE SUBJECTS:
-- BSE Maths (Linear Algebra or Calculus): Mid-Sem (out of 30 → 25) + End-Sem Written (out of 100 → 50) + Assignment (out of 100 → 25) = 100 total
+- BSE Maths (Linear Algebra or Calculus): Mid-Sem (out of 30 → 25) + End-Sem Written (out of 100 → 50) + Tutorial (out of 100 → 25) = 100 total
 - PCC (COA or Electronic Circuits): Mid-Sem (out of 30 → 25) + End-Sem Written (out of 100 → 50) + Viva (out of 100 → 25) = 100 total
 - PSP C language (Module 1 only): Mid-Sem (out of 30 → 25) + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 25) = 100 total
 - Python for Engineers (Module 2 only): Mid-Sem (out of 30 → 25) + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 25) = 100 total
 - Applied Electromechanics (AE): NO Mid-Sem + End-Sem Written (out of 100 → 50) + LAB (out of 100 → 25) + Project (out of 100 → 25) = 100 total
 - Web Dev / Data Analysis / DLD (BSE/VSEC): NO Mid-Sem + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 50) = 100 total
-- IKS / UHV: End-Sem MCQ only (out of 100, no conversion) = 100 total
+- IKS / UHV: End-Sem Online MCQ only = 60 marks total (no Mid-Sem, no conversion)
 - Environmental Studies: End-Sem MCQ (out of 100 → 50) + PPT Presentation (50) = 100 total
 
 COMMON SUBJECTS (ALL branches, both modules):
