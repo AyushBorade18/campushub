@@ -100,7 +100,8 @@ async function getUserTimetable(userId: string): Promise<string> {
       '12:00':'12-1 PM','13:00':'1-2 PM','14:00':'2-3 PM','15:00':'3-4 PM',
       '16:00':'4-5 PM','17:00':'5-6 PM','18:00':'6 PM'
     }
-    const now = new Date()
+    // Use IST time (UTC+5:30) — server may run in UTC
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
     const todayName = allDays[now.getDay()]
     const tomorrowName = allDays[(now.getDay() + 1) % 7]
     const todayHasSlots = data.some(s => s.day === todayName)
@@ -163,7 +164,7 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
   const offDayNums = offDaysSetting === 'sat_sun' ? [0,6]
     : offDaysSetting === 'sun_mon' ? [0,1] : [0]
 
-  const today = new Date(); today.setHours(0,0,0,0)
+  const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })); today.setHours(0,0,0,0)
 
   let prompt = `You are CampusHub AI — the smart assistant for VIT Pune students. Be friendly, use emojis, give structured answers.
 
@@ -376,7 +377,7 @@ export async function POST(req: NextRequest) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'llama3-8b-8192', messages, max_tokens: 600, temperature: 0.7 })
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, max_tokens: 600, temperature: 0.7 })
     })
 
     const data = await res.json()
