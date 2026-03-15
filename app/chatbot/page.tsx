@@ -238,7 +238,40 @@ export default function AIPage() {
     if (!f) return
     setUploading(true)
     try {
-      const text = await f.text()
+      let text = ''
+      if (f.type === 'application/pdf' || f.name.endsWith('.pdf')) {
+        // For PDFs: read as binary and extract only readable text chunks
+        const buffer = await f.arrayBuffer()
+        const bytes = new Uint8Array(buffer)
+        // Extract readable ASCII text runs from PDF binary
+        let extracted = ''
+        let run = ''
+        for (let i = 0; i < bytes.length; i++) {
+          const c = bytes[i]
+          if (c >= 32 && c < 127) {
+            run += String.fromCharCode(c)
+          } else {
+            if (run.length > 4) extracted += run + ' '
+            run = ''
+          }
+        }
+        if (run.length > 4) extracted += run
+        // Clean up PDF syntax garbage, keep real words
+        text = extracted
+          .replace(/[\/<>()\[\]{}]/g, ' ')
+          .replace(/\b[A-Za-z0-9]{1,2}\b/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 15000)
+        if (!text || text.length < 100) {
+          setMsgs(p => [...p, { role: 'system', text: '\u26a0\ufe0f **' + f.name + '** could not be read — it may be a scanned/image PDF.\n\n**Try instead:**\n- Copy-paste text directly into chat\n- Save as .txt file\n- Use a digitally-typed PDF' }])
+          setUploading(false)
+          if (fileRef.current) fileRef.current.value = ''
+          return
+        }
+      } else {
+        text = await f.text()
+      }
       if (!text.trim()) { alert('Could not extract text from this file. Try a .txt file instead.'); setUploading(false); return }
       setDocName(f.name)
       setDocText(text.slice(0, 15000))
