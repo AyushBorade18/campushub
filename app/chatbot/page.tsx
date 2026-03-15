@@ -269,8 +269,11 @@ export default function AIPage() {
       let text = ''
       if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
         text = await extractPdfText(f)
-        if (!text || text.length < 50) {
-          setMsgs(p => [...p, { role: 'system', text: `⚠️ **${f.name}** could not be read — it may be a scanned/image PDF with no text layer.\n\nTry copy-pasting text directly into the chat instead.` }])
+        // Check if extracted text is actually readable (not font-encoded garbage)
+        const realWords = (text.match(/[a-zA-Z]{3,}/g) || []).length
+        const isReadable = text.length > 50 && realWords > 20
+        if (!isReadable) {
+          setMsgs(p => [...p, { role: 'system', text: `⚠️ **${f.name}** could not be read as text.\n\nThis PDF uses encoded/compressed fonts that cannot be extracted in the browser.\n\n**What works instead:**\n- 📋 Copy-paste text from your PDF into the chat\n- 🔄 Convert at **smallpdf.com → PDF to Word**, then copy the text\n- 📝 Just ask your question directly — I know the VIT Pune syllabus already!` }])
           setUploading(false)
           if (fileRef.current) fileRef.current.value = ''
           return
