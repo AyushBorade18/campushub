@@ -35,7 +35,7 @@ export default function DashboardPage() {
       {/* Hero */}
       <div style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)', borderRadius: '20px', padding: '28px 32px', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
-        <div style={{ fontSize: '13px', color: '#e0e7ff', marginBottom: '6px' }}>Good morning, 👋</div>
+        <div style={{ fontSize: '13px', color: '#e0e7ff', marginBottom: '6px' }}>Hello, 👋</div>
         <div style={{ fontSize: '26px', fontWeight: '800', color: '#fff', marginBottom: '4px' }}>{profile?.full_name || 'Student'}</div>
         <div style={{ fontSize: '13px', color: '#c7d2fe' }}>VIT Pune · {profile?.major || 'Engineering'} · {profile?.year || '1st Year'}</div>
         <div style={{ marginTop: '18px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>

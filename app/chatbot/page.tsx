@@ -233,47 +233,17 @@ export default function AIPage() {
     if (activeId === id) newChat()
   }
 
-  async function extractPdfText(file: File): Promise<string> {
-    const arrayBuffer = await file.arrayBuffer()
-    const uint8 = new Uint8Array(arrayBuffer)
-    const pdfjsLib = (window as any).pdfjsLib
-    if (!pdfjsLib) return new TextDecoder().decode(uint8)
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-    const pdf = await pdfjsLib.getDocument({ data: uint8 }).promise
-    let fullText = ''
-    for (let i = 1; i <= Math.min(pdf.numPages, 30); i++) {
-      const page = await pdf.getPage(i)
-      const content = await page.getTextContent()
-      fullText += `\n[Page ${i}]\n` + content.items.map((item: any) => item.str).join(' ')
-    }
-    return fullText
-  }
-
   async function upload(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
     setUploading(true)
     try {
-      let text = ''
-      if (f.name.toLowerCase().endsWith('.pdf')) {
-        if (!(window as any).pdfjsLib) {
-          await new Promise<void>((resolve, reject) => {
-            const script = document.createElement('script')
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
-            script.onload = () => resolve()
-            script.onerror = () => reject(new Error('PDF.js load failed'))
-            document.head.appendChild(script)
-          })
-        }
-        text = await extractPdfText(f)
-      } else {
-        text = await f.text()
-      }
-      if (!text.trim()) { alert('Could not extract text. Try a .txt file.'); setUploading(false); return }
+      const text = await f.text()
+      if (!text.trim()) { alert('Could not extract text from this file. Try a .txt file instead.'); setUploading(false); return }
       setDocName(f.name)
       setDocText(text.slice(0, 15000))
       setMsgs(p => [...p, { role: 'system', text: `📎 **${f.name}** is ready (${(text.length/1000).toFixed(1)} KB)\n\nNow ask me anything from this document!` }])
-    } catch { alert('Could not read file. Make sure the PDF is not password-protected.') }
+    } catch { alert('Could not read file.') }
     setUploading(false)
     if (fileRef.current) fileRef.current.value = ''
   }
@@ -324,8 +294,8 @@ export default function AIPage() {
   const activeSession = sessions.find(s => s.id === activeId)
 
   return (
-    <MainLayout>
-      <div className="chatbot-container" style={{ display: 'flex', height: 'calc(100vh - 80px)', gap: '14px' }}>
+    <MainLayout noPadding>
+      <div className="chatbot-container" style={{ display: 'flex', height: 'calc(100vh - 64px)', gap: '14px', padding: '16px', overflow: 'hidden', boxSizing: 'border-box' }}>
 
         {/* Chat History Sidebar */}
         {sidebarOpen && (
