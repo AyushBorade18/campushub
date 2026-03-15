@@ -295,179 +295,178 @@ export default function AIPage() {
 
   return (
     <MainLayout noPadding>
-      <div className="chatbot-container" style={{ display: 'flex', height: 'calc(100vh - 64px)', gap: '14px', padding: '16px', overflow: 'hidden', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', height: 'calc(100dvh - 64px)', overflow: 'hidden', background: '#f8fafc' }}>
 
-        {/* Chat History Sidebar */}
+        {/* Mobile: Chat History Drawer Overlay */}
         {sidebarOpen && (
-          <div className="chatbot-sidebar" style={{ width: '230px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button onClick={newChat}
-              style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(79,70,229,0.3)' }}>
-              <span style={{ fontSize: '18px' }}>✏️</span> New Chat
-            </button>
-
-            <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>💬 Chat History</span>
-              </div>
-              <div style={{ flex: 1, overflowY: 'auto', padding: '6px' }}>
-                {sessions.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '24px 12px', color: '#94a3b8', fontSize: '12px', lineHeight: 1.6 }}>
-                    <div style={{ fontSize: '28px', marginBottom: '8px' }}>💬</div>
-                    No chats yet.<br/>Start asking!
-                  </div>
-                ) : (
-                  sessions.map(s => (
-                    <div key={s.id} onClick={() => loadSession(s.id)}
-                      style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#ede9fe' : 'transparent', border: activeId === s.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', transition: 'all 0.15s', position: 'relative' }}
-                      onMouseEnter={e => { if (activeId !== s.id) (e.currentTarget as HTMLElement).style.background = '#f8fafc' }}
-                      onMouseLeave={e => { if (activeId !== s.id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}>
-                      <div style={{ fontSize: '12.5px', fontWeight: '600', color: activeId === s.id ? '#4f46e5' : '#1e293b', lineHeight: 1.4, marginBottom: '4px', paddingRight: '20px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
-                        {s.title}
-                      </div>
-                      <div style={{ fontSize: '10.5px', color: '#94a3b8' }}>{timeAgo(s.createdAt)}</div>
-                      <button onClick={(e) => deleteSession(s.id, e)} title="Delete"
-                        style={{ position: 'absolute', top: '8px', right: '6px', background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', fontSize: '15px', padding: '2px 4px', borderRadius: '5px' }}
-                        onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                        onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}>
-                        ×
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-              {sessions.length > 0 && (
-                <div style={{ padding: '8px', borderTop: '1px solid #f1f5f9' }}>
-                  <button onClick={() => { saveSessions([]); newChat() }}
-                    style={{ width: '100%', background: 'none', border: '1px solid #fee2e2', borderRadius: '8px', padding: '6px', cursor: 'pointer', color: '#ef4444', fontSize: '11.5px', fontWeight: '600' }}>
-                    🗑 Clear all history
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}
+            style={{ display: 'none', position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200 }} />
         )}
 
-        {/* Main Chat */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <button onClick={() => setSidebarOpen(o => !o)} title="Toggle history"
-                style={{ width: '36px', height: '36px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1' }}>
-                {sidebarOpen ? '◀' : '▶'}
-              </button>
-              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🤖</div>
-              <div>
-                <div style={{ fontSize: '17px', fontWeight: '900', color: '#0f172a' }}>
-                  {activeSession ? activeSession.title.slice(0,38) + (activeSession.title.length > 38 ? '…' : '') : 'AI Campus Assistant'}
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#64748b' }}>VIT Pune · Full syllabus & schedule · Groq AI</div>
-              </div>
+        {/* Sidebar */}
+        <div className={`chatbot-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}
+          style={{ width: '230px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e8eaf0', transition: 'transform 0.25s ease' }}>
+
+          <button onClick={newChat}
+            style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <span>✏️</span> New Chat
+          </button>
+
+          <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+              <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>💬 Chat History</span>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '6px' }}>
+              {sessions.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '24px 12px', color: '#94a3b8', fontSize: '12px', lineHeight: 1.6 }}>
+                  <div style={{ fontSize: '28px', marginBottom: '8px' }}>💬</div>
+                  No chats yet.<br/>Start asking!
+                </div>
+              ) : sessions.map(s => (
+                <div key={s.id} onClick={() => { loadSession(s.id); setSidebarOpen(false) }}
+                  style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#ede9fe' : 'transparent', border: activeId === s.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', transition: 'all 0.15s', position: 'relative' }}>
+                  <div style={{ fontSize: '12.5px', fontWeight: '600', color: activeId === s.id ? '#4f46e5' : '#1e293b', lineHeight: 1.4, marginBottom: '4px', paddingRight: '20px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
+                    {s.title}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#94a3b8' }}>{timeAgo(s.createdAt)}</div>
+                  <button onClick={(e) => deleteSession(s.id, e)} title="Delete"
+                    style={{ position: 'absolute', top: '8px', right: '6px', background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', fontSize: '15px', padding: '2px 4px', borderRadius: '5px' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}>
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            {sessions.length > 0 && (
+              <div style={{ padding: '8px', borderTop: '1px solid #f1f5f9', flexShrink: 0 }}>
+                <button onClick={() => { saveSessions([]); newChat() }}
+                  style={{ width: '100%', background: 'none', border: '1px solid #fee2e2', borderRadius: '8px', padding: '6px', cursor: 'pointer', color: '#ef4444', fontSize: '11.5px', fontWeight: '600' }}>
+                  🗑 Clear all history
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Chat Area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+
+          {/* Header */}
+          <div style={{ padding: '10px 14px', borderBottom: '1px solid #e8eaf0', background: '#fff', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, flexWrap: 'wrap' }}>
+            <button onClick={() => setSidebarOpen(o => !o)} title="Chat history"
+              style={{ width: '36px', height: '36px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', flexShrink: 0 }}>
+              {sidebarOpen ? '◀' : '💬'}
+            </button>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🤖</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '15px', fontWeight: '800', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {activeSession ? activeSession.title.slice(0,40) + (activeSession.title.length > 40 ? '…' : '') : 'AI Campus Assistant'}
+              </div>
+              <div style={{ fontSize: '11px', color: '#64748b' }}>VIT Pune · Groq AI</div>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
               {docName && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: '10px', padding: '5px 12px' }}>
-                  <span>📄</span>
-                  <span style={{ fontSize: '12px', color: '#5b21b6', fontWeight: '700', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
-                  <button onClick={() => { setDocName(''); setDocText('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a78bfa', fontSize: '16px', padding: 0 }}>×</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: '8px', padding: '4px 8px' }}>
+                  <span style={{ fontSize: '12px' }}>📄</span>
+                  <span style={{ fontSize: '11px', color: '#5b21b6', fontWeight: '700', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
+                  <button onClick={() => { setDocName(''); setDocText('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a78bfa', fontSize: '14px', padding: 0, lineHeight: 1 }}>×</button>
                 </div>
               )}
               {!empty && (
-                <button onClick={newChat} style={{ background: '#f1f5f9', border: 'none', borderRadius: '8px', padding: '7px 14px', fontSize: '12px', color: '#64748b', fontWeight: '600', cursor: 'pointer' }}>
-                  ✏️ New Chat
+                <button onClick={newChat}
+                  style={{ background: '#f1f5f9', border: 'none', borderRadius: '8px', padding: '6px 10px', fontSize: '12px', color: '#64748b', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  ✏️ New
                 </button>
               )}
             </div>
           </div>
 
-          {/* Chat Box */}
-          <div className="chatbot-main" style={{ background: '#fff', borderRadius: '18px', border: '1px solid #e8eaf0', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', background: '#fafbff', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* Messages — this is the scrollable area */}
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '16px', background: '#fafbff', display: 'flex', flexDirection: 'column', gap: '14px', WebkitOverflowScrolling: 'touch' } as any}>
 
-              {empty && (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '20px' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>🤖</div>
-                    <div style={{ fontSize: '20px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>AI Campus Assistant</div>
-                    <div style={{ fontSize: '13px', color: '#64748b', maxWidth: '380px', lineHeight: '1.7' }}>
-                      {profile?.full_name ? (
-                        <>Hey <strong>{profile.full_name.split(' ')[0]}</strong>! I know your <strong>{profile.major || 'VIT Pune'} {profile.module ? `(${profile.module === 'module_1' ? 'Module 1' : 'Module 2'})` : ''}</strong> full semester — subjects, exam dates, marks scheme &amp; more.</>
-                      ) : (
-                        <>I know your <strong>complete VIT Pune semester</strong> — all subjects, exam dates, deadlines, and campus info.</>
-                      )}
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '500px' }}>
-                    {getQuickAsks(profile?.major || '', profile?.module || '').map(s => (
-                      <button key={s.q} onClick={() => send(s.q)}
-                        style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '11px 13px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
-                        onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
-                        onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e8eaf0'; (e.currentTarget).style.background = '#fff' }}>
-                        <div style={{ fontSize: '16px', marginBottom: '3px' }}>{s.icon}</div>
-                        <div style={{ fontSize: '12px', fontWeight: '700', color: '#0f172a' }}>{s.label}</div>
-                        <div style={{ fontSize: '10.5px', color: '#94a3b8', marginTop: '2px', lineHeight: 1.4 }}>{s.q.slice(0,38)}…</div>
-                      </button>
-                    ))}
-                  </div>
-                  <button onClick={() => fileRef.current?.click()}
-                    style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#fff', border: '2px dashed #c7d2fe', borderRadius: '14px', padding: '13px 20px', cursor: 'pointer', width: '100%', maxWidth: '500px' }}>
-                    <span style={{ fontSize: '24px' }}>📎</span>
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#4f46e5' }}>Upload PDF or TXT — Ask from your notes</div>
-                      <div style={{ fontSize: '11px', color: '#94a3b8' }}>Syllabus PDFs, question papers, textbooks</div>
-                    </div>
-                  </button>
-                </div>
-              )}
-
-              {msgs.map((m, i) => (
-                <div key={i} style={{ display: 'flex', gap: '10px', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-start' }}>
-                  {m.role !== 'user' && (
-                    <div style={{ width: '32px', height: '32px', borderRadius: '10px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', marginTop: '2px' }}>
-                      {m.role === 'system' ? '📎' : '🤖'}
-                    </div>
-                  )}
-                  <div style={{ maxWidth: '82%', padding: '12px 16px', borderRadius: m.role === 'user' ? '18px 4px 18px 18px' : '4px 18px 18px 18px', background: m.role === 'user' ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
-                    dangerouslySetInnerHTML={{ __html: m.role === 'user' ? m.text.replace(/\n/g,'<br/>') : renderMd(m.text) }} />
-                  {m.role === 'user' && (
-                    <div style={{ width: '32px', height: '32px', borderRadius: '10px', flexShrink: 0, background: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
-                  )}
-                </div>
-              ))}
-
-              {busy && (
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>🤖</div>
-                  <div style={{ background: '#fff', border: '1px solid #e8eaf0', borderRadius: '4px 18px 18px 18px', padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {[0,1,2].map(j => (
-                      <div key={j} style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366f1', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
-                    ))}
-                    <span style={{ marginLeft: '8px', fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>Thinking...</span>
+            {empty && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100%', gap: '16px', padding: '20px 0' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '44px', marginBottom: '8px' }}>🤖</div>
+                  <div style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>AI Campus Assistant</div>
+                  <div style={{ fontSize: '13px', color: '#64748b', maxWidth: '340px', lineHeight: '1.7' }}>
+                    {profile?.full_name ? (
+                      <>Hey <strong>{profile.full_name.split(' ')[0]}</strong>! I know your <strong>{profile.major || 'VIT Pune'} {profile.module ? `(${profile.module === 'module_1' ? 'Mod 1' : 'Mod 2'})` : ''}</strong> full semester.</>
+                    ) : (
+                      <>I know your <strong>complete VIT Pune semester</strong> — subjects, exams, marks &amp; more.</>
+                    )}
                   </div>
                 </div>
-              )}
-              <div ref={endRef} />
-            </div>
-
-            {/* Input */}
-            <div style={{ padding: '12px 16px', borderTop: '1px solid #f1f5f9', background: '#fff' }}>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input ref={fileRef} type="file" accept=".txt,.pdf,.md" style={{ display: 'none' }} onChange={upload} />
-                <button onClick={() => fileRef.current?.click()} title="Upload document"
-                  style={{ width: '42px', height: '42px', borderRadius: '11px', border: `1.5px solid ${docName ? '#7c3aed' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f8fafc', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {uploading ? '⌛' : '📎'}
-                </button>
-                <input ref={inputRef}
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
-                  placeholder={docName ? `Ask about "${docName}"…` : 'Ask anything — exams, code, concepts, study help…'}
-                  style={{ flex: 1, padding: '11px 16px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '13.5px', outline: 'none', fontFamily: 'inherit', background: '#fafafa' }} />
-                <button onClick={() => send()} disabled={busy || !input.trim()}
-                  style={{ width: '42px', height: '42px', borderRadius: '12px', background: input.trim() && !busy ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  ➤
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '480px' }}>
+                  {getQuickAsks(profile?.major || '', profile?.module || '').slice(0, 6).map(s => (
+                    <button key={s.q} onClick={() => send(s.q)}
+                      style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '10px 12px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
+                      onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
+                      onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e8eaf0'; (e.currentTarget).style.background = '#fff' }}>
+                      <div style={{ fontSize: '15px', marginBottom: '2px' }}>{s.icon}</div>
+                      <div style={{ fontSize: '12px', fontWeight: '700', color: '#0f172a' }}>{s.label}</div>
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => fileRef.current?.click()}
+                  style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fff', border: '2px dashed #c7d2fe', borderRadius: '12px', padding: '12px 16px', cursor: 'pointer', width: '100%', maxWidth: '480px' }}>
+                  <span style={{ fontSize: '22px' }}>📎</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#4f46e5' }}>Upload PDF or TXT</div>
+                    <div style={{ fontSize: '11px', color: '#94a3b8' }}>Ask questions from your notes</div>
+                  </div>
                 </button>
               </div>
+            )}
+
+            {msgs.map((m, i) => (
+              <div key={i} style={{ display: 'flex', gap: '8px', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-start' }}>
+                {m.role !== 'user' && (
+                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', marginTop: '2px' }}>
+                    {m.role === 'system' ? '📎' : '🤖'}
+                  </div>
+                )}
+                <div style={{ maxWidth: '78%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: m.role === 'user' ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', wordBreak: 'break-word' }}
+                  dangerouslySetInnerHTML={{ __html: m.role === 'user' ? m.text.replace(/\n/g,'<br/>') : renderMd(m.text) }} />
+                {m.role === 'user' && (
+                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
+                )}
+              </div>
+            ))}
+
+            {busy && (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <div style={{ width: '30px', height: '30px', borderRadius: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px' }}>🤖</div>
+                <div style={{ background: '#fff', border: '1px solid #e8eaf0', borderRadius: '4px 16px 16px 16px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  {[0,1,2].map(j => (
+                    <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366f1', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
+                  ))}
+                  <span style={{ marginLeft: '6px', fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>Thinking...</span>
+                </div>
+              </div>
+            )}
+            <div ref={endRef} />
+          </div>
+
+          {/* Input — pinned at bottom */}
+          <div style={{ padding: '10px 12px', borderTop: '1px solid #f1f5f9', background: '#fff', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input ref={fileRef} type="file" accept=".txt,.pdf,.md" style={{ display: 'none' }} onChange={upload} />
+              <button onClick={() => fileRef.current?.click()} title="Upload document"
+                style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1.5px solid ${docName ? '#7c3aed' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f8fafc', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {uploading ? '⌛' : '📎'}
+              </button>
+              <input ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
+                placeholder={docName ? `Ask about "${docName}"…` : 'Ask anything about VIT Pune…'}
+                style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '14px', outline: 'none', fontFamily: 'inherit', background: '#fafafa', minWidth: 0 }} />
+              <button onClick={() => send()} disabled={busy || !input.trim()}
+                style={{ width: '40px', height: '40px', borderRadius: '11px', background: input.trim() && !busy ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                ➤
+              </button>
             </div>
           </div>
         </div>
@@ -478,33 +477,36 @@ export default function AIPage() {
           0%, 80%, 100% { transform: translateY(0) }
           40% { transform: translateY(-8px) }
         }
-      `}</style>
-          <style>{`
+
         @media (max-width: 768px) {
-          .chatbot-container {
-            height: calc(100dvh - 64px) !important;
-            flex-direction: column !important;
-            padding: 8px !important;
-            gap: 8px !important;
-          }
           .chatbot-sidebar {
-            width: 100% !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            flex-shrink: 0 !important;
-            max-height: 180px !important;
-            min-height: 0 !important;
+            position: fixed !important;
+            top: 64px !important;
+            left: 0 !important;
+            height: calc(100dvh - 64px) !important;
+            z-index: 201 !important;
+            transform: translateX(-100%) !important;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15) !important;
+            background: #fff !important;
           }
-          .chatbot-sidebar > div {
-            min-width: 200px !important;
-            max-height: 180px !important;
-            flex-shrink: 0 !important;
+          .chatbot-sidebar.sidebar-open {
+            transform: translateX(0) !important;
           }
-          .chatbot-main {
-            flex: 1 !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
+          .sidebar-overlay {
+            display: block !important;
+          }
+        }
+
+        @media (min-width: 769px) {
+          .chatbot-sidebar {
+            transform: translateX(0) !important;
+            position: relative !important;
+          }
+          .chatbot-sidebar:not(.sidebar-open) {
+            display: none !important;
+          }
+          .sidebar-overlay {
+            display: none !important;
           }
         }
       `}</style>
