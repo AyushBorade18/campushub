@@ -233,14 +233,53 @@ export default function AIPage() {
     if (activeId === id) newChat()
   }
 
+  async function extractPdfText(file: File): Promise<string> {
+    // Load pdf.js if not already loaded
+    if (!(window as any).pdfjsLib) {
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+        script.onload = () => resolve()
+        script.onerror = () => reject()
+        document.head.appendChild(script)
+      }).catch(() => {})
+    }
+    try {
+      const pdfjsLib = (window as any).pdfjsLib
+      if (!pdfjsLib) return ''
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+      const arrayBuffer = await file.arrayBuffer()
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+      let fullText = ''
+      for (let i = 1; i <= Math.min(pdf.numPages, 30); i++) {
+        const page = await pdf.getPage(i)
+        const content = await page.getTextContent()
+        const pageText = content.items.map((item: any) => item.str).join(' ')
+        fullText += pageText + '\n'
+      }
+      return fullText.trim()
+    } catch { return '' }
+  }
+
   async function upload(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
     setUploading(true)
     try {
-      const text = await f.text()
-      if (!text.trim()) { alert('Could not extract text from this file. Try a .txt file instead.'); setUploading(false); return }
-            setDocName(f.name)
+      let text = ''
+      if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
+        text = await extractPdfText(f)
+        if (!text || text.length < 50) {
+          setMsgs(p => [...p, { role: 'system', text: `⚠️ **${f.name}** could not be read — it may be a scanned/image PDF with no text layer.\n\nTry copy-pasting text directly into the chat instead.` }])
+          setUploading(false)
+          if (fileRef.current) fileRef.current.value = ''
+          return
+        }
+      } else {
+        text = await f.text()
+      }
+      if (!text.trim()) { alert('Could not extract text from this file.'); setUploading(false); return }
+      setDocName(f.name)
       setDocText(text.slice(0, 15000))
       setMsgs(p => [...p, { role: 'system', text: `📎 **${f.name}** is ready (${(text.length/1000).toFixed(1)} KB)\n\nNow ask me anything from this document!` }])
     } catch { alert('Could not read file.') }
