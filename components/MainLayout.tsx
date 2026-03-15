@@ -56,16 +56,16 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
 
       <div style={{ marginLeft: `${sidebarW}px`, flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc' }} className="main-content">
         {/* Top bar */}
-        <div style={{ height: `${topBarH}px`, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 28px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+        <div style={{ height: `${topBarH}px`, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button onClick={() => setMobileOpen(true)} className="hamburger-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px', padding: '4px', display: 'none', color: '#0f172a' }}>☰</button>
-            <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+            <div className="topbar-date" style={{ fontSize: '13px', color: '#94a3b8' }}>
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {userId && <NotificationBell userId={userId} />}
-            <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+            <div className="topbar-greeting" style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: '10px', padding: '7px 14px', fontSize: '13px', fontWeight: '600', color: '#0f172a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
               👋 {userName || 'Student'}
             </div>
           </div>
@@ -80,7 +80,11 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
       <style>{`
         @media (max-width: 768px) {
           .main-content { margin-left: 0 !important; }
-          .hamburger-btn { display: block !important; }
+          .hamburger-btn { display: flex !important; }
+          .topbar-date { display: none !important; }
+          .topbar-greeting { font-size: 12px !important; padding: 5px 10px !important; }
+          .topbar-right { gap: 6px !important; }
+          main { padding: 12px 14px !important; }
         }
       `}</style>
     </div>

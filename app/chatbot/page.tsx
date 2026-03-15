@@ -381,7 +381,7 @@ export default function AIPage() {
           </div>
 
           {/* Chat Box */}
-          <div style={{ background: '#fff', borderRadius: '18px', border: '1px solid #e8eaf0', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+          <div className="chatbot-main" style={{ background: '#fff', borderRadius: '18px', border: '1px solid #e8eaf0', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px', background: '#fafbff', display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
               {empty && (
@@ -481,9 +481,31 @@ export default function AIPage() {
       `}</style>
           <style>{`
         @media (max-width: 768px) {
-          .chatbot-container { height: auto !important; flex-direction: column !important; }
-          .chatbot-sidebar { width: 100% !important; flex-direction: row !important; flex-wrap: wrap; }
-          .chatbot-sidebar > div { flex: 1; min-width: 200px; max-height: 200px; }
+          .chatbot-container {
+            height: calc(100dvh - 64px) !important;
+            flex-direction: column !important;
+            padding: 8px !important;
+            gap: 8px !important;
+          }
+          .chatbot-sidebar {
+            width: 100% !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            flex-shrink: 0 !important;
+            max-height: 180px !important;
+            min-height: 0 !important;
+          }
+          .chatbot-sidebar > div {
+            min-width: 200px !important;
+            max-height: 180px !important;
+            flex-shrink: 0 !important;
+          }
+          .chatbot-main {
+            flex: 1 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+          }
         }
       `}</style>
     </MainLayout>

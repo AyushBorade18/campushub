@@ -118,9 +118,9 @@ export default function NotificationBell({ userId }: { userId: string }) {
 
       {/* Dropdown */}
       {open && (
-        <div style={{
-          position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-          background: '#fff', borderRadius: '16px', width: '340px',
+        <div className="notif-dropdown" style={{
+          position: 'fixed', top: '70px', right: '10px',
+          background: '#fff', borderRadius: '16px', width: 'min(340px, calc(100vw - 20px))',
           boxShadow: '0 8px 32px rgba(0,0,0,0.14)', border: '1px solid #f1f5f9',
           zIndex: 1000, overflow: 'hidden',
         }}>
