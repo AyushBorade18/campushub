@@ -292,16 +292,16 @@ export default function MessagesPage() {
                               <div style={{ fontSize: '10px', color: '#94a3b8' }}>{formatTime(msg.created_at)}</div>
                               {isMe && (
                                 <div style={{ position: 'relative' }}>
-                                  <button onClick={() => setMsgMenuId(msgMenuId === msg.id ? null : msg.id)}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '10px', color: '#94a3b8', padding: '0 2px' }}>⋯</button>
+                                  <button onClick={(e) => { e.stopPropagation(); setMsgMenuId(msgMenuId === msg.id ? null : msg.id) }}
+                                    style={{ background: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#64748b', padding: '2px 7px', fontWeight: '700' }}>⋯</button>
                                   {msgMenuId === msg.id && (
                                     <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #f1f5f9', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
-                                      <button onClick={() => { deleteForEveryone(msg.id); setMsgMenuId(null) }}
+                                      <button onClick={(e) => { e.stopPropagation(); deleteForEveryone(msg.id); setMsgMenuId(null) }}
                                         style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#ef4444', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         🗑 Delete for everyone
                                       </button>
                                       <div style={{ height: '1px', background: '#f1f5f9' }} />
-                                      <button onClick={() => { deleteForMe(msg.id); setMsgMenuId(null) }}
+                                      <button onClick={(e) => { e.stopPropagation(); deleteForMe(msg.id); setMsgMenuId(null) }}
                                         style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#64748b', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         🙈 Delete for me
                                       </button>
