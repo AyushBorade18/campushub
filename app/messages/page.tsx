@@ -172,7 +172,7 @@ export default function MessagesPage() {
 
   return (
     <MainLayout>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 112px)', overflow: 'hidden' }}>
         {(!isMobile || !mobileShowChat) && (
           <div style={{ marginBottom: '12px', flexShrink: 0 }}>
             <h2 style={{ margin: 0, fontSize: isMobile ? '20px' : '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
@@ -290,25 +290,27 @@ export default function MessagesPage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px', position: 'relative' }}>
                               <div style={{ fontSize: '10px', color: '#94a3b8' }}>{formatTime(msg.created_at)}</div>
-                              {isMe && (
-                                <div style={{ position: 'relative' }}>
-                                  <button onClick={(e) => { e.stopPropagation(); setMsgMenuId(msgMenuId === msg.id ? null : msg.id) }}
-                                    style={{ background: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#64748b', padding: '2px 7px', fontWeight: '700' }}>⋯</button>
-                                  {msgMenuId === msg.id && (
-                                    <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #f1f5f9', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
-                                      <button onClick={(e) => { e.stopPropagation(); deleteForEveryone(msg.id); setMsgMenuId(null) }}
-                                        style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#ef4444', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        🗑 Delete for everyone
-                                      </button>
-                                      <div style={{ height: '1px', background: '#f1f5f9' }} />
-                                      <button onClick={(e) => { e.stopPropagation(); deleteForMe(msg.id); setMsgMenuId(null) }}
-                                        style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#64748b', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        🙈 Delete for me
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                              <div style={{ position: 'relative' }}>
+                                <button onClick={(e) => { e.stopPropagation(); setMsgMenuId(msgMenuId === msg.id ? null : msg.id) }}
+                                  style={{ background: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#64748b', padding: '2px 7px', fontWeight: '700' }}>⋯</button>
+                                {msgMenuId === msg.id && (
+                                  <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #f1f5f9', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
+                                    {isMe && (
+                                      <>
+                                        <button onClick={(e) => { e.stopPropagation(); deleteForEveryone(msg.id); setMsgMenuId(null) }}
+                                          style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#ef4444', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                          🗑 Delete for everyone
+                                        </button>
+                                        <div style={{ height: '1px', background: '#f1f5f9' }} />
+                                      </>
+                                    )}
+                                    <button onClick={(e) => { e.stopPropagation(); deleteForMe(msg.id); setMsgMenuId(null) }}
+                                      style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#64748b', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      🙈 Delete for me
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                           {isMe && <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>ME</div>}
