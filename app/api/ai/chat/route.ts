@@ -151,7 +151,7 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
   const msg = message.toLowerCase()
   const wantsFees     = /fee|fees|tuition|cost|pay|amount|lakh|rupee|cap|management|nri|quota|caste|sc|st|obc|sebc|nt|sbc/i.test(message)
   const wantsHoliday  = /holiday|leave|off|vacation|bridge|break|long weekend/i.test(message)
-  const wantsMarks    = /mark|marks|assessment|exam pattern|viva|mid.?sem|end.?sem|project|assignment|credit|sgpa|cgpa|grade/i.test(message)
+  const wantsMarks    = /mark|marks|marking|scheme|assessment|exam pattern|viva|mid.?sem|end.?sem|project|assignment|credit|sgpa|cgpa|grade|scoring|weightage|distribution/i.test(message)
   const wantsModule   = /module|subject|syllabus|coa|psp|web dev|calculus|python|data analysis|linear algebra|electro|dld|iks|uhv|asep|rad|gp|srm|environmental/i.test(message)
   const wantsClubs    = /club|society|ieee|gdsc|microsoft|robotics|coding|technical|co.?curr/i.test(message)
   const wantsExam     = /exam rule|exam instruction|online exam|offline exam|portal|vierp|camera|tab switch/i.test(message)
@@ -191,16 +191,32 @@ ${ragContext}
   // Marks — inject when asked OR for general academic questions
   if (wantsMarks || wantsModule || wantsTimetable) {
     prompt += `
-MARKS STRUCTURE:
-- BSE Maths (Linear Algebra/Calculus): Mid-Sem 30→25 + End-Sem 100→50 + Assignment 100→25 = 100
-- PCC (COA/Electronic Circuits): Mid-Sem 30→25 + End-Sem Written 100→50 + Viva 100→25 = 100
-- PSP (C language, Module 1): Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
-- Python for Engineers (Module 2): Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
-- AE (Applied Electromechanics): NO Mid-Sem + End-Sem Written 100→50 + LAB 100→25 + Project 100→25 = 100
-- BSE/VSEC (Web Dev/Data Analysis/DLD): End-Sem LAB+Viva 100→50 + Project 100→50 = 100 (NO Mid-Sem)
-- IKS/UHV: End-Sem MCQ 100 only
-- Env Studies: End-Sem MCQ 100→50 + PPT 50 = 100
-- ASEP: Mid-Sem Review 50→30 + End-Sem Review 100→70 = 100
+MARKS STRUCTURE (show ALL details including conversions when asked about marks):
+NOTE: Marks are out of a higher value but converted/scaled to lower value for final calculation.
+Format shown: Exam (out of X → converted to Y marks in final)
+
+MODULE SUBJECTS:
+- BSE Maths (Linear Algebra or Calculus): Mid-Sem (out of 30 → 25) + End-Sem Written (out of 100 → 50) + Assignment (out of 100 → 25) = 100 total
+- PCC (COA or Electronic Circuits): Mid-Sem (out of 30 → 25) + End-Sem Written (out of 100 → 50) + Viva (out of 100 → 25) = 100 total
+- PSP C language (Module 1 only): Mid-Sem (out of 30 → 25) + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 25) = 100 total
+- Python for Engineers (Module 2 only): Mid-Sem (out of 30 → 25) + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 25) = 100 total
+- Applied Electromechanics (AE): NO Mid-Sem + End-Sem Written (out of 100 → 50) + LAB (out of 100 → 25) + Project (out of 100 → 25) = 100 total
+- Web Dev / Data Analysis / DLD (BSE/VSEC): NO Mid-Sem + End-Sem LAB+Viva (out of 100 → 50) + Project (out of 100 → 50) = 100 total
+- IKS / UHV: End-Sem MCQ only (out of 100, no conversion) = 100 total
+- Environmental Studies: End-Sem MCQ (out of 100 → 50) + PPT Presentation (50) = 100 total
+
+COMMON SUBJECTS (ALL branches, both modules):
+- ASEP (Advanced Soft Skills & English Proficiency): Mid-Sem Review (out of 50 → 30) + End-Sem Review (out of 100 → 70) = 100 total
+- RAD (Research & Academic Development): Internal assessment based
+- GP (General Proficiency): Attendance + participation based
+- SRM (Social Responsibility Module): Activity based
+
+MANDATORY FORMAT WHEN SHOWING MARKS — follow this EXACTLY:
+For EVERY subject show: ComponentName (out of X → Y marks counted) 
+Example: Mid-Sem (out of 30 → 25 marks counted)
+NEVER skip the conversion. NEVER just write "25 marks" without showing "out of 30 → 25".
+ALWAYS include ASEP, RAD, GP, SRM in your answer as common subjects for all students.
+ALWAYS explain what the conversion means: "You write out of 30 but only 25 marks are counted in final total".
 `
   }
 
