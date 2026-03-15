@@ -136,13 +136,22 @@ export default function MessagesPage() {
     setUploading(false)
   }
 
-  const unsendMessage = (msgId: string) => {
-    if (!currentUser || !confirm('Unsend this message?')) return
+  const deleteForEveryone = async (msgId: string) => {
+    if (!currentUser || !confirm('Delete for everyone? This cannot be undone.')) return
+    await supabase.from('direct_messages').delete().eq('id', msgId).eq('sender_id', currentUser.id)
+    setConvMessages(prev => prev.filter(m => m.id !== msgId))
+    loadConversations(currentUser.id)
+  }
+
+  const deleteForMe = (msgId: string) => {
+    if (!currentUser) return
     const updated = new Set(unsentMsgIds)
     updated.add(msgId)
     setUnsentMsgIds(updated)
     localStorage.setItem(unsentKey(currentUser.id), JSON.stringify(Array.from(updated)))
   }
+
+  const [msgMenuId, setMsgMenuId] = useState<string | null>(null)
 
   const deleteChat = () => {
     if (!currentUser || !activeConv) return
@@ -163,14 +172,14 @@ export default function MessagesPage() {
 
   return (
     <MainLayout>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
         {(!isMobile || !mobileShowChat) && (
           <div style={{ marginBottom: '12px', flexShrink: 0 }}>
             <h2 style={{ margin: 0, fontSize: isMobile ? '20px' : '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
             <p style={{ margin: '2px 0 0', color: '#64748b', fontSize: '12px' }}>Direct messages from marketplace & community</p>
           </div>
         )}
-        <div style={{ display: 'flex', flex: 1, minHeight: 0, borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', height: isMobile ? 'calc(100dvh - 140px)' : '100%' }}>
+        <div style={{ display: 'flex', flex: 1, minHeight: 0, borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
 
           {/* Conversation List */}
           {showList && (
@@ -247,7 +256,7 @@ export default function MessagesPage() {
                     </div>
                   )}
 
-                  <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px', background: '#fafbff' }}>
+                  <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px', background: '#fafbff' }} onClick={() => setMsgMenuId(null)}>
                     {visibleMessages.map((msg: any) => {
                       const isMe = msg.sender_id === currentUser?.id
                       return (
@@ -279,9 +288,27 @@ export default function MessagesPage() {
                                 )
                               })() : msg.content}
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px', position: 'relative' }}>
                               <div style={{ fontSize: '10px', color: '#94a3b8' }}>{formatTime(msg.created_at)}</div>
-                              {isMe && <button onClick={() => unsendMessage(msg.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '10px', color: '#94a3b8', padding: 0 }}>unsend</button>}
+                              {isMe && (
+                                <div style={{ position: 'relative' }}>
+                                  <button onClick={() => setMsgMenuId(msgMenuId === msg.id ? null : msg.id)}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '10px', color: '#94a3b8', padding: '0 2px' }}>⋯</button>
+                                  {msgMenuId === msg.id && (
+                                    <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #f1f5f9', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
+                                      <button onClick={() => { deleteForEveryone(msg.id); setMsgMenuId(null) }}
+                                        style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#ef4444', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        🗑 Delete for everyone
+                                      </button>
+                                      <div style={{ height: '1px', background: '#f1f5f9' }} />
+                                      <button onClick={() => { deleteForMe(msg.id); setMsgMenuId(null) }}
+                                        style={{ width: '100%', padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#64748b', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        🙈 Delete for me
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                           {isMe && <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>ME</div>}
