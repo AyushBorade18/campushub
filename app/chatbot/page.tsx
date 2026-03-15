@@ -158,7 +158,7 @@ export default function AIPage() {
   const [docName, setDocName] = useState('')
   const [docText, setDocText] = useState('')
   const [uploading, setUploading] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const endRef = useRef<HTMLDivElement>(null)
@@ -293,181 +293,195 @@ export default function AIPage() {
   const empty = msgs.length === 0
   const activeSession = sessions.find(s => s.id === activeId)
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+
   return (
     <MainLayout noPadding>
-      <div style={{ display: 'flex', height: 'calc(100dvh - 64px)', overflow: 'hidden', background: '#f8fafc' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 64px)', overflow: 'hidden', background: '#f8fafc' }}>
 
-        {/* Mobile: Chat History Drawer Overlay */}
-        {sidebarOpen && (
-          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}
-            style={{ display: 'none', position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200 }} />
-        )}
+        {/* ── MAIN AREA (sidebar + chat side by side on desktop) ── */}
+        <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
 
-        {/* Sidebar */}
-        <div className={`chatbot-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}
-          style={{ width: '230px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e8eaf0', transition: 'transform 0.25s ease' }}>
+          {/* ── SIDEBAR DRAWER OVERLAY (mobile only) ── */}
+          {sidebarOpen && (
+            <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+          )}
 
-          <button onClick={newChat}
-            style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-            <span>✏️</span> New Chat
-          </button>
+          {/* ── SIDEBAR ── */}
+          <div
+            className={`chatbot-sidebar${sidebarOpen ? ' open' : ''}`}
+            style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', background: '#fff', borderRight: '1px solid #e8eaf0' }}
+          >
+            <button onClick={newChat}
+              style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              <span>✏️</span> New Chat
+            </button>
 
-          <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
-              <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>💬 Chat History</span>
-            </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '6px' }}>
-              {sessions.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '24px 12px', color: '#94a3b8', fontSize: '12px', lineHeight: 1.6 }}>
-                  <div style={{ fontSize: '28px', marginBottom: '8px' }}>💬</div>
-                  No chats yet.<br/>Start asking!
-                </div>
-              ) : sessions.map(s => (
-                <div key={s.id} onClick={() => { loadSession(s.id); setSidebarOpen(false) }}
-                  style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#ede9fe' : 'transparent', border: activeId === s.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', transition: 'all 0.15s', position: 'relative' }}>
-                  <div style={{ fontSize: '12.5px', fontWeight: '600', color: activeId === s.id ? '#4f46e5' : '#1e293b', lineHeight: 1.4, marginBottom: '4px', paddingRight: '20px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
-                    {s.title}
+            <div style={{ background: '#f8fafc', borderRadius: '12px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+              <div style={{ padding: '10px 12px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+                <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Chat History</span>
+              </div>
+              <div style={{ flex: 1, overflowY: 'auto', padding: '6px' }}>
+                {sessions.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '24px 12px', color: '#94a3b8', fontSize: '12px', lineHeight: 1.6 }}>
+                    <div style={{ fontSize: '28px', marginBottom: '8px' }}>💬</div>
+                    No chats yet.<br/>Start asking!
                   </div>
-                  <div style={{ fontSize: '10.5px', color: '#94a3b8' }}>{timeAgo(s.createdAt)}</div>
-                  <button onClick={(e) => deleteSession(s.id, e)} title="Delete"
-                    style={{ position: 'absolute', top: '8px', right: '6px', background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', fontSize: '15px', padding: '2px 4px', borderRadius: '5px' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}>
-                    ×
+                ) : sessions.map(s => (
+                  <div key={s.id} onClick={() => { loadSession(s.id); setSidebarOpen(false) }}
+                    style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#ede9fe' : 'transparent', border: activeId === s.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', position: 'relative' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '600', color: activeId === s.id ? '#4f46e5' : '#1e293b', lineHeight: 1.4, marginBottom: '3px', paddingRight: '18px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
+                      {s.title}
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8' }}>{timeAgo(s.createdAt)}</div>
+                    <button onClick={(e) => deleteSession(s.id, e)}
+                      style={{ position: 'absolute', top: '6px', right: '4px', background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', fontSize: '14px', padding: '2px 4px', borderRadius: '4px' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}>×</button>
+                  </div>
+                ))}
+              </div>
+              {sessions.length > 0 && (
+                <div style={{ padding: '8px', borderTop: '1px solid #f1f5f9', flexShrink: 0 }}>
+                  <button onClick={() => { saveSessions([]); newChat() }}
+                    style={{ width: '100%', background: 'none', border: '1px solid #fee2e2', borderRadius: '8px', padding: '6px', cursor: 'pointer', color: '#ef4444', fontSize: '11px', fontWeight: '600' }}>
+                    🗑 Clear all history
                   </button>
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── MAIN CHAT ── */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+
+            {/* Header */}
+            <div style={{ padding: '10px 14px', borderBottom: '1px solid #e8eaf0', background: '#fff', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+              {/* Hamburger — always visible, opens/closes sidebar */}
+              <button onClick={() => setSidebarOpen(o => !o)}
+                style={{ width: '38px', height: '38px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', flexShrink: 0, padding: '8px' }}>
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
+              </button>
+
+              <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', flexShrink: 0 }}>🤖</div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '15px', fontWeight: '800', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {activeSession ? activeSession.title.slice(0,36) + (activeSession.title.length > 36 ? '…' : '') : 'AI Campus Assistant'}
+                </div>
+                <div style={{ fontSize: '11px', color: '#94a3b8' }}>VIT Pune · Groq AI · Llama 3.1</div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+                {docName && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: '8px', padding: '4px 8px', maxWidth: '120px' }}>
+                    <span style={{ fontSize: '11px' }}>📄</span>
+                    <span style={{ fontSize: '10px', color: '#5b21b6', fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
+                    <button onClick={() => { setDocName(''); setDocText('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a78bfa', fontSize: '13px', padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
+                  </div>
+                )}
+                {!empty && (
+                  <button onClick={newChat}
+                    style={{ background: '#f1f5f9', border: 'none', borderRadius: '8px', padding: '6px 10px', fontSize: '12px', color: '#64748b', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    ✏️ New
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Messages scroll area */}
+            <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '16px 14px', background: '#fafbff', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+              {empty && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80%', gap: '16px', padding: '16px 0' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '44px', marginBottom: '8px' }}>🤖</div>
+                    <div style={{ fontSize: '17px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>AI Campus Assistant</div>
+                    <div style={{ fontSize: '13px', color: '#64748b', maxWidth: '320px', lineHeight: '1.6' }}>
+                      {profile?.full_name ? (
+                        <>Hey <strong>{profile.full_name.split(' ')[0]}</strong>! I know your <strong>{profile.major || 'VIT Pune'} {profile.module ? `(${profile.module === 'module_1' ? 'Mod 1' : 'Mod 2'})` : ''}</strong> full semester.</>
+                      ) : (
+                        <>I know your <strong>complete VIT Pune semester</strong> — subjects, exams &amp; more.</>
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '460px' }}>
+                    {getQuickAsks(profile?.major || '', profile?.module || '').slice(0, 6).map(s => (
+                      <button key={s.q} onClick={() => send(s.q)}
+                        style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '10px 12px', cursor: 'pointer', textAlign: 'left' }}
+                        onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
+                        onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e8eaf0'; (e.currentTarget).style.background = '#fff' }}>
+                        <div style={{ fontSize: '18px', marginBottom: '4px' }}>{s.icon}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '700', color: '#0f172a', marginBottom: '2px' }}>{s.label}</div>
+                        <div style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.3 }}>{s.q.slice(0,32)}…</div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <button onClick={() => fileRef.current?.click()}
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fff', border: '2px dashed #c7d2fe', borderRadius: '12px', padding: '12px 16px', cursor: 'pointer', width: '100%', maxWidth: '460px' }}>
+                    <span style={{ fontSize: '22px' }}>📎</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#4f46e5' }}>Upload PDF or TXT</div>
+                      <div style={{ fontSize: '11px', color: '#94a3b8' }}>Ask questions from your notes</div>
+                    </div>
+                  </button>
+                </div>
+              )}
+
+              {msgs.map((m, i) => (
+                <div key={i} style={{ display: 'flex', gap: '8px', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-start' }}>
+                  {m.role !== 'user' && (
+                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', marginTop: '2px' }}>
+                      {m.role === 'system' ? '📎' : '🤖'}
+                    </div>
+                  )}
+                  <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: m.role === 'user' ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', wordBreak: 'break-word' }}
+                    dangerouslySetInnerHTML={{ __html: m.role === 'user' ? m.text.replace(/\n/g,'<br/>') : renderMd(m.text) }} />
+                  {m.role === 'user' && (
+                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
+                  )}
+                </div>
               ))}
-            </div>
-            {sessions.length > 0 && (
-              <div style={{ padding: '8px', borderTop: '1px solid #f1f5f9', flexShrink: 0 }}>
-                <button onClick={() => { saveSessions([]); newChat() }}
-                  style={{ width: '100%', background: 'none', border: '1px solid #fee2e2', borderRadius: '8px', padding: '6px', cursor: 'pointer', color: '#ef4444', fontSize: '11.5px', fontWeight: '600' }}>
-                  🗑 Clear all history
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Main Chat Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
-
-          {/* Header */}
-          <div style={{ padding: '10px 14px', borderBottom: '1px solid #e8eaf0', background: '#fff', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, flexWrap: 'wrap' }}>
-            <button onClick={() => setSidebarOpen(o => !o)} title="Chat history"
-              style={{ width: '36px', height: '36px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', flexShrink: 0 }}>
-              {sidebarOpen ? '◀' : '💬'}
-            </button>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🤖</div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: '15px', fontWeight: '800', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {activeSession ? activeSession.title.slice(0,40) + (activeSession.title.length > 40 ? '…' : '') : 'AI Campus Assistant'}
-              </div>
-              <div style={{ fontSize: '11px', color: '#64748b' }}>VIT Pune · Groq AI</div>
-            </div>
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
-              {docName && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: '8px', padding: '4px 8px' }}>
-                  <span style={{ fontSize: '12px' }}>📄</span>
-                  <span style={{ fontSize: '11px', color: '#5b21b6', fontWeight: '700', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
-                  <button onClick={() => { setDocName(''); setDocText('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a78bfa', fontSize: '14px', padding: 0, lineHeight: 1 }}>×</button>
+              {busy && (
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>🤖</div>
+                  <div style={{ background: '#fff', border: '1px solid #e8eaf0', borderRadius: '4px 16px 16px 16px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    {[0,1,2].map(j => (
+                      <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366f1', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
+                    ))}
+                    <span style={{ marginLeft: '6px', fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>Thinking...</span>
+                  </div>
                 </div>
               )}
-              {!empty && (
-                <button onClick={newChat}
-                  style={{ background: '#f1f5f9', border: 'none', borderRadius: '8px', padding: '6px 10px', fontSize: '12px', color: '#64748b', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  ✏️ New
-                </button>
-              )}
+              <div ref={endRef} />
             </div>
-          </div>
 
-          {/* Messages — this is the scrollable area */}
-          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '16px', background: '#fafbff', display: 'flex', flexDirection: 'column', gap: '14px', WebkitOverflowScrolling: 'touch' } as any}>
-
-            {empty && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100%', gap: '16px', padding: '20px 0' }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '44px', marginBottom: '8px' }}>🤖</div>
-                  <div style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', marginBottom: '6px' }}>AI Campus Assistant</div>
-                  <div style={{ fontSize: '13px', color: '#64748b', maxWidth: '340px', lineHeight: '1.7' }}>
-                    {profile?.full_name ? (
-                      <>Hey <strong>{profile.full_name.split(' ')[0]}</strong>! I know your <strong>{profile.major || 'VIT Pune'} {profile.module ? `(${profile.module === 'module_1' ? 'Mod 1' : 'Mod 2'})` : ''}</strong> full semester.</>
-                    ) : (
-                      <>I know your <strong>complete VIT Pune semester</strong> — subjects, exams, marks &amp; more.</>
-                    )}
-                  </div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', maxWidth: '480px' }}>
-                  {getQuickAsks(profile?.major || '', profile?.module || '').slice(0, 6).map(s => (
-                    <button key={s.q} onClick={() => send(s.q)}
-                      style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '10px 12px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s' }}
-                      onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
-                      onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e8eaf0'; (e.currentTarget).style.background = '#fff' }}>
-                      <div style={{ fontSize: '15px', marginBottom: '2px' }}>{s.icon}</div>
-                      <div style={{ fontSize: '12px', fontWeight: '700', color: '#0f172a' }}>{s.label}</div>
-                    </button>
-                  ))}
-                </div>
-                <button onClick={() => fileRef.current?.click()}
-                  style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fff', border: '2px dashed #c7d2fe', borderRadius: '12px', padding: '12px 16px', cursor: 'pointer', width: '100%', maxWidth: '480px' }}>
-                  <span style={{ fontSize: '22px' }}>📎</span>
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#4f46e5' }}>Upload PDF or TXT</div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8' }}>Ask questions from your notes</div>
-                  </div>
-                </button>
-              </div>
-            )}
-
-            {msgs.map((m, i) => (
-              <div key={i} style={{ display: 'flex', gap: '8px', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-start' }}>
-                {m.role !== 'user' && (
-                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', marginTop: '2px' }}>
-                    {m.role === 'system' ? '📎' : '🤖'}
-                  </div>
-                )}
-                <div style={{ maxWidth: '78%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: m.role === 'user' ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', wordBreak: 'break-word' }}
-                  dangerouslySetInnerHTML={{ __html: m.role === 'user' ? m.text.replace(/\n/g,'<br/>') : renderMd(m.text) }} />
-                {m.role === 'user' && (
-                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
-                )}
-              </div>
-            ))}
-
-            {busy && (
+            {/* Input pinned at bottom */}
+            <div style={{ padding: '10px 12px', borderTop: '1px solid #f1f5f9', background: '#fff', flexShrink: 0 }}>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <div style={{ width: '30px', height: '30px', borderRadius: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px' }}>🤖</div>
-                <div style={{ background: '#fff', border: '1px solid #e8eaf0', borderRadius: '4px 16px 16px 16px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  {[0,1,2].map(j => (
-                    <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366f1', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
-                  ))}
-                  <span style={{ marginLeft: '6px', fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>Thinking...</span>
-                </div>
+                <input ref={fileRef} type="file" accept=".txt,.pdf,.md" style={{ display: 'none' }} onChange={upload} />
+                <button onClick={() => fileRef.current?.click()}
+                  style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1.5px solid ${docName ? '#7c3aed' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f8fafc', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  {uploading ? '⌛' : '📎'}
+                </button>
+                <input ref={inputRef}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
+                  placeholder={docName ? `Ask about "${docName}"…` : 'Ask anything about VIT Pune…'}
+                  style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '14px', outline: 'none', fontFamily: 'inherit', background: '#fafafa', minWidth: 0 }} />
+                <button onClick={() => send()} disabled={busy || !input.trim()}
+                  style={{ width: '40px', height: '40px', borderRadius: '11px', background: input.trim() && !busy ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  ➤
+                </button>
               </div>
-            )}
-            <div ref={endRef} />
-          </div>
-
-          {/* Input — pinned at bottom */}
-          <div style={{ padding: '10px 12px', borderTop: '1px solid #f1f5f9', background: '#fff', flexShrink: 0 }}>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input ref={fileRef} type="file" accept=".txt,.pdf,.md" style={{ display: 'none' }} onChange={upload} />
-              <button onClick={() => fileRef.current?.click()} title="Upload document"
-                style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1.5px solid ${docName ? '#7c3aed' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f8fafc', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                {uploading ? '⌛' : '📎'}
-              </button>
-              <input ref={inputRef}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
-                placeholder={docName ? `Ask about "${docName}"…` : 'Ask anything about VIT Pune…'}
-                style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '14px', outline: 'none', fontFamily: 'inherit', background: '#fafafa', minWidth: 0 }} />
-              <button onClick={() => send()} disabled={busy || !input.trim()}
-                style={{ width: '40px', height: '40px', borderRadius: '11px', background: input.trim() && !busy ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                ➤
-              </button>
             </div>
+
           </div>
         </div>
       </div>
@@ -478,35 +492,54 @@ export default function AIPage() {
           40% { transform: translateY(-8px) }
         }
 
+        /* Desktop sidebar — inline panel */
+        @media (min-width: 769px) {
+          .chatbot-sidebar {
+            width: 230px;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background: #fff;
+            border-right: 1px solid #e8eaf0;
+            overflow-y: auto;
+          }
+          .chatbot-sidebar:not(.open) {
+            display: none !important;
+          }
+          .sidebar-overlay { display: none !important; }
+        }
+
+        /* Mobile sidebar — slide-in drawer from left */
         @media (max-width: 768px) {
           .chatbot-sidebar {
             position: fixed !important;
             top: 64px !important;
             left: 0 !important;
-            height: calc(100dvh - 64px) !important;
-            z-index: 201 !important;
-            transform: translateX(-100%) !important;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.15) !important;
+            bottom: 0 !important;
+            width: 280px !important;
+            z-index: 400 !important;
             background: #fff !important;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.18) !important;
+            transform: translateX(-100%);
+            transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+            display: flex !important;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            overflow-y: auto;
           }
-          .chatbot-sidebar.sidebar-open {
+          .chatbot-sidebar.open {
             transform: translateX(0) !important;
           }
           .sidebar-overlay {
             display: block !important;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .chatbot-sidebar {
-            transform: translateX(0) !important;
-            position: relative !important;
-          }
-          .chatbot-sidebar:not(.sidebar-open) {
-            display: none !important;
-          }
-          .sidebar-overlay {
-            display: none !important;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 399;
           }
         }
       `}</style>
