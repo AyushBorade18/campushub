@@ -35,7 +35,7 @@ No explanation, no markdown, just the JSON array.`
     const data = await res.json()
     const raw = data.choices?.[0]?.message?.content?.trim() || '[]'
     // Safely parse JSON array
-    const match = raw.match(/\[.*\]/s)
+    const match = raw.match(/\[[\s\S]*\]/)
     const tags: string[] = match ? JSON.parse(match[0]) : []
     return NextResponse.json({ tags: tags.slice(0, 8) })
   } catch (err) {
