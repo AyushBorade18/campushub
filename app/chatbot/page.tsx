@@ -318,8 +318,12 @@ export default function AIPage() {
             </button>
 
             <div style={{ background: '#f8fafc', borderRadius: '12px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-              <div style={{ padding: '10px 12px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+              <div style={{ padding: '10px 12px', borderBottom: '1px solid #f1f5f9', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Chat History</span>
+                <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)}
+                  style={{ background: '#fee2e2', border: 'none', borderRadius: '6px', width: '24px', height: '24px', cursor: 'pointer', fontSize: '14px', color: '#ef4444', display: 'none', alignItems: 'center', justifyContent: 'center', fontWeight: '700', lineHeight: 1 }}>
+                  ✕
+                </button>
               </div>
               <div style={{ flex: 1, overflowY: 'auto', padding: '6px' }}>
                 {sessions.length === 0 ? (
@@ -509,11 +513,13 @@ export default function AIPage() {
           .chatbot-sidebar:not(.open) {
             display: none !important;
           }
+          .sidebar-close-btn { display: flex !important; }
           .sidebar-overlay { display: none !important; }
         }
 
         /* Mobile sidebar — slide-in drawer from left */
         @media (max-width: 768px) {
+          .sidebar-close-btn { display: flex !important; }
           .chatbot-sidebar {
             position: fixed !important;
             top: 64px !important;
@@ -534,6 +540,7 @@ export default function AIPage() {
           .chatbot-sidebar.open {
             transform: translateX(0) !important;
           }
+          .sidebar-close-btn { display: flex !important; }
           .sidebar-overlay {
             display: block !important;
             position: fixed;
