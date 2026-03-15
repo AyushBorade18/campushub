@@ -129,350 +129,182 @@ async function getUserTimetable(userId: string): Promise<string> {
   } catch { return '' }
 }
 
-function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: string, communityData: string, timetableData: string): string {
+function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: string, communityData: string, timetableData: string, message: string): string {
   const userName = profile?.full_name || 'Student'
   const userBranch = profile?.major || 'B.Tech'
   const userYear = profile?.year || '1st Year'
-  const userModule = profile?.module === 'module_1' && ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY'].includes(profile?.major)
-    ? 'Module 1 — Linear Algebra, COA, Web Development, IKS'
-    : profile?.module === 'module_2' && ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY'].includes(profile?.major)
-    ? 'Module 2 — Calculus, Python for Engineers, Data Analysis, UHV'
-    : profile?.module === 'module_1' && ['ENTC','INSTRUMENTATION'].includes(profile?.major)
-    ? 'Module 1 — Linear Algebra, Electronic Circuits, IKS'
-    : profile?.module === 'module_2' && ['ENTC','INSTRUMENTATION'].includes(profile?.major)
-    ? 'Module 2 — Calculus, Digital Logic Design, UHV'
+  const CS_BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY']
+  const ENTC_BRANCHES = ['ENTC','INSTRUMENTATION']
+  const isCS = CS_BRANCHES.includes(profile?.major)
+  const isENTC = ENTC_BRANCHES.includes(profile?.major)
+  const isMod1 = profile?.module === 'module_1'
+  const isMod2 = profile?.module === 'module_2'
+
+  const userModule = isCS && isMod1 ? 'Module 1 — Linear Algebra, COA, Web Dev, IKS'
+    : isCS && isMod2 ? 'Module 2 — Calculus, Python, Data Analysis, UHV'
+    : isENTC && isMod1 ? 'Module 1 — Linear Algebra, Electronic Circuits, IKS'
+    : isENTC && isMod2 ? 'Module 2 — Calculus, DLD, UHV'
     : null
 
-  // Compute which days are naturally off for this user
+  // Detect what the message is about — only inject relevant sections
+  const msg = message.toLowerCase()
+  const wantsFees     = /fee|fees|tuition|cost|pay|amount|lakh|rupee|cap|management|nri|quota|caste|sc|st|obc|sebc|nt|sbc/i.test(message)
+  const wantsHoliday  = /holiday|leave|off|vacation|bridge|break|long weekend/i.test(message)
+  const wantsMarks    = /mark|marks|assessment|exam pattern|viva|mid.?sem|end.?sem|project|assignment|credit|sgpa|cgpa|grade/i.test(message)
+  const wantsModule   = /module|subject|syllabus|coa|psp|web dev|calculus|python|data analysis|linear algebra|electro|dld|iks|uhv|asep|rad|gp|srm|environmental/i.test(message)
+  const wantsClubs    = /club|society|ieee|gdsc|microsoft|robotics|coding|technical|co.?curr/i.test(message)
+  const wantsExam     = /exam rule|exam instruction|online exam|offline exam|portal|vierp|camera|tab switch/i.test(message)
+  const wantsTimetable = /timetable|schedule|today|tomorrow|class|lecture|slot|free period/i.test(message)
+
+  // Always-included core prompt (~400 tokens)
   const offDaysSetting = profile?.off_days || 'sat_sun'
-  const offDayNames: string[] = offDaysSetting === 'sat_sun' ? ['Saturday','Sunday']
-    : offDaysSetting === 'sun_mon' ? ['Sunday','Monday']
-    : ['Sunday']
-  const offDayNums: number[] = offDaysSetting === 'sat_sun' ? [0,6]
-    : offDaysSetting === 'sun_mon' ? [0,1]
-    : [0]  // 0=Sun,1=Mon,...,6=Sat
+  const offDayNames = offDaysSetting === 'sat_sun' ? ['Saturday','Sunday']
+    : offDaysSetting === 'sun_mon' ? ['Sunday','Monday'] : ['Sunday']
+  const offDayNums = offDaysSetting === 'sat_sun' ? [0,6]
+    : offDaysSetting === 'sun_mon' ? [0,1] : [0]
 
-  // Compute bridge day opportunities from upcoming holidays
-  const holidayDates = [
-    new Date('2026-03-19'), new Date('2026-03-21'), new Date('2026-03-26'),
-    new Date('2026-03-31'), new Date('2026-04-03'), new Date('2026-04-14'),
-    new Date('2026-05-01'), new Date('2026-05-28'),
-  ]
   const today = new Date(); today.setHours(0,0,0,0)
-  const upcoming = holidayDates.filter(d => d >= today)
 
-  // For each upcoming holiday, check if taking 1 adjacent working day gives a long streak
-  const bridgeAnalysis: string[] = []
-  for (const hd of upcoming) {
-    const dayOfWeek = hd.getDay() // 0=Sun
-    // Check day before and after
-    for (const offset of [-1, 1]) {
-      const candidate = new Date(hd); candidate.setDate(hd.getDate() + offset)
-      if (offDayNums.includes(candidate.getDay())) continue // already off
-      // Count streak if they take this day off
-      let streak = 1 // the holiday itself
-      let streakDays = [hd]
-      // Expand outward
-      for (let dir of [-1, 1]) {
-        let cur = new Date(hd)
-        while (true) {
-          cur = new Date(cur); cur.setDate(cur.getDate() + dir)
-          if (offDayNums.includes(cur.getDay()) || upcoming.some(u => u.getTime() === cur.getTime()) || cur.getTime() === candidate.getTime()) {
-            streak++; streakDays.push(new Date(cur))
-          } else break
-        }
-      }
-      if (streak >= 3) {
-        const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit' })
-        bridgeAnalysis.push(`Take off ${candidate.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'2-digit', year:'numeric' })} → get ${streak}+ days off in a row (${streakDays.map(fmt).join(', ')} + your ${offDayNames.join('/')})`)
-      }
+  let prompt = `You are CampusHub AI — the smart assistant for VIT Pune students. Be friendly, use emojis, give structured answers.
+
+USER: ${userName} | Branch: ${userBranch} | Year: ${userYear} | ${userModule ? `Module: ${userModule}` : 'Module: not set'}
+Off days: ${offDayNames.join(' & ')} | Date: ${today.toLocaleDateString('en-GB', {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'})}
+Sem II in progress | Mid-Sem: 15–18 Apr 2026 | End-Sem: 8–24 Jun 2026 | Min attendance: 75%
+
+RULES: Only mention subjects from the student's module. Never invent faculty names, room numbers, or details not in this prompt. If unsure, say "Check vit.edu or your department."
+`
+
+  // RAG context
+  if (ragContext) prompt += `
+RELEVANT VIT KNOWLEDGE:
+${ragContext}
+`
+
+  // Marks — inject when asked OR for general academic questions
+  if (wantsMarks || wantsModule || wantsTimetable) {
+    prompt += `
+MARKS STRUCTURE:
+- BSE Maths (Linear Algebra/Calculus): Mid-Sem 30→25 + End-Sem 100→50 + Assignment 100→25 = 100
+- PCC (COA/Electronic Circuits): Mid-Sem 30→25 + End-Sem Written 100→50 + Viva 100→25 = 100
+- PSP/Python: Mid-Sem 30→25 + End-Sem LAB+Viva 100→50 + Project 100→25 = 100
+- AE (Applied Electromechanics): NO Mid-Sem + End-Sem Written 100→50 + LAB 100→25 + Project 100→25 = 100
+- BSE/VSEC (Web Dev/Data Analysis/DLD): End-Sem LAB+Viva 100→50 + Project 100→50 = 100 (NO Mid-Sem)
+- IKS/UHV: End-Sem MCQ 100 only
+- Env Studies: End-Sem MCQ 100→50 + PPT 50 = 100
+- ASEP: Mid-Sem Review 50→30 + End-Sem Review 100→70 = 100
+`
+  }
+
+  // Module subjects
+  if (wantsModule) {
+    if (isCS) {
+      prompt += `
+CS/IT/AI MODULE SUBJECTS:
+Module 1: Linear Algebra, PSP, COA, Web Dev, IKS, Student Activity
+Module 2: Calculus, Applied Electromechanics, Python, Data Analysis, UHV, Env Studies
+Common (both): ASEP, RAD, GP, SRM (NO Engineering Graphics for CS/IT/AI)
+`
+    } else if (isENTC) {
+      prompt += `
+ENTC/INSTRUMENTATION MODULE SUBJECTS:
+Module 1: Linear Algebra, PSP, Electronic Circuits, IKS, Student Activity
+Module 2: Calculus, Applied Electromechanics, DLD, UHV, Env Studies
+Common: Engineering Graphics, ASEP, RAD, GP, SRM
+`
     }
   }
 
-  return `### ROLE
-You are "CampusHub AI" — the personalized intelligent assistant for VIT Pune (Vishwakarma Institute of Technology).
+  // Fees — only when asked
+  if (wantsFees) {
+    prompt += `
+VIT PUNE FEES 2025-26:
+CAP/OPEN: Rs 2,12,165 | OBC: Rs 1,22,600 | NT/SBC/OBC-GIRLS/PH: Rs 33,035 | SC/ST: Rs 6,165
+Management (CS/IT/AI): Rs 6,24,165 | ENTC/Mech: Rs 4,18,165 | Civil/Instrumentation: Rs 2,12,165
+NRI: USD 12,000/year
+`
+  }
 
-### USER IDENTITY
-You are currently speaking with:
-- Name: ${userName}
-- Branch: ${userBranch}  
-- Year: ${userYear}
-${userModule ? `- Module: ${userModule}` : '- Module: Not set'}
-- Current Semester: Semester II (March 2026)
-- Weekly off days: ${offDayNames.join(' and ')} (every week, always off)
+  // Holidays — only when asked
+  if (wantsHoliday) {
+    const allHolidays = [
+      { d: new Date('2026-03-19'), label: '19/03 (Thu) — Gudi Padwa' },
+      { d: new Date('2026-03-21'), label: '21/03 (Sat) — Ramzan Id' },
+      { d: new Date('2026-03-26'), label: '26/03 (Thu) — Ram Navami' },
+      { d: new Date('2026-03-31'), label: '31/03 (Tue) — Mahaveer Jayanti' },
+      { d: new Date('2026-04-03'), label: '03/04 (Fri) — Good Friday' },
+      { d: new Date('2026-04-14'), label: '14/04 (Tue) — Ambedkar Jayanti' },
+      { d: new Date('2026-05-01'), label: '01/05 (Fri) — Maharashtra Day' },
+      { d: new Date('2026-05-28'), label: '28/05 (Thu) — Bakri Id' },
+    ]
+    const upcoming = allHolidays.filter(h => h.d >= today)
+    const past = allHolidays.filter(h => h.d < today)
 
-### BRIDGE DAY OPPORTUNITIES (pre-computed for ${userName})
-${bridgeAnalysis.length
-  ? `By taking just ONE leave day, ${userName} can get long breaks:\n` + bridgeAnalysis.map(b => `- ${b}`).join('\n')
-  : 'No major bridge day opportunities in upcoming holidays.'}
+    // Bridge days
+    const offNums = offDayNums
+    const bridges: string[] = []
+    for (const {d: hd} of upcoming) {
+      for (const offset of [-1,1]) {
+        const candidate = new Date(hd); candidate.setDate(hd.getDate()+offset)
+        if (offNums.includes(candidate.getDay())) continue
+        let streak = 2; let days = [hd, candidate]
+        for (const dir of [-1,1]) {
+          let cur = new Date(hd)
+          for (let i=0;i<3;i++) {
+            cur = new Date(cur); cur.setDate(cur.getDate()+dir)
+            if (offNums.includes(cur.getDay()) || upcoming.some(u=>u.d.getTime()===cur.getTime())) {streak++;days.push(new Date(cur))} else break
+          }
+        }
+        if (streak>=3) bridges.push(`Take ${candidate.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'2-digit'})} off → ${streak}+ day break`)
+      }
+    }
+    prompt += `
+UPCOMING HOLIDAYS: ${upcoming.map(h=>h.label).join(' | ') || 'None remaining'}
+PAST HOLIDAYS: ${past.map(h=>h.label).join(' | ') || 'None'}
+`
+    if (bridges.length) prompt += `BRIDGE DAY TIPS for ${userName}: ${bridges.join(' | ')}
+`
+  }
 
-Use this section to give PERSONALISED advice when asked about best day to take leave / maximize holidays.
+  // Clubs — only when asked
+  if (wantsClubs) {
+    prompt += `
+TECHNICAL CLUBS: Microsoft Learn Student Club, GedIT Coding Club, GDSC, IEEE VIT Pune, CSI VIT Pune, ISA, TRF (Robotics), Team Endurance Racing, Team Griffin India (drones), Team Veloce Racing, Game Dev+, Reality Spectra (AR/VR), InnovSphere, Club Catalyst
+CO-CURRICULAR: Pi Editorial, Antariksh, EPEC, RangManch (drama), Abhivridhhi, Team Eklavya (sports), Speaker's Club, VEDC
+Overall Incharge: Dr. Vikas Kolekar
+`
+  }
 
-When asked "what is my name", "what branch am I in", "who am I" — answer using the identity above. NEVER say you don't have access to personal details.
+  // Exam rules — only when asked
+  if (wantsExam) {
+    prompt += `
+ONLINE EXAM: Portal: epvit.vierp.in | Laptop only | Join Google Meet first | Camera ON always | Tab switch = termination
+OFFLINE EXAM: Arrive 30 min early | I-card compulsory | No phone | Cannot enter after 30 min
+`
+  }
 
-### RETRIEVED CAMPUS KNOWLEDGE (RAG)
-${ragContext
-  ? `Relevant VIT Pune information retrieved:\n---\n${ragContext}\n---`
-  : 'No specific documents matched — use general VIT Pune knowledge.'}
+  // GRADES always useful
+  prompt += `
+GRADES: A+(AA)=10, A(AB)=9, B+(BB)=8, B(BC)=7, C+(CC)=6, C(CD)=5, D(DD)=4, F=0. CGPA = total grade points ÷ total credits (not avg of SGPAs)
+`
 
-⚠️ IMPORTANT PRIORITY RULE: If RAG content conflicts with the MARKS STRUCTURE or MODULE STRUCTURE sections above, ALWAYS use the marks/module data from this system prompt — it is more accurate and up to date than the RAG. RAG is only for general campus info not covered above.
+  // Live data — only when relevant
+  if (marketplaceData) prompt += `
+MARKETPLACE LISTINGS:
+${marketplaceData}
+`
+  if (communityData) prompt += `
+COMMUNITY POSTS:
+${communityData}
+`
+  if (timetableData) prompt += `
+STUDENT TIMETABLE:
+${timetableData}
+Use exact times. Never invent room numbers.
+`
 
-### RULES
-1. Address the user as ${userName} naturally and personally
-2. For branch-specific questions, tailor answers to ${userBranch}
-3. ${userModule ? `The student is in ${userModule} — ONLY include their module subjects in study plans. Never mention subjects from the other module.` : 'Module is not set — ask "Are you in Module 1 or Module 2?" before making any study plans.'}
-3. NEVER invent exam mark breakdowns or question formats not in the context
-4. Be friendly, use emojis, keep answers structured
-5. If unsure: "Check the VIT notice board or ask your teacher"
-
-### CURRENT VIT PUNE INFO
-- Today's exact date: ${new Date().toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} (DD/MM/YYYY: ${new Date().toLocaleDateString('en-GB').split('/').join('/')})
-- Semester II in progress
-- Next exam: Mid-Sem 15–18 April 2026
-- End-Sem: 8–24 June 2026
-- Minimum attendance: 75%
-- Mess: Breakfast 7–9 AM | Lunch 12:30–2:30 PM | Dinner 7:30–9:30 PM
-- Library: Mon–Sat 8 AM–10 PM | Sun 10 AM–6 PM
-
-### VIT PUNE ACADEMIC CALENDAR — HOLIDAYS 2025-26
-
-${(() => {
-  const today = new Date(); today.setHours(0,0,0,0)
-  const all = [
-    { d: new Date('2025-10-02'), label: '02/10/2025 (Thu) — Mahatma Gandhi Jayanti & Vijaya Dashami / Dasara' },
-    { d: new Date('2025-10-20'), label: '20/10/2025–25/10/2025 (Mon–Sat) — Diwali Break' },
-    { d: new Date('2025-11-05'), label: '05/11/2025 (Wed) — Guru Nanak Jayanti' },
-    { d: new Date('2025-12-25'), label: '25/12/2025 (Thu) — Christmas' },
-    { d: new Date('2026-01-26'), label: '26/01/2026 (Mon) — Republic Day' },
-    { d: new Date('2026-02-19'), label: '19/02/2026 (Thu) — Chhatrapati Shivaji Maharaj Jayanti' },
-    { d: new Date('2026-03-03'), label: '03/03/2026 (Tue) — Dhulivandan (Holi second day)' },
-    { d: new Date('2026-03-19'), label: '19/03/2026 (Thu) — Gudi Padwa' },
-    { d: new Date('2026-03-21'), label: '21/03/2026 (Sat) — Ramzan Id' },
-    { d: new Date('2026-03-26'), label: '26/03/2026 (Thu) — Ram Navami' },
-    { d: new Date('2026-03-31'), label: '31/03/2026 (Tue) — Mahaveer Janma Kalyanak' },
-    { d: new Date('2026-04-03'), label: '03/04/2026 (Fri) — Good Friday' },
-    { d: new Date('2026-04-14'), label: '14/04/2026 (Tue) — Dr. Babasaheb Ambedkar Jayanti' },
-    { d: new Date('2026-05-01'), label: '01/05/2026 (Fri) — Maharashtra Day / Buddha Poornima / Labour Day' },
-    { d: new Date('2026-05-28'), label: '28/05/2026 (Thu) — Bakri Id' },
-  ]
-  const upcoming = all.filter(h => h.d >= today).map(h => `- ${h.label}`)
-  const past = all.filter(h => h.d < today).map(h => `- ${h.label}`)
-  return `UPCOMING HOLIDAYS (from today ${today.toLocaleDateString('en-GB')}):\n${upcoming.length ? upcoming.join('\n') : 'No more holidays this academic year.'}\n\nPAST HOLIDAYS (already gone):\n${past.length ? past.join('\n') : 'None yet.'}`
-})()}
-
-When asked "upcoming holidays" → use UPCOMING list above. When asked "past holidays" → use PAST list above. When asked "all holidays" → list both.
-
-### VIT PUNE FEES STRUCTURE 2025-26 (ALWAYS ANSWER FROM THIS)
-CAP/ACAP Seats (Government Quota) - Category-wise Total Fees:
-- OPEN: Rs 2,12,165 (Tuition 1,79,130 + Development 26,870 + Eligibility 600 + Exam 2,420 + Misc 2,444 + Insurance 701)
-- OPEN OMS (Outside Maharashtra): Rs 2,12,665
-- OBC: Rs 1,22,600 (Tuition 89,565 + Development 26,870 + others)
-- SEBC (Maratha Arakshan): In CAP round = same as OBC = Rs 1,22,600. In ACAP round = same as OPEN = Rs 2,12,165. SEBC is only for Maratha reservation category.
-- NT: Rs 33,035 (only Development fees + others)
-- SBC: Rs 33,035
-- SC: Rs 6,165 (Tuition NIL, Development NIL)
-- ST: Rs 6,165
-- OBC-GIRLS: Rs 33,035
-- PH/PWD/ORPHAN: Rs 33,035
-
-Management/Institute Level Seats (Self-Finance):
-- Top branches (CE, IT, CSE-AI, AI&DS, CSE-AIML): Rs 6,24,165 (Tuition 5,37,390 + Dev 80,610 + others)
-- Mid branches (CSE IoT-CS-BT, CS-DS, CE-SE, E-TC, Mechanical): Rs 4,18,165 (Tuition 3,58,260 + Dev 53,740 + others)
-- Lower branches (Civil, Instrumentation): Rs 2,12,165 (same as CAP OPEN)
-- NRI Seats: USD 12,000 per year + Rs 6,665 other charges
-- CIWGC: CE = USD 2,400 | IT/CSE-AI/CSE-AIML/AI&DS = USD 1,800 | Others = USD 1,200
-
-### SGPA/CGPA GRADES
-A+(AA)=10, A(AB)=9, B+(BB)=8, B(BC)=7, C+(CC)=6, C(CD)=5, D(DD)=4, F(FF)=0
-SGPA = Total Grade Points ÷ Total Credits in semester
-CGPA = Total Grade Points of ALL semesters ÷ Total Credits of ALL semesters (NOT average of SGPAs)
-
-### FY B.TECH SUBJECT ABBREVIATIONS (NEVER MISINTERPRET)
-- COA = Computer Organization and Architecture (NOT "Course on Accounts")
-- PSP = Problem Solving & Programming using C (CS1012)
-- AE = Applied Electromechanics (ET1012)
-- IKS = Indian Knowledge System (HS1073)
-- UHV = Universal Human Values (HS1077)
-- Env Studies = Environmental Studies (HS1082)
-- ASEP = Applied Science & Engineering Project
-- RAD = Reasoning and Aptitude Development (HS1072)
-- GP = General Proficiency (HS1074)
-- SRM = Scientific Research Methods
-- SA = Student Activity (HS1083)
-- WD = Web Development
-- DA = Data Analysis
-- DLD = Digital Logic Design (E&TC/Instrumentation only)
-- EC = Electronic Circuits (E&TC/Instrumentation only)
-- Engg Graphics = Engineering Graphics (E&TC/Mechanical/Civil only — NOT for CS/IT/AI branches)
-
-### FY B.TECH MODULE STRUCTURE — COMPLETE & CORRECT
-
-**CS/IT/AI BRANCHES (CSE, IT, AI&DS, CSE-AI, CSE-AIML, CS-DS, CS-SE, CSE-IOT & CYBERSECURITY):**
-
-MODULE 1 subjects:
-- Linear Algebra (BSE Maths)
-- PSP (Problem Solving & Programming)
-- COA (Computer Organization & Architecture)
-- Web Development (BSE/VSEC)
-- IKS (Indian Knowledge System)
-- Student Activity
-
-MODULE 2 subjects:
-- Calculus (BSE Maths)
-- Applied Electromechanics (AE)
-- Python for Engineers
-- Data Analysis (BSE/VSEC)
-- UHV (Universal Human Values)
-- Environmental Studies
-
-COMMON subjects (both modules, CS/IT/AI):
-- ASEP-1 (Sem 1) / ASEP-2 (Sem 2)
-- RAD-1 (Sem 1) / RAD-2 (Sem 2)
-- GP-1 (Sem 1) / GP-2 (Sem 2)
-- SRM-1 (Sem 1) / SRM-2 (Sem 2)
-- Engineering Graphics: NOT for CS/IT/AI branches
-
-**ENTC / INSTRUMENTATION BRANCHES:**
-
-MODULE 1 subjects:
-- Linear Algebra (BSE Maths)
-- PSP (Problem Solving & Programming)
-- Electronic Circuits (PCC)
-- IKS (Indian Knowledge System)
-- Student Activity
-
-MODULE 2 subjects:
-- Calculus (BSE Maths)
-- Applied Electromechanics (AE)
-- Digital Logic Design / DLD (BSE/VSEC)
-- UHV (Universal Human Values)
-- Environmental Studies
-
-COMMON subjects (both modules, ENTC/Instrumentation):
-- Engineering Graphics (common for ENTC, Mechanical, Civil, Instrumentation only)
-- ASEP-1/2, RAD-1/2, GP-1/2, SRM-1/2
-
-**MECHANICAL / CIVIL BRANCHES:**
-- No module system
-- Engineering Graphics is a common subject
-- ASEP-1/2, RAD-1/2, GP-1/2, SRM-1/2 are common
-
-IMPORTANT: When making study plans or listing subjects, ONLY include subjects from the student's module. NEVER mix Module 1 and Module 2 subjects. NEVER suggest Engineering Graphics to CS/IT/AI students.
-
-### FY B.TECH MARKS STRUCTURE (OFFICIAL - FROM VIT ASSESSMENT DOCUMENT)
-
-**BSE Maths — Linear Algebra (HS1084) / Calculus (HS1085):**
-Mid-Sem Written Exam: 30 → 25 marks
-End-Sem Written Exam: 100 → 50 marks
-Assignment/Tutorial (In-Semester): 100 → 25 marks
-TOTAL = 100 marks
-
-**PCC — COA (CS1016 etc.) / Electronic Circuits (ET1016):**
-Mid-Sem Written Exam: 30 → 25 marks
-End-Sem Written Exam: 100 → 50 marks
-Comprehensive Viva Voce (End-Sem): 100 → 25 marks
-TOTAL = 100 marks
-
-**PCC — Python for Engineers (CS1018):**
-Mid-Sem Written Exam: 30 → 25 marks
-End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
-Course Project (End-Sem): 100 → 25 marks
-TOTAL = 100 marks
-
-**ESE — Applied Electromechanics (ET1012):**
-NO Mid-Sem exam
-End-Sem Written Exam: 100 → 50 marks
-End-Sem LAB: 100 → 25 marks
-Course Project (End-Sem): 100 → 25 marks
-TOTAL = 100 marks
-
-**ESE — PSP / Problem Solving & Programming (CS1012):**
-Mid-Sem Written Exam: 30 → 25 marks
-End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
-Course Project (End-Sem): 100 → 25 marks
-TOTAL = 100 marks
-
-**BSE/VSEC — Web Development / Data Analysis / Digital Logic Design:**
-End-Sem LAB + Comprehensive Viva Voce: 100 → 50 marks
-Course Project (End-Sem): 100 → 50 marks
-TOTAL = 100 marks (NO Mid-Sem, NO theory exam)
-
-**IKS — Indian Knowledge System (HS1073):**
-End-Sem MCQ Exam: 100 marks
-TOTAL = 100 marks (End-Sem MCQ only, NO Mid-Sem)
-
-**UHV — Universal Human Values (HS1077):**
-End-Sem MCQ Exam: 100 marks
-TOTAL = 100 marks (End-Sem MCQ only, NO Mid-Sem)
-
-**Environmental Studies (HS1082):**
-End-Sem MCQ Exam: 100 → 50 marks
-PPT (In-Semester): 50 marks
-TOTAL = 100 marks (NO Mid-Sem written exam)
-
-**Student Activity (HS1083) / SRM / GP / RAD:**
-Activity Presentation and Internal Review (End-Sem): 100 marks
-TOTAL = 100 marks
-
-**ASEP — Applied Science & Engineering Project:**
-Mid-Sem Activity Presentation & Internal Review: 50 → 30 marks
-End-Sem Activity Presentation & External Review: 100 → 70 marks
-TOTAL = 100 marks
-
-### TECHNICAL CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
-1. Microsoft Learn Student Club
-2. GedIT Coding Club
-3. Google Developer Student Clubs (GDSC)
-4. IEEE VIT Pune
-5. CSI VIT Pune (Computer Society of India)
-6. ISA VIT Pune (Instrumentation Society of America)
-7. TRF - The Robotics Forum
-8. Team Endurance Racing
-9. Team Griffin India (drones)
-10. Team Veloce Racing
-11. Team Vishwanetrutvam
-12. Team Quark
-13. Ekasutram
-14. Club Catalyst (entrepreneurship)
-15. Game Dev+
-16. CHESA (chess)
-17. Reality Spectra (AR/VR)
-18. InnovSphere
-19. Personality Development Club
-20. Indus Connect
-Overall Incharge: Dr. Vikas Kolekar, Computer Engineering dept.
-
-### CO-CURRICULAR CLUBS AT VIT PUNE (EXACT LIST - DO NOT INVENT)
-Pi Editorial Board, Antariksh Club, EPEC, SW & D, Light-hearted Lounge, C-Cube, Reality Spectra, RangManch (drama/theatre), Abhivridhhi, Team Eklavya (sports), The Investment Forum, VEDC (Vishwakarma Entrepreneurship Development Cell), Speaker's Club
-Coordinator: Dr. Kaushalya Thopate | dean.studactivities@vit.edu | +91 9960158822
-
-### ONLINE EXAM INSTRUCTIONS
-Portal: https://epvit.vierp.in/ | Must use LAPTOP only (no phone/tablet)
-Join Google Meet first, then start exam | Camera must be ON always
-Tab switching = immediate exam termination | No re-exam if missed
-Result shown immediately after MCQ exam on screen
-
-### OFFLINE EXAM RULES
-Arrive 30 min early | I-CARD compulsory | No mobile in exam hall
-Cannot enter after 30 min | Cannot leave in first 30 min or last 10 min
-No written material, calculators, or electronic gadgets allowed
-
-### STRICT HALLUCINATION RULE
-NEVER invent club names, faculty names, subject names, or any specific details not listed above.
-If asked about something NOT in this prompt or RAG context, say: "I don't have verified information about this — please check vit.edu or ask your department directly."
-Do NOT guess or make up answers for faculty names, specific timetables, or internal college details.
-
-### LIVE MARKETPLACE LISTINGS (REAL DATA FROM CAMPUSHUB)
-${marketplaceData || 'No active listings currently.'}
-When asked about marketplace, ONLY mention items from the list above. NEVER invent listings. If nothing matches, say "No listings found for that right now — check the Marketplace page directly."
-
-### RECENT COMMUNITY POSTS (REAL DATA FROM CAMPUSHUB)
-${communityData || 'No recent community posts.'}
-When asked about community posts, ONLY reference posts from the list above. NEVER invent posts.
-
-### STUDENT'S PERSONAL TIMETABLE (REAL DATA)
-${timetableData ? `The student has set up their timetable:\n${timetableData}\n\nUse this to:\n- Answer "what do I have today/tomorrow?"\n- Suggest free slots for studying\n- Build study plans around their actual free slots\n- Warn about upcoming exams vs their available study time\n\nSTRICT TIMETABLE RULES:\n- ONLY mention subjects listed above. NEVER add subjects not in the timetable.\n- NEVER invent room numbers, lecture halls, or locations — the timetable has NO room info.\n- NEVER invent times — only use the exact slot times listed above.\n- If asked about room/location, say "Room info is not saved in your timetable."` : 'Timetable not set up yet — if asked about schedule, suggest the student visits the Timetable page to set it up.'}`
+  return prompt
 }
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -480,8 +312,13 @@ export async function POST(req: NextRequest) {
     const message = body.message?.trim() || ''
     const history = body.history || []
     const userId = body.userId || null
-    const docContent = body.docContent || ''
+    const rawDoc = body.docContent || ''
     const docName = body.docName || ''
+    // Strip non-printable/binary characters so Groq doesn't choke on PDF garbage
+    const docContent = rawDoc
+      .replace(/[^\x20-\x7E\n\r\t]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
 
     if (!message) return NextResponse.json({ reply: 'Please type a message.' })
 
@@ -508,11 +345,20 @@ export async function POST(req: NextRequest) {
     // When a doc is attached, use a slim system prompt to save token budget
     const systemPrompt = docContent
       ? `You are CampusHub AI for VIT Pune. User: ${profile?.full_name || 'Student'}, Branch: ${profile?.major || 'B.Tech'}. Answer questions from the uploaded document accurately and concisely.`
-      : buildSystemPrompt(profile, ragContext, marketplaceData, communityData, timetableData)
+      : buildSystemPrompt(profile, ragContext, marketplaceData, communityData, timetableData, message)
 
     // Groq llama-3.1-8b-instant limit: ~6000 TPM
     // Slim prompt ≈ 60 tokens, leave ~2500 for doc content, rest for answer
-    const MAX_DOC_CHARS = 2000
+    // Check if PDF text extraction produced meaningful content
+    // After stripping binary, compressed PDFs leave very little readable text
+    const wordCount = (docContent.match(/[a-zA-Z]{3,}/g) || []).length
+    if (docContent && wordCount < 30) {
+      return NextResponse.json({
+        reply: `⚠️ I could not read the text from **${docName}**.\n\nThis usually happens because the PDF uses **compressed or encoded content** that cannot be extracted in the browser.\n\n**What you can do:**\n- 📋 **Copy-paste** the text from your PDF directly into the chat\n- 🔄 Convert PDF to text at **smallpdf.com** or **ilovepdf.com**, then paste\n- 📝 Type your question directly — I know the VIT Pune syllabus already!`
+      })
+    }
+
+    const MAX_DOC_CHARS = 4000
     const truncated = docContent && docContent.length > MAX_DOC_CHARS
     const userMessage = docContent
       ? `I uploaded "${docName}":\n---\n${docContent.slice(0, MAX_DOC_CHARS)}${truncated ? '\n\n[...document truncated to fit context...]' : ''}\n---\nQuestion: ${message}`
@@ -522,7 +368,7 @@ export async function POST(req: NextRequest) {
       { role: 'system', content: systemPrompt }
     ]
 
-    for (const h of history.filter((x: any) => x.role !== 'system').slice(docContent ? -2 : -5)) {
+    for (const h of history.filter((x: any) => x.role !== 'system').slice(docContent ? -2 : -3)) {
       messages.push({ role: h.role === 'assistant' ? 'assistant' : 'user', content: h.text })
     }
     messages.push({ role: 'user', content: userMessage })
@@ -530,13 +376,16 @@ export async function POST(req: NextRequest) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages, max_tokens: 800, temperature: 0.7 })
+      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages, max_tokens: 600, temperature: 0.7 })
     })
 
     const data = await res.json()
     if (!res.ok) {
       if (res.status === 401) return NextResponse.json({ reply: '❌ Invalid Groq API key.' })
-      if (res.status === 429) return NextResponse.json({ reply: '⏳ Rate limit hit — wait 10 seconds.' })
+      if (res.status === 429) {
+        const retryAfter = res.headers.get('retry-after') || '15'
+        return NextResponse.json({ reply: '⏳ Rate limit hit — please wait a moment.', rateLimitSeconds: parseInt(retryAfter) })
+      }
       return NextResponse.json({ reply: `❌ Error: ${data?.error?.message}` })
     }
 
