@@ -376,7 +376,7 @@ export async function POST(req: NextRequest) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages, max_tokens: 600, temperature: 0.7 })
+      body: JSON.stringify({ model: 'llama3-8b-8192', messages, max_tokens: 600, temperature: 0.7 })
     })
 
     const data = await res.json()
