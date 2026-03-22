@@ -33,15 +33,35 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
   }, [router])
 
   if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
-        <div style={{ textAlign: 'center', color: '#fff' }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎓</div>
-          <div style={{ fontSize: '18px', fontWeight: '700' }}>Loading CampusHub...</div>
-        </div>
+  return (
+    <div style={{ minHeight: '100vh', background: '#f3f6fb', display: 'flex', flexDirection: 'column' }}>
+      {/* Top bar skeleton */}
+      <div style={{ height: '64px', background: '#fff', borderBottom: '1px solid #e8edf2', display: 'flex', alignItems: 'center', padding: '0 20px', gap: '12px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: '120px', height: '16px', borderRadius: '6px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ flex: 1 }} />
+        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: '80px', height: '32px', borderRadius: '8px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
       </div>
-    )
-  }
+      {/* Content skeleton */}
+      <div style={{ flex: 1, padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ height: '120px', borderRadius: '16px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          {[1,2,3,4].map(i => (
+            <div key={i} style={{ height: '80px', borderRadius: '12px', background: '#e2e8f0', animation: `pulse 1.5s ease-in-out ${i * 0.1}s infinite` }} />
+          ))}
+        </div>
+        <div style={{ height: '200px', borderRadius: '16px', background: '#e2e8f0', animation: 'pulse 1.5s ease-in-out infinite' }} />
+      </div>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
+    </div>
+  )
+}
 
   const sidebarW = collapsed ? 60 : 220
   const topBarH = 64
@@ -54,9 +74,9 @@ export default function MainLayout({ children, noPadding }: { children: ReactNod
 
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} userName={userName} userYear={userYear} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      <div style={{ marginLeft: `${sidebarW}px`, flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f8fafc' }} className="main-content">
+      <div style={{ marginLeft: `${sidebarW}px`, flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', transition: 'margin-left 0.25s cubic-bezier(0.4,0,0.2,1)', background: '#f3f6fb' }} className="main-content">
         {/* Top bar */}
-        <div style={{ height: `${topBarH}px`, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+        <div style={{ height: `${topBarH}px`, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid #f1f5f9', background: '#f3f6fb' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button onClick={() => setMobileOpen(true)} className="hamburger-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px', padding: '4px', display: 'none', color: '#0f172a' }}>☰</button>
             <div className="topbar-date" style={{ fontSize: '13px', color: '#94a3b8' }}>

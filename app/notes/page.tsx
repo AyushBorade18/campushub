@@ -9,8 +9,8 @@ const SUBJECTS_ENTC_M1 = ['Linear Algebra','PSP','Electronic Circuits','IKS','En
 const SUBJECTS_ENTC_M2 = ['Calculus','Applied Electromechanics','DLD','UHV','Environmental Studies','Engineering Graphics','ASEP','RAD','GP','SRM']
 const ALL_SUBJECTS = [...new Set([...SUBJECTS_CS_M1,...SUBJECTS_CS_M2,...SUBJECTS_ENTC_M1,...SUBJECTS_ENTC_M2,'Other'])]
 
-const TAG_COLORS = ['#ede9fe','#dbeafe','#d1fae5','#fef3c7','#fee2e2','#f0fdf4','#e0f2fe']
-const TAG_TEXT = ['#5b21b6','#1d4ed8','#047857','#92400e','#991b1b','#166534','#0369a1']
+const TAG_COLORS = ['#e8f0fe','#dbeafe','#d1fae5','#fef3c7','#fee2e2','#f0fdf4','#e0f2fe']
+const TAG_TEXT = ['#004182','#1d4ed8','#047857','#92400e','#991b1b','#166534','#0369a1']
 
 function tagStyle(i: number) {
   return { background: TAG_COLORS[i % TAG_COLORS.length], color: TAG_TEXT[i % TAG_TEXT.length], borderRadius: '6px', padding: '3px 9px', fontSize: '11px', fontWeight: '700' }
@@ -127,7 +127,7 @@ export default function NotesPage() {
             <h2 style={{margin:0,fontSize:'22px',fontWeight:'900',color:'#0f172a'}}>📚 Notes Marketplace</h2>
             <p style={{margin:'4px 0 0',color:'#64748b',fontSize:'13px'}}>Share & discover handwritten/typed notes · AI auto-tagged by topic</p>
           </div>
-          <button onClick={()=>setShowUpload(true)} style={{background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'10px 20px',fontWeight:'700',cursor:'pointer',fontSize:'13px',boxShadow:'0 4px 14px rgba(79,70,229,0.35)'}}>
+          <button onClick={()=>setShowUpload(true)} style={{background:'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'12px',padding:'10px 20px',fontWeight:'700',cursor:'pointer',fontSize:'13px',boxShadow:'0 4px 14px rgba(10,102,194,0.35)'}}>
             + Upload Notes
           </button>
         </div>
@@ -140,7 +140,7 @@ export default function NotesPage() {
             {ALL_SUBJECTS.map(s=><option key={s} value={s}>{s}</option>)}
           </select>
           {(['All','Free','Paid'] as const).map(p=>(
-            <button key={p} onClick={()=>setFilterPrice(p)} style={{background:filterPrice===p?'#6366f1':'#f1f5f9',color:filterPrice===p?'#fff':'#374151',border:'none',borderRadius:'10px',padding:'10px 16px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
+            <button key={p} onClick={()=>setFilterPrice(p)} style={{background:filterPrice===p?'#0a66c2':'#f1f5f9',color:filterPrice===p?'#fff':'#374151',border:'none',borderRadius:'10px',padding:'10px 16px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
               {p === 'Free' ? '🆓 Free' : p === 'Paid' ? '💰 Paid' : 'All'}
             </button>
           ))}
@@ -149,7 +149,7 @@ export default function NotesPage() {
         {/* Stats bar */}
         <div style={{display:'flex',gap:'16px',marginBottom:'18px',flexWrap:'wrap'}}>
           {[
-            {label:`${notes.length} Notes`, color:'#6366f1'},
+            {label:`${notes.length} Notes`, color:'#0a66c2'},
             {label:`${notes.filter(n=>n.price===0).length} Free`, color:'#10b981'},
             {label:`${[...new Set(notes.map(n=>n.subject))].length} Subjects`, color:'#f59e0b'},
           ].map(s=>(
@@ -174,7 +174,7 @@ export default function NotesPage() {
                 onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform='';(e.currentTarget as HTMLElement).style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'}}>
 
                 {/* PDF Preview Banner */}
-                <div style={{height:'90px',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                <div style={{height:'90px',background:'linear-gradient(135deg,#0a66c2, #004182)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
                   <div style={{fontSize:'40px'}}>{note.price > 0 && note.user_id !== currentUserId ? '🔒' : '📄'}</div>
                   <div style={{position:'absolute',top:'10px',right:'10px',background:note.price===0?'#10b981':'#f59e0b',color:'#fff',borderRadius:'8px',padding:'3px 10px',fontSize:'11px',fontWeight:'800'}}>
                     {note.price===0 ? 'FREE' : `₹${note.price}`}
@@ -186,7 +186,7 @@ export default function NotesPage() {
 
                 <div style={{padding:'14px 16px'}} onClick={()=>setActiveNote(note)}>
                   <div style={{fontSize:'14px',fontWeight:'800',color:'#0f172a',marginBottom:'4px',lineHeight:1.3}}>{note.title}</div>
-                  <div style={{fontSize:'12px',color:'#6366f1',fontWeight:'600',marginBottom:'6px'}}>📚 {note.subject} {note.branch !== 'All Branches' ? `· ${note.branch}` : ''}</div>
+                  <div style={{fontSize:'12px',color:'#0a66c2',fontWeight:'600',marginBottom:'6px'}}>📚 {note.subject} {note.branch !== 'All Branches' ? `· ${note.branch}` : ''}</div>
                   {note.description && <div style={{fontSize:'12px',color:'#64748b',marginBottom:'8px',lineHeight:1.5,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'} as any}>{note.description}</div>}
 
                   {/* AI Tags */}
@@ -205,7 +205,7 @@ export default function NotesPage() {
                 </div>
 
                 <div style={{padding:'0 16px 14px'}}>
-                  <button onClick={()=>handleDownload(note)} style={{width:'100%',background: note.price > 0 && note.user_id !== currentUserId ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'10px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
+                  <button onClick={()=>handleDownload(note)} style={{width:'100%',background: note.price > 0 && note.user_id !== currentUserId ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'10px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
                     {note.price===0 ? '⬇ Download Free' : note.user_id === currentUserId ? '⬇ My Note' : `🔒 Buy ₹${note.price}`}
                   </button>
                 </div>
@@ -225,7 +225,7 @@ export default function NotesPage() {
             </div>
             <div style={{background:'#f5f3ff',borderRadius:'12px',padding:'16px',marginBottom:'16px',textAlign:'center'}}>
               <div style={{fontSize:'48px',marginBottom:'8px'}}>📄</div>
-              <div style={{fontSize:'13px',color:'#6366f1',fontWeight:'700'}}>{activeNote.file_name}</div>
+              <div style={{fontSize:'13px',color:'#0a66c2',fontWeight:'700'}}>{activeNote.file_name}</div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',marginBottom:'16px'}}>
               {[
@@ -236,7 +236,7 @@ export default function NotesPage() {
                 {label:'Uploaded by',val:activeNote.profiles?.full_name||'Student'},
                 {label:'Date',val:timeAgo(activeNote.created_at)},
               ].map(({label,val})=>(
-                <div key={label} style={{background:'#f8fafc',borderRadius:'10px',padding:'10px 14px'}}>
+                <div key={label} style={{background:'#f3f6fb',borderRadius:'10px',padding:'10px 14px'}}>
                   <div style={{fontSize:'11px',color:'#94a3b8',fontWeight:'600'}}>{label}</div>
                   <div style={{fontSize:'13px',fontWeight:'700',color:'#0f172a'}}>{val}</div>
                 </div>
@@ -248,7 +248,7 @@ export default function NotesPage() {
                 {activeNote.tags.map((t:string,i:number)=><span key={t} style={tagStyle(i)}>#{t}</span>)}
               </div>
             )}
-            <button onClick={()=>{handleDownload(activeNote);setActiveNote(null)}} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'13px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
+            <button onClick={()=>{handleDownload(activeNote);setActiveNote(null)}} style={{width:'100%',background:'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'12px',padding:'13px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
               {activeNote.price===0 ? '⬇ Download for Free' : `⬇ Buy for ₹${activeNote.price}`}
             </button>
           </div>
@@ -266,14 +266,14 @@ export default function NotesPage() {
                 <div style={{color:'#64748b',fontSize:'13px',lineHeight:1.6,marginBottom:'20px'}}>
                   A message has been sent to the uploader.<br/>Check your <strong>Messages</strong> tab for their reply and payment details.
                 </div>
-                <button onClick={()=>setBuyModal(null)} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'700',cursor:'pointer'}}>Got it!</button>
+                <button onClick={()=>setBuyModal(null)} style={{width:'100%',background:'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'700',cursor:'pointer'}}>Got it!</button>
               </>
             ) : (
               <>
                 <div style={{fontSize:'48px',marginBottom:'12px'}}>🔒</div>
                 <div style={{fontSize:'18px',fontWeight:'900',marginBottom:'6px'}}>{buyModal.title}</div>
-                <div style={{color:'#6366f1',fontWeight:'700',fontSize:'14px',marginBottom:'12px'}}>₹{buyModal.price} · {buyModal.subject}</div>
-                <div style={{color:'#64748b',fontSize:'13px',lineHeight:1.6,marginBottom:'20px',background:'#f8fafc',borderRadius:'12px',padding:'14px'}}>
+                <div style={{color:'#0a66c2',fontWeight:'700',fontSize:'14px',marginBottom:'12px'}}>₹{buyModal.price} · {buyModal.subject}</div>
+                <div style={{color:'#64748b',fontSize:'13px',lineHeight:1.6,marginBottom:'20px',background:'#f3f6fb',borderRadius:'12px',padding:'14px'}}>
                   This is a paid note. Clicking below will send a DM to the uploader with your buy request. They will share their UPI and send you the PDF after payment.
                 </div>
                 <div style={{display:'flex',gap:'10px'}}>
@@ -354,7 +354,7 @@ function UploadModal({profile,userId,onClose,onSuccess}:any) {
         <div style={{display:'flex',flexWrap:'wrap',gap:'6px',justifyContent:'center',marginBottom:'20px'}}>
           {tags.map((t,i)=><span key={t} style={tagStyle(i)}>#{t}</span>)}
         </div>
-        <button onClick={onSuccess} style={{width:'100%',background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'700',cursor:'pointer'}}>View All Notes</button>
+        <button onClick={onSuccess} style={{width:'100%',background:'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'12px',padding:'12px',fontWeight:'700',cursor:'pointer'}}>View All Notes</button>
       </div>
     </div>
   )
@@ -370,11 +370,11 @@ function UploadModal({profile,userId,onClose,onSuccess}:any) {
         {error && <div style={{background:'#fee2e2',color:'#ef4444',borderRadius:'10px',padding:'10px 14px',marginBottom:'16px',fontSize:'13px',fontWeight:'600'}}>{error}</div>}
 
         {/* PDF Drop Zone */}
-        <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${file?'#6366f1':'#cbd5e1'}`,borderRadius:'14px',padding:'24px',textAlign:'center',cursor:'pointer',marginBottom:'18px',background:file?'#f5f3ff':'#f8fafc',transition:'all 0.15s'}}>
+        <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${file?'#0a66c2':'#cbd5e1'}`,borderRadius:'14px',padding:'24px',textAlign:'center',cursor:'pointer',marginBottom:'18px',background:file?'#f5f3ff':'#f3f6fb',transition:'all 0.15s'}}>
           {file ? (
             <>
               <div style={{fontSize:'36px',marginBottom:'6px'}}>📄</div>
-              <div style={{fontWeight:'700',color:'#4f46e5',fontSize:'14px'}}>{file.name}</div>
+              <div style={{fontWeight:'700',color:'#0a66c2',fontSize:'14px'}}>{file.name}</div>
               <div style={{fontSize:'12px',color:'#94a3b8',marginTop:'2px'}}>{formatSize(file.size)} · Click to change</div>
             </>
           ) : (
@@ -416,18 +416,18 @@ function UploadModal({profile,userId,onClose,onSuccess}:any) {
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'8px'}}>
               <label style={{fontSize:'12px',fontWeight:'700',color:'#374151'}}>🤖 AI Tags</label>
-              <button onClick={autoTag} disabled={tagging||(!form.title&&!form.subject)} style={{background:'#ede9fe',color:'#6366f1',border:'none',borderRadius:'8px',padding:'5px 12px',cursor:'pointer',fontWeight:'700',fontSize:'12px',opacity:(!form.title&&!form.subject)?0.5:1}}>
+              <button onClick={autoTag} disabled={tagging||(!form.title&&!form.subject)} style={{background:'#e8f0fe',color:'#0a66c2',border:'none',borderRadius:'8px',padding:'5px 12px',cursor:'pointer',fontWeight:'700',fontSize:'12px',opacity:(!form.title&&!form.subject)?0.5:1}}>
                 {tagging ? '⏳ Tagging…' : '✨ Auto-tag'}
               </button>
             </div>
-            <div style={{minHeight:'36px',background:'#f8fafc',borderRadius:'10px',padding:'8px',display:'flex',flexWrap:'wrap',gap:'5px',border:'1.5px solid #e2e8f0'}}>
+            <div style={{minHeight:'36px',background:'#f3f6fb',borderRadius:'10px',padding:'8px',display:'flex',flexWrap:'wrap',gap:'5px',border:'1.5px solid #e2e8f0'}}>
               {tags.length === 0 ? <span style={{fontSize:'12px',color:'#94a3b8'}}>Fill title & subject then click Auto-tag</span> : tags.map((t,i)=>(
                 <span key={t} style={{...tagStyle(i),cursor:'pointer',userSelect:'none'}} onClick={()=>setTags(tags.filter(x=>x!==t))}>#{t} ✕</span>
               ))}
             </div>
           </div>
 
-          <button onClick={handleSubmit} disabled={saving} style={{background:'linear-gradient(135deg,#4f46e5,#7c3aed)',color:'#fff',border:'none',borderRadius:'12px',padding:'13px',fontWeight:'800',cursor:saving?'not-allowed':'pointer',fontSize:'14px',opacity:saving?0.8:1}}>
+          <button onClick={handleSubmit} disabled={saving} style={{background:'linear-gradient(135deg,#0a66c2, #004182)',color:'#fff',border:'none',borderRadius:'12px',padding:'13px',fontWeight:'800',cursor:saving?'not-allowed':'pointer',fontSize:'14px',opacity:saving?0.8:1}}>
             {saving ? '⏳ Uploading…' : '📤 Upload Notes'}
           </button>
         </div>

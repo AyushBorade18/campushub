@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import MainLayout from '@/components/MainLayout'
 import { supabase } from '@/lib/supabase'
 
-const TYPE_COLOR: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', borrow: '#f59e0b', lost: '#ef4444', found: '#8b5cf6' }
-const TYPE_BG: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#ede9fe' }
+const TYPE_COLOR: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', borrow: '#f59e0b', lost: '#ef4444', found: '#004182' }
+const TYPE_BG: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#e8f0fe' }
 const TYPE_LABEL: Record<string, string> = { sell: 'For Sale', buy: 'Wanted', borrow: 'Borrow/Lend', lost: 'Lost', found: 'Found' }
 
 const BRANCHES = ['CS','CS-AIML','CS-AI','IT','AIDS','CSE-DS','CSE-SE','CSE-IOT & CYBERSECURITY','ENTC','MECHANICAL','CIVIL','INSTRUMENTATION']
@@ -69,11 +69,11 @@ export default function ProfilePage() {
     <MainLayout>
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
         {/* Profile Hero */}
-        <div className='profile-hero' style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '20px', padding: '28px 28px 0', marginBottom: '20px', overflow: 'hidden', position: 'relative' }}>
+        <div className='profile-hero' style={{ background: '#0a66c2', borderRadius: '20px', padding: '28px', marginBottom: '20px', overflow: 'hidden', position: 'relative' }}>
           <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '140px', height: '140px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
-          <div className='profile-hero-inner' style={{ display: 'flex', gap: '20px', alignItems: 'flex-end' }}>
+          <div className='profile-hero-inner' style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', border: '3px solid rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: '800', color: '#fff', flexShrink: 0 }}>{initials}</div>
-            <div style={{ flex: 1, paddingBottom: '24px' }}>
+            <div style={{ flex: 1, paddingBottom: '0px' }}>
               <h2 style={{ margin: 0, color: '#fff', fontSize: '22px', fontWeight: '800' }}>{profile?.full_name || 'Student'}</h2>
               <div style={{ color: '#c7d2fe', fontSize: '13px', marginTop: '3px' }}>{profile?.college_email}</div>
               <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
@@ -82,7 +82,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
-            <div style={{ paddingBottom: '24px' }}>
+            <div style={{ paddingBottom: '0px' }}>
               <button onClick={() => editing ? saveProfile() : setEditing(true)} disabled={saving}
                 style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', padding: '8px 16px', color: '#fff', fontWeight: '700', cursor: 'pointer', fontSize: '13px' }}>
                 {saving ? 'Saving...' : editing ? '💾 Save' : '✏️ Edit Profile'}
@@ -133,7 +133,7 @@ export default function ProfilePage() {
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
               <button onClick={() => setEditing(false)} style={{ flex: 1, background: '#f1f5f9', border: 'none', borderRadius: '10px', padding: '10px', fontWeight: '600', cursor: 'pointer', color: '#64748b' }}>Cancel</button>
-              <button onClick={saveProfile} disabled={saving} style={{ flex: 2, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '10px', padding: '10px', fontWeight: '700', cursor: 'pointer', color: '#fff' }}>
+              <button onClick={saveProfile} disabled={saving} style={{ flex: 2, background: '#0a66c2', border: 'none', borderRadius: '10px', padding: '10px', fontWeight: '700', cursor: 'pointer', color: '#fff' }}>
                 {saving ? 'Saving...' : '💾 Save Changes'}
               </button>
             </div>
@@ -142,7 +142,7 @@ export default function ProfilePage() {
 
         {/* Stats */}
         <div className='stats-grid' style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-          {[['Listings', myListings.filter(l => l.status === 'active').length, '#6366f1'], ['Total Posted', myListings.length, '#10b981'], ['Sold/Closed', myListings.filter(l => l.status !== 'active').length, '#f59e0b'], ['Year', profile?.year?.split(' ')[0] || '—', '#8b5cf6']].map(([l, v, c]: any) => (
+          {[['Listings', myListings.filter(l => l.status === 'active').length, '#0a66c2'], ['Total Posted', myListings.length, '#10b981'], ['Sold/Closed', myListings.filter(l => l.status !== 'active').length, '#f59e0b'], ['Year', profile?.year?.split(' ')[0] || '—', '#004182']].map(([l, v, c]: any) => (
             <div key={l} style={{ background: '#fff', borderRadius: '14px', padding: '16px', textAlign: 'center', border: '1px solid #f1f5f9' }}>
               <div style={{ fontSize: '24px', fontWeight: '800', color: c }}>{v}</div>
               <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{l}</div>
@@ -170,7 +170,7 @@ export default function ProfilePage() {
                     <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{new Date(item.created_at).toLocaleDateString('en-IN')}</div>
                   </div>
                   <span style={{ background: TYPE_BG[item.type], color: TYPE_COLOR[item.type], borderRadius: '6px', padding: '3px 9px', fontSize: '11px', fontWeight: '700', whiteSpace: 'nowrap' }}>{TYPE_LABEL[item.type]}</span>
-                  {item.price > 0 && <span style={{ fontWeight: '800', color: '#6366f1', whiteSpace: 'nowrap' }}>₹{item.price}</span>}
+                  {item.price > 0 && <span style={{ fontWeight: '800', color: '#0a66c2', whiteSpace: 'nowrap' }}>₹{item.price}</span>}
                   <span style={{ background: item.status === 'active' ? '#d1fae5' : '#f1f5f9', color: item.status === 'active' ? '#10b981' : '#94a3b8', borderRadius: '6px', padding: '3px 9px', fontSize: '11px', fontWeight: '700' }}>{item.status}</span>
                   <button onClick={() => deleteListing(item.id)} style={{ background: '#fee2e2', border: 'none', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', color: '#ef4444', fontWeight: '600', fontSize: '12px' }}>Delete</button>
                 </div>

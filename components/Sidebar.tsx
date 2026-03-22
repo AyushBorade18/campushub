@@ -62,7 +62,7 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
       {/* Logo */}
       <div style={{ padding: '20px 14px 16px', display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid rgba(255,255,255,0.08)', minHeight: '64px' }}>
         <Link href="/dashboard" onClick={() => isMobile && setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1 }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🎓</div>
+          <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#0a66c2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>🎓</div>
           {(!collapsed || isMobile) && <span style={{ color: '#fff', fontWeight: '800', fontSize: '17px', whiteSpace: 'nowrap' }}>CampusHub</span>}
         </Link>
         {isMobile && (
@@ -80,7 +80,7 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
                 display: 'flex', alignItems: 'center', gap: '12px',
                 padding: '10px 10px', borderRadius: '10px',
                 marginBottom: '4px',
-                background: active ? 'linear-gradient(90deg, #6366f1, #8b5cf6)' : 'transparent',
+                background: active ? 'linear-gradient(90deg, #0a66c2, #004182)' : 'transparent',
                 color: active ? '#fff' : '#94a3b8',
                 cursor: 'pointer',
                 transition: 'all 0.15s',
@@ -123,12 +123,12 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
       <div style={{ padding: '12px 8px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         {(!collapsed || isMobile) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)', marginBottom: '8px' }}>
-            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>
+            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#0a66c2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>
               {initials}
             </div>
             <div style={{ overflow: 'hidden' }}>
               <div style={{ color: '#fff', fontSize: '12.5px', fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userName || 'Student'}</div>
-              <div style={{ color: '#6366f1', fontSize: '11px' }}>VIT Pune · {userYear || '1st Year'}</div>
+              <div style={{ color: '#0a66c2', fontSize: '11px' }}>VIT Pune · {userYear || '1st Year'}</div>
             </div>
           </div>
         )}
@@ -154,7 +154,7 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
       <aside className="desktop-sidebar" style={{
         width: collapsed ? '60px' : '220px',
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
+        background: '#001f3f',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
@@ -171,7 +171,7 @@ export default function Sidebar({ collapsed, setCollapsed, userName, userYear, m
       <aside className="mobile-sidebar" style={{
         width: '240px',
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
+        background: '#001f3f',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',

@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       fontFamily: { sans: ['DM Sans', 'system-ui', 'sans-serif'] },
       colors: {
-        brand: { 500: '#6366f1', 600: '#4f46e5', 100: '#e0e7ff' },
+        brand: { 500: '#0a66c2', 600: '#0a66c2', 100: '#e0e7ff' },
       },
     },
   },

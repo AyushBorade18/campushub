@@ -22,11 +22,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+    <div style={{ minHeight: '100vh', background: '#001f3f', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '420px' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ width: '64px', height: '64px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', margin: '0 auto 16px' }}>🎓</div>
+          <div style={{ width: '64px', height: '64px', background: '#0a66c2', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', margin: '0 auto 16px' }}>🎓</div>
           <h1 style={{ color: '#fff', fontSize: '28px', fontWeight: '800', margin: '0 0 4px' }}>CampusHub</h1>
           <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Your campus, connected</p>
         </div>
@@ -60,7 +60,7 @@ export default function LoginPage() {
             </div>
             <button
               type="submit" disabled={loading}
-              style={{ width: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '10px', padding: '13px', fontWeight: '700', fontSize: '15px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
+              style={{ width: '100%', background: '#0a66c2', color: '#fff', border: 'none', borderRadius: '10px', padding: '13px', fontWeight: '700', fontSize: '15px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
           <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748b', marginTop: '20px' }}>
             Don't have an account?{' '}
-            <Link href="/auth/register" style={{ color: '#6366f1', fontWeight: '700', textDecoration: 'none' }}>Create one →</Link>
+            <Link href="/auth/register" style={{ color: '#0a66c2', fontWeight: '700', textDecoration: 'none' }}>Create one →</Link>
           </p>
         </div>
       </div>

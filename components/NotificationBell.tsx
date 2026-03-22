@@ -94,7 +94,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
       <button
         onClick={() => { setOpen(o => !o); if (!open && unread > 0) {} }}
         style={{
-          position: 'relative', background: open ? '#ede9fe' : '#fff',
+          position: 'relative', background: open ? '#e8f0fe' : '#fff',
           border: '1px solid #f1f5f9', borderRadius: '10px',
           padding: '7px 10px', cursor: 'pointer', fontSize: '18px',
           boxShadow: '0 1px 4px rgba(0,0,0,0.05)', transition: 'all 0.15s',
@@ -109,7 +109,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
             background: '#ef4444', color: '#fff', borderRadius: '999px',
             fontSize: '10px', fontWeight: '800', minWidth: '18px', height: '18px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '0 4px', border: '2px solid #f8fafc', lineHeight: 1,
+            padding: '0 4px', border: '2px solid #f3f6fb', lineHeight: 1,
           }}>
             {unread > 99 ? '99+' : unread}
           </span>
@@ -131,7 +131,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               {unread > 0 && (
-                <button onClick={markAllRead} style={{ background: '#ede9fe', color: '#6366f1', border: 'none', borderRadius: '7px', padding: '4px 10px', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+                <button onClick={markAllRead} style={{ background: '#e8f0fe', color: '#0a66c2', border: 'none', borderRadius: '7px', padding: '4px 10px', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
                   Mark all read
                 </button>
               )}
@@ -157,7 +157,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                 style={{
                   display: 'flex', gap: '12px', padding: '12px 16px', cursor: 'pointer',
                   background: n.read ? '#fff' : '#f5f3ff',
-                  borderBottom: '1px solid #f8fafc',
+                  borderBottom: '1px solid #f3f6fb',
                   transition: 'background 0.1s',
                 }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#f1f5f9')}
@@ -166,7 +166,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                 {/* Icon */}
                 <div style={{
                   width: '38px', height: '38px', borderRadius: '10px', flexShrink: 0,
-                  background: n.type === 'message' ? '#ede9fe' : n.type === 'marketplace' ? '#fef3c7' : n.type === 'notes' ? '#dbeafe' : '#d1fae5',
+                  background: n.type === 'message' ? '#e8f0fe' : n.type === 'marketplace' ? '#fef3c7' : n.type === 'notes' ? '#dbeafe' : '#d1fae5',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px',
                 }}>
                   {TYPE_ICON[n.type] || '🔔'}
@@ -179,7 +179,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                 </div>
                 {/* Unread dot */}
                 {!n.read && (
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366f1', flexShrink: 0, marginTop: '5px' }} />
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0a66c2', flexShrink: 0, marginTop: '5px' }} />
                 )}
               </div>
             ))}

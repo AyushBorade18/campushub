@@ -26,20 +26,20 @@ export default function DashboardPage() {
     load()
   }, [])
 
-  const typeColor: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', borrow: '#f59e0b', lost: '#ef4444', found: '#8b5cf6' }
-  const typeBg: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#ede9fe' }
+  const typeColor: Record<string, string> = { sell: '#10b981', buy: '#3b82f6', borrow: '#f59e0b', lost: '#ef4444', found: '#004182' }
+  const typeBg: Record<string, string> = { sell: '#d1fae5', buy: '#dbeafe', borrow: '#fef3c7', lost: '#fee2e2', found: '#e8f0fe' }
   const typeLabel: Record<string, string> = { sell: 'For Sale', buy: 'Wanted', borrow: 'Borrow/Lend', lost: 'Lost', found: 'Found' }
 
   return (
     <MainLayout>
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)', borderRadius: '20px', padding: '28px 32px', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ background: 'linear-gradient(135deg, #0a66c2 0%, #004182 50%, #0055a5 100%)', borderRadius: '20px', padding: '28px 32px', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
         <div style={{ fontSize: '13px', color: '#e0e7ff', marginBottom: '6px' }}>Hello, 👋</div>
         <div style={{ fontSize: '26px', fontWeight: '800', color: '#fff', marginBottom: '4px' }}>{profile?.full_name || 'Student'}</div>
         <div style={{ fontSize: '13px', color: '#c7d2fe' }}>VIT Pune · {profile?.major || 'Engineering'} · {profile?.year || '1st Year'}</div>
         <div style={{ marginTop: '18px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <Link href="/marketplace" style={{ background: '#fff', color: '#6366f1', borderRadius: '10px', padding: '8px 18px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}>Browse Marketplace</Link>
+          <Link href="/marketplace" style={{ background: '#fff', color: '#0a66c2', borderRadius: '10px', padding: '8px 18px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}>Browse Marketplace</Link>
           <Link href="/community" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', padding: '8px 18px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}>Community Hub</Link>
         </div>
       </div>
@@ -47,10 +47,10 @@ export default function DashboardPage() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', marginBottom: '24px' }}>
         {[
-          { label: 'Active Listings', value: stats.listings, icon: '🛍', color: '#6366f1', bg: '#e0e7ff' },
+          { label: 'Active Listings', value: stats.listings, icon: '🛍', color: '#0a66c2', bg: '#e0e7ff' },
           { label: 'Lost Items', value: stats.lost, icon: '🔍', color: '#ef4444', bg: '#fee2e2' },
           { label: 'Channels', value: 5, icon: '💬', color: '#10b981', bg: '#d1fae5' },
-          { label: 'AI Assistant', value: '24/7', icon: '🤖', color: '#8b5cf6', bg: '#ede9fe' },
+          { label: 'AI Assistant', value: '24/7', icon: '🤖', color: '#004182', bg: '#e8f0fe' },
         ].map(s => (
           <div key={s.label} style={{ background: '#fff', borderRadius: '14px', padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
             <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', marginBottom: '12px' }}>{s.icon}</div>
@@ -68,8 +68,8 @@ export default function DashboardPage() {
             { href: '/marketplace?tab=sell', label: 'Sell Item', icon: '💰', color: '#10b981', bg: '#d1fae5' },
             { href: '/marketplace?tab=borrow', label: 'Borrow/Lend', icon: '🔄', color: '#f59e0b', bg: '#fef3c7' },
             { href: '/marketplace?tab=lost', label: 'Report Lost', icon: '🔍', color: '#ef4444', bg: '#fee2e2' },
-            { href: '/community', label: 'Join Chat', icon: '💬', color: '#6366f1', bg: '#e0e7ff' },
-            { href: '/chatbot', label: 'Ask AI Bot', icon: '🤖', color: '#8b5cf6', bg: '#ede9fe' },
+            { href: '/community', label: 'Join Chat', icon: '💬', color: '#0a66c2', bg: '#e0e7ff' },
+            { href: '/chatbot', label: 'Ask AI Bot', icon: '🤖', color: '#004182', bg: '#e8f0fe' },
           ].map(a => (
             <Link key={a.href} href={a.href} style={{ textDecoration: 'none' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 10px', borderRadius: '12px', border: '1.5px solid #f1f5f9', cursor: 'pointer', transition: 'all 0.15s', background: '#fafafa' }}>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
       <div style={{ background: '#fff', borderRadius: '16px', padding: '20px 24px', border: '1px solid #f1f5f9' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700' }}>Recent Marketplace Activity</h3>
-          <Link href="/marketplace" style={{ color: '#6366f1', fontWeight: '600', fontSize: '13px', textDecoration: 'none' }}>View All →</Link>
+          <Link href="/marketplace" style={{ color: '#0a66c2', fontWeight: '600', fontSize: '13px', textDecoration: 'none' }}>View All →</Link>
         </div>
         {recentListings.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
                   <span style={{ background: typeBg[item.type] || '#f1f5f9', color: typeColor[item.type] || '#64748b', borderRadius: '6px', padding: '2px 8px', fontSize: '10px', fontWeight: '700' }}>{typeLabel[item.type] || item.type}</span>
                 </div>
                 <div style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a', marginBottom: '4px', lineHeight: '1.4' }}>{item.title}</div>
-                {item.price > 0 && <div style={{ fontSize: '14px', fontWeight: '800', color: '#6366f1' }}>₹{item.price?.toLocaleString()}</div>}
+                {item.price > 0 && <div style={{ fontSize: '14px', fontWeight: '800', color: '#0a66c2' }}>₹{item.price?.toLocaleString()}</div>}
                 {item.price === 0 && <div style={{ fontSize: '13px', fontWeight: '700', color: '#10b981' }}>Free</div>}
               </div>
             ))}

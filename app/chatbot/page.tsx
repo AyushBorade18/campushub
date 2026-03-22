@@ -110,7 +110,7 @@ function renderMd(text: string) {
 
   // Temporarily replace inline code with placeholders
   t = t.replace(/`([^`\n]+)`/g, (_: string, code: string) => {
-    const html = `<code style="background:#ede9fe;color:#5b21b6;padding:2px 7px;border-radius:5px;font-size:12.5px;font-family:monospace">${code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`
+    const html = `<code style="background:#e8f0fe;color:#004182;padding:2px 7px;border-radius:5px;font-size:12.5px;font-family:monospace">${code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`
     inlineCodes.push(html)
     return `%%INLINECODE_${inlineCodes.length - 1}%%`
   })
@@ -121,9 +121,9 @@ function renderMd(text: string) {
   // Step 3: Apply markdown formatting on escaped text
   t = t
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^#{1,3} (.+)$/gm, '<div style="font-size:15px;font-weight:800;color:#0f172a;margin:14px 0 6px;padding-bottom:5px;border-bottom:2px solid #ede9fe">$1</div>')
-    .replace(/^[-*] (.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0"><span style="color:#6366f1;font-weight:700;flex-shrink:0">•</span><span>$1</span></div>')
-    .replace(/^\d+\. (.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0"><span style="color:#6366f1;font-weight:700;flex-shrink:0">›</span><span>$1</span></div>')
+    .replace(/^#{1,3} (.+)$/gm, '<div style="font-size:15px;font-weight:800;color:#0f172a;margin:14px 0 6px;padding-bottom:5px;border-bottom:2px solid #e8f0fe">$1</div>')
+    .replace(/^[-*] (.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0"><span style="color:#0a66c2;font-weight:700;flex-shrink:0">•</span><span>$1</span></div>')
+    .replace(/^\d+\. (.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0"><span style="color:#0a66c2;font-weight:700;flex-shrink:0">›</span><span>$1</span></div>')
     .replace(/\n\n/g, '<br/><br/>')
     .replace(/\n/g, '<br/>')
 
@@ -339,7 +339,7 @@ export default function AIPage() {
 
   return (
     <MainLayout noPadding>
-      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 64px)', overflow: 'hidden', background: '#f8fafc' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 64px)', overflow: 'hidden', background: '#f3f6fb' }}>
 
         {/* ── MAIN AREA (sidebar + chat side by side on desktop) ── */}
         <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
@@ -355,11 +355,11 @@ export default function AIPage() {
             style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', background: '#fff', borderRight: '1px solid #e8eaf0' }}
           >
             <button onClick={newChat}
-              style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              style={{ background: 'linear-gradient(135deg,#0a66c2, #004182)', border: 'none', borderRadius: '12px', padding: '11px 14px', cursor: 'pointer', color: '#fff', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               <span>✏️</span> New Chat
             </button>
 
-            <div style={{ background: '#f8fafc', borderRadius: '12px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <div style={{ background: '#f3f6fb', borderRadius: '12px', border: '1px solid #e8eaf0', flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               <div style={{ padding: '10px 12px', borderBottom: '1px solid #f1f5f9', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Chat History</span>
                 <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)}
@@ -375,8 +375,8 @@ export default function AIPage() {
                   </div>
                 ) : sessions.map(s => (
                   <div key={s.id} onClick={() => { loadSession(s.id); setSidebarOpen(false) }}
-                    style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#ede9fe' : 'transparent', border: activeId === s.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', position: 'relative' }}>
-                    <div style={{ fontSize: '12px', fontWeight: '600', color: activeId === s.id ? '#4f46e5' : '#1e293b', lineHeight: 1.4, marginBottom: '3px', paddingRight: '18px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
+                    style={{ borderRadius: '10px', padding: '9px 10px', cursor: 'pointer', marginBottom: '3px', background: activeId === s.id ? '#e8f0fe' : 'transparent', border: activeId === s.id ? '1.5px solid  #93b8e8' : '1.5px solid transparent', position: 'relative' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '600', color: activeId === s.id ? '#0a66c2' : '#1e293b', lineHeight: 1.4, marginBottom: '3px', paddingRight: '18px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as any}>
                       {s.title}
                     </div>
                     <div style={{ fontSize: '10px', color: '#94a3b8' }}>{timeAgo(s.createdAt)}</div>
@@ -405,13 +405,13 @@ export default function AIPage() {
             <div style={{ padding: '10px 14px', borderBottom: '1px solid #e8eaf0', background: '#fff', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
               {/* Hamburger — always visible, opens/closes sidebar */}
               <button onClick={() => setSidebarOpen(o => !o)}
-                style={{ width: '38px', height: '38px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#ede9fe' : '#f8fafc', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', flexShrink: 0, padding: '8px' }}>
-                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
-                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
-                <span style={{ display: 'block', width: '16px', height: '2px', background: '#6366f1', borderRadius: '2px' }} />
+                style={{ width: '38px', height: '38px', borderRadius: '10px', border: '1.5px solid #e2e8f0', background: sidebarOpen ? '#e8f0fe' : '#f3f6fb', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', flexShrink: 0, padding: '8px' }}>
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#0a66c2', borderRadius: '2px' }} />
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#0a66c2', borderRadius: '2px' }} />
+                <span style={{ display: 'block', width: '16px', height: '2px', background: '#0a66c2', borderRadius: '2px' }} />
               </button>
 
-              <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', flexShrink: 0 }}>🤖</div>
+              <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'linear-gradient(135deg,#0a66c2, #004182)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', flexShrink: 0 }}>🤖</div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: '15px', fontWeight: '800', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -424,7 +424,7 @@ export default function AIPage() {
                 {docName && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: '8px', padding: '4px 8px', maxWidth: '120px' }}>
                     <span style={{ fontSize: '11px' }}>📄</span>
-                    <span style={{ fontSize: '10px', color: '#5b21b6', fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
+                    <span style={{ fontSize: '10px', color: '#004182', fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{docName}</span>
                     <button onClick={() => { setDocName(''); setDocText('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a78bfa', fontSize: '13px', padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
                   </div>
                 )}
@@ -458,7 +458,7 @@ export default function AIPage() {
                     {getQuickAsks(profile?.major || '', profile?.module || '').slice(0, 6).map(s => (
                       <button key={s.q} onClick={() => send(s.q)}
                         style={{ background: '#fff', border: '1.5px solid #e8eaf0', borderRadius: '12px', padding: '10px 12px', cursor: 'pointer', textAlign: 'left' }}
-                        onMouseEnter={e => { (e.currentTarget).style.borderColor = '#6366f1'; (e.currentTarget).style.background = '#f5f3ff' }}
+                        onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0a66c2'; (e.currentTarget).style.background = '#f5f3ff' }}
                         onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e8eaf0'; (e.currentTarget).style.background = '#fff' }}>
                         <div style={{ fontSize: '18px', marginBottom: '4px' }}>{s.icon}</div>
                         <div style={{ fontSize: '12px', fontWeight: '700', color: '#0f172a', marginBottom: '2px' }}>{s.label}</div>
@@ -471,7 +471,7 @@ export default function AIPage() {
                     style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fff', border: '2px dashed #c7d2fe', borderRadius: '12px', padding: '12px 16px', cursor: 'pointer', width: '100%', maxWidth: '460px' }}>
                     <span style={{ fontSize: '22px' }}>📎</span>
                     <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#4f46e5' }}>Upload PDF or TXT</div>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#0a66c2' }}>Upload PDF or TXT</div>
                       <div style={{ fontSize: '11px', color: '#94a3b8' }}>Ask questions from your notes</div>
                     </div>
                   </button>
@@ -481,24 +481,24 @@ export default function AIPage() {
               {msgs.map((m, i) => (
                 <div key={i} style={{ display: 'flex', gap: '8px', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-start' }}>
                   {m.role !== 'user' && (
-                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', marginTop: '2px' }}>
+                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: m.role === 'system' ? '#fef3c7' : 'linear-gradient(135deg,#0a66c2, #004182)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', marginTop: '2px' }}>
                       {m.role === 'system' ? '📎' : '🤖'}
                     </div>
                   )}
-                  <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: m.role === 'user' ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', wordBreak: 'break-word' }}
+                  <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: m.role === 'user' ? 'linear-gradient(135deg,#0a66c2, #004182)' : m.role === 'system' ? '#fffbeb' : '#fff', color: m.role === 'user' ? '#fff' : '#1e293b', fontSize: '13.5px', lineHeight: '1.75', border: m.role === 'assistant' ? '1px solid #e8eaf0' : 'none', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', wordBreak: 'break-word' }}
                     dangerouslySetInnerHTML={{ __html: m.role === 'user' ? m.text.replace(/\n/g,'<br/>') : renderMd(m.text) }} />
                   {m.role === 'user' && (
-                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
+                    <div style={{ width: '30px', height: '30px', borderRadius: '9px', flexShrink: 0, background: '#0a66c2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>YOU</div>
                   )}
                 </div>
               ))}
 
               {busy && (
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>🤖</div>
+                  <div style={{ width: '30px', height: '30px', borderRadius: '9px', background: 'linear-gradient(135deg,#0a66c2, #004182)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>🤖</div>
                   <div style={{ background: '#fff', border: '1px solid #e8eaf0', borderRadius: '4px 16px 16px 16px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                     {[0,1,2].map(j => (
-                      <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#6366f1', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
+                      <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#0a66c2', animation: `bounce 1.2s ease-in-out ${j*0.2}s infinite` }} />
                     ))}
                     <span style={{ marginLeft: '6px', fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>Thinking...</span>
                   </div>
@@ -512,7 +512,7 @@ export default function AIPage() {
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <input ref={fileRef} type="file" accept=".txt,.pdf,.md" style={{ display: 'none' }} onChange={upload} />
                 <button onClick={() => fileRef.current?.click()}
-                  style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1.5px solid ${docName ? '#7c3aed' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f8fafc', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1.5px solid ${docName ? ' #004182' : '#e2e8f0'}`, background: docName ? '#f5f3ff' : '#f3f6fb', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   {uploading ? '⌛' : '📎'}
                 </button>
                 <input ref={inputRef}
@@ -522,7 +522,7 @@ export default function AIPage() {
                   placeholder={docName ? `Ask about "${docName}"…` : 'Ask anything about VIT Pune…'}
                   style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '14px', outline: 'none', fontFamily: 'inherit', background: '#fafafa', minWidth: 0 }} />
                 <button onClick={() => send()} disabled={busy || !input.trim()}
-                  style={{ width: '40px', height: '40px', borderRadius: '11px', background: input.trim() && !busy ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  style={{ width: '40px', height: '40px', borderRadius: '11px', background: input.trim() && !busy ? 'linear-gradient(135deg,#0a66c2, #004182)' : '#e2e8f0', border: 'none', cursor: input.trim() && !busy ? 'pointer' : 'default', color: '#fff', fontSize: '17px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   ➤
                 </button>
               </div>

@@ -30,7 +30,7 @@ function getSubjectPills(branch: string, module: string) {
   const isMod2 = module === 'module_2'
 
   const common = [
-    { name: 'ASEP', type: 'lab', color: '#7c3aed' },
+    { name: 'ASEP', type: 'lab', color: ' #004182' },
     { name: 'RAD', type: 'theory', color: '#0891b2' },
     { name: 'GP', type: 'lab', color: '#0891b2' },
     { name: 'SRM', type: 'theory', color: '#0891b2' },
@@ -39,77 +39,77 @@ function getSubjectPills(branch: string, module: string) {
   ]
 
   if (isCS && isMod1) return [
-    { name: 'PSP', type: 'theory', color: '#6366f1' },
-    { name: 'PSP Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'Linear Algebra', type: 'theory', color: '#6366f1' },
-    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#6366f1' },
-    { name: 'COA', type: 'theory', color: '#6366f1' },
-    { name: 'Web Dev', type: 'theory', color: '#6366f1' },
-    { name: 'Web Dev Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'IKS', type: 'theory', color: '#6366f1' },
+    { name: 'PSP', type: 'theory', color: '#0a66c2' },
+    { name: 'PSP Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'Linear Algebra', type: 'theory', color: '#0a66c2' },
+    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#0a66c2' },
+    { name: 'COA', type: 'theory', color: '#0a66c2' },
+    { name: 'Web Dev', type: 'theory', color: '#0a66c2' },
+    { name: 'Web Dev Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'IKS', type: 'theory', color: '#0a66c2' },
     { name: 'Student Activity', type: 'theory', color: '#f59e0b' },
     ...common,
   ]
   if (isCS && isMod2) return [
-    { name: 'AE', type: 'theory', color: '#6366f1' },
-    { name: 'AE Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'Calculus', type: 'theory', color: '#6366f1' },
-    { name: 'Calculus Tutorial', type: 'theory', color: '#6366f1' },
-    { name: 'Python', type: 'theory', color: '#6366f1' },
-    { name: 'Python Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'Data Analysis', type: 'theory', color: '#6366f1' },
-    { name: 'Data Analysis Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'UHV', type: 'theory', color: '#6366f1' },
-    { name: 'Env Studies', type: 'theory', color: '#6366f1' },
+    { name: 'AE', type: 'theory', color: '#0a66c2' },
+    { name: 'AE Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'Calculus', type: 'theory', color: '#0a66c2' },
+    { name: 'Calculus Tutorial', type: 'theory', color: '#0a66c2' },
+    { name: 'Python', type: 'theory', color: '#0a66c2' },
+    { name: 'Python Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'Data Analysis', type: 'theory', color: '#0a66c2' },
+    { name: 'Data Analysis Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'UHV', type: 'theory', color: '#0a66c2' },
+    { name: 'Env Studies', type: 'theory', color: '#0a66c2' },
     { name: 'Student Activity', type: 'theory', color: '#f59e0b' },
     ...common,
   ]
   if (isENTC && isMod1) return [
-    { name: 'PSP', type: 'theory', color: '#6366f1' },
-    { name: 'PSP Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'Linear Algebra', type: 'theory', color: '#6366f1' },
-    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#6366f1' },
-    { name: 'Electronic Circuits', type: 'theory', color: '#6366f1' },
-    { name: 'EC Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'IKS', type: 'theory', color: '#6366f1' },
-    { name: 'Engg Graphics', type: 'lab', color: '#4f46e5' },
+    { name: 'PSP', type: 'theory', color: '#0a66c2' },
+    { name: 'PSP Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'Linear Algebra', type: 'theory', color: '#0a66c2' },
+    { name: 'Linear Algebra Tutorial', type: 'theory', color: '#0a66c2' },
+    { name: 'Electronic Circuits', type: 'theory', color: '#0a66c2' },
+    { name: 'EC Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'IKS', type: 'theory', color: '#0a66c2' },
+    { name: 'Engg Graphics', type: 'lab', color: '#0a66c2' },
     { name: 'Student Activity', type: 'theory', color: '#f59e0b' },
     ...common,
   ]
   if (isENTC && isMod2) return [
-    { name: 'AE', type: 'theory', color: '#6366f1' },
-    { name: 'AE Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'Calculus', type: 'theory', color: '#6366f1' },
-    { name: 'Calculus Tutorial', type: 'theory', color: '#6366f1' },
-    { name: 'DLD', type: 'theory', color: '#6366f1' },
-    { name: 'DLD Lab', type: 'lab', color: '#4f46e5' },
-    { name: 'UHV', type: 'theory', color: '#6366f1' },
-    { name: 'Env Studies', type: 'theory', color: '#6366f1' },
-    { name: 'Engg Graphics', type: 'lab', color: '#4f46e5' },
+    { name: 'AE', type: 'theory', color: '#0a66c2' },
+    { name: 'AE Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'Calculus', type: 'theory', color: '#0a66c2' },
+    { name: 'Calculus Tutorial', type: 'theory', color: '#0a66c2' },
+    { name: 'DLD', type: 'theory', color: '#0a66c2' },
+    { name: 'DLD Lab', type: 'lab', color: '#0a66c2' },
+    { name: 'UHV', type: 'theory', color: '#0a66c2' },
+    { name: 'Env Studies', type: 'theory', color: '#0a66c2' },
+    { name: 'Engg Graphics', type: 'lab', color: '#0a66c2' },
     { name: 'Student Activity', type: 'theory', color: '#f59e0b' },
     ...common,
   ]
   // Default / Mechanical / Civil
   return [
-    { name: 'Theory Class', type: 'theory', color: '#6366f1' },
-    { name: 'Lab', type: 'lab', color: '#4f46e5' },
+    { name: 'Theory Class', type: 'theory', color: '#0a66c2' },
+    { name: 'Lab', type: 'lab', color: '#0a66c2' },
     ...common,
   ]
 }
 
 // ── Subject colour lookup ────────────────────────────────────────────
 const SUBJECT_COLORS: Record<string, string> = {
-  theory: '#6366f1', lab: '#7c3aed', break: '#94a3b8', free: '#10b981'
+  theory: '#0a66c2', lab: ' #004182', break: '#94a3b8', free: '#10b981'
 }
 
 function getSlotColor(type: string) {
-  return SUBJECT_COLORS[type] || '#6366f1'
+  return SUBJECT_COLORS[type] || '#0a66c2'
 }
 
 function getSlotBg(type: string) {
   if (type === 'break') return '#f1f5f9'
   if (type === 'free')  return '#d1fae5'
-  if (type === 'lab')   return '#ede9fe'
+  if (type === 'lab')   return '#e8f0fe'
   return '#eef2ff'
 }
 
@@ -275,7 +275,7 @@ export default function TimetablePage() {
           <div style={{ display:'flex', gap:'8px' }}>
             {view === 'build' && (
               <button onClick={() => { setView('preview'); setSaved(true); setTimeout(() => setSaved(false), 2500) }}
-                style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', color:'#fff', border:'none', borderRadius:'10px', padding:'9px 18px', fontWeight:'700', cursor:'pointer', fontSize:'13px' }}>
+                style={{ background:'#0a66c2', color:'#fff', border:'none', borderRadius:'10px', padding:'9px 18px', fontWeight:'700', cursor:'pointer', fontSize:'13px' }}>
                 💾 Save
               </button>
             )}
@@ -308,7 +308,7 @@ export default function TimetablePage() {
             { val:'sun_only', label:'Only Sun off' },
           ].map(o => (
             <button key={o.val} onClick={() => saveOffDays(o.val)}
-              style={{ background: offDays===o.val ? '#6366f1' : '#f1f5f9', color: offDays===o.val ? '#fff' : '#374151', border:'none', borderRadius:'8px', padding:'7px 14px', fontWeight:'700', cursor:'pointer', fontSize:'12.5px' }}>
+              style={{ background: offDays===o.val ? '#0a66c2' : '#f1f5f9', color: offDays===o.val ? '#fff' : '#374151', border:'none', borderRadius:'8px', padding:'7px 14px', fontWeight:'700', cursor:'pointer', fontSize:'12.5px' }}>
               {o.label}
             </button>
           ))}
@@ -333,7 +333,7 @@ export default function TimetablePage() {
           <div style={{ overflowX:'auto' }}>
             <table style={{ width:'100%', borderCollapse:'collapse', minWidth:'600px' }}>
               <thead>
-                <tr style={{ background:'linear-gradient(135deg,#4f46e5,#7c3aed)' }}>
+                <tr style={{ background:'linear-gradient(135deg,#0a66c2, #004182)' }}>
                   <th style={{ padding:'12px 14px', textAlign:'left', fontSize:'12px', fontWeight:'800', color:'rgba(255,255,255,0.8)', width:'72px' }}>Time</th>
                   {activeDays.map(day => (
                     <th key={day} style={{ padding:'12px 8px', textAlign:'center', fontSize:'12.5px', fontWeight:'800', color:'#fff' }}>{DAY_LABEL[day]}</th>
@@ -387,11 +387,11 @@ export default function TimetablePage() {
             <div style={{ fontSize:'12px', fontWeight:'800', color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'12px' }}>⚡ Quick Copy — Paste one day's schedule to others</div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:'8px' }}>
               {activeDays.map(fromDay => (
-                <div key={fromDay} style={{ display:'flex', alignItems:'center', gap:'6px', background:'#f8fafc', borderRadius:'10px', padding:'8px 12px' }}>
+                <div key={fromDay} style={{ display:'flex', alignItems:'center', gap:'6px', background:'#f3f6fb', borderRadius:'10px', padding:'8px 12px' }}>
                   <span style={{ fontSize:'12px', fontWeight:'700', color:'#374151' }}>Copy {DAY_LABEL[fromDay]} →</span>
                   {activeDays.filter(d => d !== fromDay).map(toDay => (
                     <button key={toDay} onClick={() => copyDayToDay(fromDay, [toDay])}
-                      style={{ background:'#ede9fe', color:'#6366f1', border:'none', borderRadius:'6px', padding:'4px 9px', cursor:'pointer', fontSize:'11.5px', fontWeight:'700' }}>
+                      style={{ background:'#e8f0fe', color:'#0a66c2', border:'none', borderRadius:'6px', padding:'4px 9px', cursor:'pointer', fontSize:'11.5px', fontWeight:'700' }}>
                       {DAY_LABEL[toDay]}
                     </button>
                   ))}
@@ -457,7 +457,7 @@ function TodaySummary({ slots, offDays }: any) {
   )
 
   return (
-    <div style={{ background:'linear-gradient(135deg,#4f46e5,#7c3aed)', borderRadius:'16px', padding:'20px 24px', marginTop:'16px', color:'#fff' }}>
+    <div style={{ background:'linear-gradient(135deg,#0a66c2, #004182)', borderRadius:'16px', padding:'20px 24px', marginTop:'16px', color:'#fff' }}>
       <div style={{ fontSize:'14px', fontWeight:'800', marginBottom:'12px', opacity:0.9 }}>
         📌 Today — {todayName.charAt(0).toUpperCase() + todayName.slice(1)} {todayDate}
       </div>

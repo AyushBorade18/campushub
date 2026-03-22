@@ -23,7 +23,7 @@ function timeAgo(d: string) {
 }
 
 const avatarColor = (name: string) => {
-  const colors = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#06b6d4']
+  const colors = ['#0a66c2','#10b981','#f59e0b','#ef4444','#004182','#3b82f6','#06b6d4']
   return colors[(name?.charCodeAt(0) || 65) % colors.length]
 }
 const initials = (name: string) => (name || 'ST').split(' ').map((n:string) => n[0]).join('').slice(0,2).toUpperCase()
@@ -32,7 +32,7 @@ const TAG: any = {
   hostel:     ['#dbeafe','#1d4ed8'],
   mess:       ['#fef3c7','#92400e'],
   laundry:    ['#e0f2fe','#0369a1'],
-  academic:   ['#ede9fe','#5b21b6'],
+  academic:   ['#e8f0fe','#004182'],
   lost_found: ['#fee2e2','#b91c1c'],
   events:     ['#dcfce7','#15803d'],
   general:    ['#f1f5f9','#475569'],
@@ -142,7 +142,7 @@ export default function CommunityPage() {
           <p style={{ margin:'3px 0 0', color:'#64748b', fontSize:'13px' }}>VIT Pune · Share hostel, mess, events & campus updates</p>
         </div>
         <button onClick={() => { setError(''); setShowModal(true) }}
-          style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', borderRadius:'12px', padding:'11px 20px', color:'#fff', fontWeight:'700', fontSize:'14px', cursor:'pointer' }}>
+          style={{ background:'#0a66c2', border:'none', borderRadius:'12px', padding:'11px 20px', color:'#fff', fontWeight:'700', fontSize:'14px', cursor:'pointer' }}>
           ✏️ New Post
         </button>
       </div>
@@ -151,7 +151,7 @@ export default function CommunityPage() {
       <div className='community-filters' style={{ display:'flex', gap:'8px', marginBottom:'18px', overflowX:'auto', paddingBottom:'4px', flexWrap:'wrap' }}>
         {CATEGORIES.map(c => (
           <button key={c.id} onClick={() => setFilter(c.id)}
-            style={{ background:filter===c.id?'#6366f1':'#fff', color:filter===c.id?'#fff':'#64748b', border:`1.5px solid ${filter===c.id?'#6366f1':'#e2e8f0'}`, borderRadius:'20px', padding:'7px 16px', cursor:'pointer', fontSize:'13px', fontWeight:'600', whiteSpace:'nowrap' }}>
+            style={{ background:filter===c.id?'#0a66c2':'#fff', color:filter===c.id?'#fff':'#64748b', border:`1.5px solid ${filter===c.id?'#0a66c2':'#e2e8f0'}`, borderRadius:'20px', padding:'7px 16px', cursor:'pointer', fontSize:'13px', fontWeight:'600', whiteSpace:'nowrap' }}>
             {c.icon} {c.label}
           </button>
         ))}
@@ -166,7 +166,7 @@ export default function CommunityPage() {
           <div style={{ fontSize:'16px', fontWeight:'700', color:'#0f172a', marginBottom:'6px' }}>No posts yet</div>
           <div style={{ color:'#94a3b8', fontSize:'13px', marginBottom:'20px' }}>Be the first to post!</div>
           <button onClick={() => setShowModal(true)}
-            style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', borderRadius:'10px', padding:'10px 22px', color:'#fff', fontWeight:'700', cursor:'pointer' }}>
+            style={{ background:'#0a66c2', border:'none', borderRadius:'10px', padding:'10px 22px', color:'#fff', fontWeight:'700', cursor:'pointer' }}>
             ✏️ Create Post
           </button>
         </div>
@@ -196,7 +196,7 @@ export default function CommunityPage() {
                     </span>
                     {currentUserId && currentUserId !== post.user_id && (
                       <button onClick={() => setMsgPost(post)}
-                        style={{ background:'#ede9fe', border:'none', borderRadius:'8px', padding:'4px 12px', cursor:'pointer', color:'#6366f1', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap' }}>
+                        style={{ background:'#e8f0fe', border:'none', borderRadius:'8px', padding:'4px 12px', cursor:'pointer', color:'#0a66c2', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap' }}>
                         💬 Message
                       </button>
                     )}
@@ -215,7 +215,7 @@ export default function CommunityPage() {
                   </div>
                 )}
                 {post.address && (
-                  <div style={{ marginTop:'8px', display:'flex', alignItems:'center', gap:'6px', fontSize:'12.5px', color:'#6366f1', fontWeight:'600', background:'#f5f3ff', borderRadius:'8px', padding:'7px 12px', width:'fit-content' }}>
+                  <div style={{ marginTop:'8px', display:'flex', alignItems:'center', gap:'6px', fontSize:'12.5px', color:'#0a66c2', fontWeight:'600', background:'#f5f3ff', borderRadius:'8px', padding:'7px 12px', width:'fit-content' }}>
                     <span>📍</span> {post.address}
                   </div>
                 )}
@@ -251,7 +251,7 @@ export default function CommunityPage() {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'6px', marginBottom:'14px' }}>
               {CATEGORIES.filter(c => c.id !== 'all').map(c => (
                 <button key={c.id} onClick={() => setCategory(c.id)}
-                  style={{ padding:'8px 4px', borderRadius:'9px', border:`1.5px solid ${category===c.id?'#6366f1':'#e2e8f0'}`, background:category===c.id?'#ede9fe':'#fafafa', cursor:'pointer', fontSize:'11px', fontWeight:'600', color:category===c.id?'#4f46e5':'#64748b' }}>
+                  style={{ padding:'8px 4px', borderRadius:'9px', border:`1.5px solid ${category===c.id?'#0a66c2':'#e2e8f0'}`, background:category===c.id?'#e8f0fe':'#fafafa', cursor:'pointer', fontSize:'11px', fontWeight:'600', color:category===c.id?'#0a66c2':'#64748b' }}>
                   {c.icon}<br/>{c.label}
                 </button>
               ))}
@@ -297,7 +297,7 @@ export default function CommunityPage() {
               }} />
             {!mediaPreview ? (
               <button onClick={() => mediaRef.current?.click()}
-                style={{ width:'100%', padding:'14px', border:'2px dashed #c7d2fe', borderRadius:'12px', background:'#fafafa', cursor:'pointer', fontSize:'13px', color:'#6366f1', fontWeight:'600', marginBottom:'16px' }}>
+                style={{ width:'100%', padding:'14px', border:'2px dashed #c7d2fe', borderRadius:'12px', background:'#fafafa', cursor:'pointer', fontSize:'13px', color:'#0a66c2', fontWeight:'600', marginBottom:'16px' }}>
                 📎 Attach Photo or Video
               </button>
             ) : (
@@ -314,7 +314,7 @@ export default function CommunityPage() {
                 Cancel
               </button>
               <button onClick={submitPost} disabled={posting}
-                style={{ flex:2, background:!posting?'linear-gradient(135deg,#6366f1,#8b5cf6)':'#e2e8f0', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'700', cursor:posting?'default':'pointer', color:'#fff', fontSize:'14px' }}>
+                style={{ flex:2, background:!posting?'#0a66c2':'#e2e8f0', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'700', cursor:posting?'default':'pointer', color:'#fff', fontSize:'14px' }}>
                 {posting ? '⌛ Posting...' : '📢 Post Now'}
               </button>
             </div>
@@ -372,11 +372,11 @@ function CommunityMsgModal({ post, onClose }: any) {
             <div style={{ fontSize:'48px', marginBottom:'8px' }}>✅</div>
             <div style={{ fontWeight:'700', color:'#10b981', fontSize:'16px' }}>Message Sent!</div>
             <div style={{ color:'#64748b', fontSize:'13px', marginTop:'4px', marginBottom:'16px' }}>{name} will be notified</div>
-            <button onClick={onClose} style={{ background:'#6366f1', color:'#fff', border:'none', borderRadius:'10px', padding:'10px 24px', fontWeight:'700', cursor:'pointer' }}>Done</button>
+            <button onClick={onClose} style={{ background:'#0a66c2', color:'#fff', border:'none', borderRadius:'10px', padding:'10px 24px', fontWeight:'700', cursor:'pointer' }}>Done</button>
           </div>
         ) : (
           <>
-            <div style={{ background:'#f8fafc', borderRadius:'12px', padding:'12px 14px', marginBottom:'14px' }}>
+            <div style={{ background:'#f3f6fb', borderRadius:'12px', padding:'12px 14px', marginBottom:'14px' }}>
               <div style={{ fontSize:'11px', color:'#94a3b8', marginBottom:'3px' }}>About post</div>
               <div style={{ fontWeight:'700', color:'#0f172a', fontSize:'14px' }}>{post.title}</div>
               {post.content && <div style={{ color:'#64748b', fontSize:'12px', marginTop:'3px' }}>{post.content.slice(0, 80)}{post.content.length > 80 ? '…' : ''}</div>}
@@ -385,7 +385,7 @@ function CommunityMsgModal({ post, onClose }: any) {
               style={{ width:'100%', padding:'11px 14px', border:'1.5px solid #e2e8f0', borderRadius:'12px', fontSize:'13px', resize:'vertical', outline:'none', boxSizing:'border-box', fontFamily:'inherit', marginBottom:'12px' }} />
             <div style={{ display:'flex', gap:'10px' }}>
               <button onClick={onClose} style={{ flex:1, background:'#f1f5f9', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'600', cursor:'pointer', color:'#64748b' }}>Cancel</button>
-              <button onClick={send} disabled={sending} style={{ flex:2, background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'700', cursor:'pointer', color:'#fff', opacity:sending?0.7:1 }}>
+              <button onClick={send} disabled={sending} style={{ flex:2, background:'#0a66c2', border:'none', borderRadius:'10px', padding:'12px', fontWeight:'700', cursor:'pointer', color:'#fff', opacity:sending?0.7:1 }}>
                 {sending ? 'Sending…' : 'Send Message'}
               </button>
             </div>

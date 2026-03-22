@@ -84,7 +84,7 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#0f172a,#1e1b4b)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ minHeight: '100vh', background: '#001f3f', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
         <div style={{ background: '#fff', borderRadius: '20px', padding: '40px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
           <div style={{ fontSize: '56px', marginBottom: '12px' }}>🎉</div>
           <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#0f172a', margin: '0 0 8px' }}>Welcome to CampusHub!</h2>
@@ -94,7 +94,7 @@ export default function RegisterPage() {
           <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '24px' }}>
             (Check spam/junk folder too. Or ask your teacher to disable email confirmation in Supabase for testing.)
           </p>
-          <Link href="/auth/login" style={{ display: 'inline-block', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', textDecoration: 'none', borderRadius: '10px', padding: '12px 28px', fontWeight: '700' }}>
+          <Link href="/auth/login" style={{ display: 'inline-block', background: '#0a66c2', color: '#fff', textDecoration: 'none', borderRadius: '10px', padding: '12px 28px', fontWeight: '700' }}>
             Go to Login →
           </Link>
         </div>
@@ -103,12 +103,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#0f172a,#1e1b4b)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+    <div style={{ minHeight: '100vh', background: '#001f3f', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '440px' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ width: '56px', height: '56px', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 10px' }}>🎓</div>
+          <div style={{ width: '56px', height: '56px', background: '#0a66c2', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 10px' }}>🎓</div>
           <h1 style={{ color: '#fff', fontSize: '24px', fontWeight: '800', margin: 0 }}>Join CampusHub</h1>
-          <p style={{ color: '#6366f1', fontSize: '13px', margin: '4px 0 0', fontWeight: '600' }}>VIT Pune — Students Only</p>
+          <p style={{ color: '#0a66c2', fontSize: '13px', margin: '4px 0 0', fontWeight: '600' }}>VIT Pune — Students Only</p>
         </div>
 
         <div style={{ background: '#fff', borderRadius: '20px', padding: '28px', boxShadow: '0 25px 50px rgba(0,0,0,0.3)' }}>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
 
           <div style={{ marginBottom: '12px' }}>
             <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', display: 'block', marginBottom: '5px' }}>
-              VIT Pune Email * <span style={{ color: '#6366f1' }}>(.edu or .edu.in)</span>
+              VIT Pune Email * <span style={{ color: '#0a66c2' }}>(.edu or .edu.in)</span>
             </label>
             <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required placeholder="yourname@vit.edu.in"
               style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} />
@@ -153,17 +153,17 @@ export default function RegisterPage() {
           {needsModule && (
             <div style={{ marginBottom: '12px' }}>
               <label style={{ fontSize: '12px', fontWeight: '600', color: '#374151', display: 'block', marginBottom: '5px' }}>
-                Module * <span style={{ color: '#6366f1' }}>(your subject group)</span>
+                Module * <span style={{ color: '#0a66c2' }}>(your subject group)</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                 {(['module_1','module_2'] as const).map(mod => (
                   <div key={mod} onClick={() => setForm(f => ({ ...f, module: mod }))}
-                    style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', border: `2px solid ${form.module === mod ? '#6366f1' : '#e2e8f0'}`, borderRadius: '10px', padding: '10px 12px', cursor: 'pointer', background: form.module === mod ? '#f5f3ff' : '#fff', transition: 'all 0.15s' }}>
-                    <div style={{ width: '16px', height: '16px', borderRadius: '50%', border: `2px solid ${form.module === mod ? '#6366f1' : '#cbd5e1'}`, background: form.module === mod ? '#6366f1' : '#fff', flexShrink: 0, marginTop: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', border: `2px solid ${form.module === mod ? '#0a66c2' : '#e2e8f0'}`, borderRadius: '10px', padding: '10px 12px', cursor: 'pointer', background: form.module === mod ? '#f5f3ff' : '#fff', transition: 'all 0.15s' }}>
+                    <div style={{ width: '16px', height: '16px', borderRadius: '50%', border: `2px solid ${form.module === mod ? '#0a66c2' : '#cbd5e1'}`, background: form.module === mod ? '#0a66c2' : '#fff', flexShrink: 0, marginTop: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {form.module === mod && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />}
                     </div>
                     <div>
-                      <div style={{ fontSize: '12px', fontWeight: '700', color: form.module === mod ? '#4f46e5' : '#374151' }}>
+                      <div style={{ fontSize: '12px', fontWeight: '700', color: form.module === mod ? '#0a66c2' : '#374151' }}>
                         {mod === 'module_1' ? 'Module 1' : 'Module 2'}
                       </div>
                       <div style={{ fontSize: '11px', color: '#64748b', marginTop: '1px' }}>
@@ -184,17 +184,17 @@ export default function RegisterPage() {
 
           <div style={{ background: '#f0f4ff', borderRadius: '10px', padding: '10px 12px', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>🏫</span>
-            <span style={{ fontSize: '12px', color: '#6366f1', fontWeight: '600' }}>VIT Pune — Vishwakarma Institute of Technology</span>
+            <span style={{ fontSize: '12px', color: '#0a66c2', fontWeight: '600' }}>VIT Pune — Vishwakarma Institute of Technology</span>
           </div>
 
           <button onClick={handleRegister} disabled={loading}
-            style={{ width: '100%', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', border: 'none', borderRadius: '10px', padding: '13px', fontWeight: '700', fontSize: '15px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+            style={{ width: '100%', background: '#0a66c2', color: '#fff', border: 'none', borderRadius: '10px', padding: '13px', fontWeight: '700', fontSize: '15px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
             {loading ? 'Creating Account...' : '🚀 Create My Account'}
           </button>
 
           <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748b', marginTop: '18px' }}>
             Already have an account?{' '}
-            <Link href="/auth/login" style={{ color: '#6366f1', fontWeight: '700', textDecoration: 'none' }}>Sign in →</Link>
+            <Link href="/auth/login" style={{ color: '#0a66c2', fontWeight: '700', textDecoration: 'none' }}>Sign in →</Link>
           </p>
         </div>
       </div>
