@@ -509,7 +509,7 @@ Supabase uses PostgreSQL triggers and WebSockets. When a message is inserted in 
 Mess menu crowdsourcing, mobile app (React Native), AI attendance predictor, end-sem rank predictor based on mid-sem marks.
 
 **"What was the hardest problem you solved?"**
-Token limit management. Groq's free tier allows 6000 tokens/minute. The full system prompt is ~4000 tokens. When a PDF is uploaded, I detect that and swap to a 60-token slim prompt, reduce chat history to 2 messages, and cap document content at 2000 characters — keeping total under 6000 while still giving useful answers.
+Token limit management. Groq's free tier allows 30000 tokens/minute. The full system prompt is ~4000 tokens. When a PDF is uploaded, I detect that and swap to a 60-token slim prompt, reduce chat history to 2 messages, and cap document content at 2000 characters — keeping total under 6000 while still giving useful answers.
 
 ---
 
