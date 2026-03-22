@@ -171,8 +171,8 @@ export default function MessagesPage() {
   const showChat = !isMobile || mobileShowChat
 
   return (
-    <MainLayout>
-      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden', maxHeight: 'calc(100vh - 64px)' }}>
+    <MainLayout noPadding>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 64px)', overflow: 'hidden', padding: '16px', boxSizing: 'border-box' }}>
         {(!isMobile || !mobileShowChat) && (
           <div style={{ marginBottom: '12px', flexShrink: 0 }}>
             <h2 style={{ margin: 0, fontSize: isMobile ? '20px' : '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
