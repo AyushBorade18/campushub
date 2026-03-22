@@ -4,8 +4,8 @@
   "description": "All-in-one campus app for VIT Pune students",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#6366f1",
+  "background_color": "#004182",
+  "theme_color": "#0a66c2",
   "orientation": "portrait",
   "icons": [
     {
