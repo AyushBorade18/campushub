@@ -207,9 +207,9 @@ MODULE SUBJECTS:
 
 COMMON SUBJECTS (ALL branches, both modules):
 - ASEP (Advanced Soft Skills & English Proficiency): Mid-Sem Review (out of 50 → 30) + End-Sem Review (out of 100 → 70) = 100 total
-- RAD (Research & Academic Development): Internal assessment based
-- GP (General Proficiency): Attendance + participation based
-- SRM (Social Responsibility Module): Activity based
+- RAD (Reading and Development): Internal assessment — English, logical and quantitative aptitude
+- GP (General Proficiency): Based on attendance, participation and co-curricular activities
+- SRM (Scientific Research Methods): Internal assessment based — covers research methodology, IPR, plagiarism, patents
 
 MANDATORY FORMAT WHEN SHOWING MARKS — follow this EXACTLY:
 For EVERY subject show: ComponentName (out of X → Y marks counted) 
