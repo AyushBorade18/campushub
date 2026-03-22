@@ -165,25 +165,25 @@ export default function MessagesPage() {
   }
 
   const initials = (name: string) => name ? name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() : 'ST'
-  const avatarColor = (name: string) => { const c = ['#0a66c2','#10b981','#f59e0b','#ef4444','#004182']; return c[(name?.charCodeAt(0) || 0) % c.length] }
+  const avatarColor = (name: string) => { const c = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6']; return c[(name?.charCodeAt(0) || 0) % c.length] }
   const visibleMessages = convMessages.filter(m => !unsentMsgIds.has(m.id))
   const showList = !isMobile || !mobileShowChat
   const showChat = !isMobile || mobileShowChat
 
   return (
     <MainLayout>
-      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 112px)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden', maxHeight: 'calc(100vh - 64px)' }}>
         {(!isMobile || !mobileShowChat) && (
           <div style={{ marginBottom: '12px', flexShrink: 0 }}>
             <h2 style={{ margin: 0, fontSize: isMobile ? '20px' : '22px', fontWeight: '800', color: '#0f172a' }}>Messages</h2>
             <p style={{ margin: '2px 0 0', color: '#64748b', fontSize: '12px' }}>Direct messages from marketplace & community</p>
           </div>
         )}
-        <div style={{ display: 'flex', flex: 1, minHeight: 0, borderRadius: '16px', border: '1px solid #f1f5f9', overflow: 'hidden', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'flex', flex: 1, minHeight: 0, borderRadius: '16px', border: '1px solid #E5E7EB', overflow: 'hidden', background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
 
           {/* Conversation List */}
           {showList && (
-            <div style={{ width: isMobile ? '100%' : '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: isMobile ? 'none' : '1px solid #f1f5f9', background: '#f3f6fb', overflow: 'hidden' }}>
+            <div style={{ width: isMobile ? '100%' : '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: isMobile ? 'none' : '1px solid #f1f5f9', background: '#f8fafc', overflow: 'hidden' }}>
               <div style={{ padding: '14px 16px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
                 <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>💬 Conversations ({conversations.length})</div>
               </div>
@@ -205,7 +205,7 @@ export default function MessagesPage() {
                         <span style={{ fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>{conv.other_name}</span>
                         <span style={{ fontSize: '11px', color: '#94a3b8' }}>{formatTime(conv.last_time)}</span>
                       </div>
-                      {conv.listing && <div style={{ fontSize: '11px', color: '#0a66c2', fontWeight: '600', marginBottom: '2px' }}>Re: {conv.listing.title}</div>}
+                      {conv.listing && <div style={{ fontSize: '11px', color: '#6366f1', fontWeight: '600', marginBottom: '2px' }}>Re: {conv.listing.title}</div>}
                       <div style={{ fontSize: '12px', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {conv.last_msg?.includes('__FILE__') ? '📎 Attachment' : conv.last_msg}
                       </div>
@@ -230,12 +230,12 @@ export default function MessagesPage() {
                 <>
                   <div style={{ padding: '12px 16px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, background: '#fff' }}>
                     {isMobile && (
-                      <button onClick={goBack} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '22px', color: '#0a66c2', padding: '0 6px 0 0' }}>←</button>
+                      <button onClick={goBack} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '22px', color: '#6366f1', padding: '0 6px 0 0' }}>←</button>
                     )}
                     <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: avatarColor(activeConv.other_name), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>{initials(activeConv.other_name)}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: '700', color: '#0f172a', fontSize: '14px' }}>{activeConv.other_name}</div>
-                      {activeConv.listing && <div style={{ fontSize: '11px', color: '#0a66c2', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Re: {activeConv.listing.title}</div>}
+                      {activeConv.listing && <div style={{ fontSize: '11px', color: '#6366f1', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Re: {activeConv.listing.title}</div>}
                     </div>
                     <button onClick={() => setShowDeleteConfirm(true)} style={{ background: '#fff0f0', border: '1px solid #fecaca', borderRadius: '8px', padding: isMobile ? '6px 8px' : '6px 12px', cursor: 'pointer', fontSize: isMobile ? '16px' : '12px', fontWeight: '600', color: '#ef4444', flexShrink: 0 }}>
                       {isMobile ? '🗑' : '🗑 Delete'}
@@ -263,7 +263,7 @@ export default function MessagesPage() {
                         <div key={msg.id} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '6px' }}>
                           {!isMe && <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: avatarColor(activeConv.other_name), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>{initials(activeConv.other_name)}</div>}
                           <div style={{ maxWidth: isMobile ? '78%' : '65%', display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start' }}>
-                            <div style={{ padding: msg.content.includes('__FILE__') ? '6px' : '9px 13px', borderRadius: isMe ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: isMe ? '#0a66c2' : '#fff', color: isMe ? '#fff' : '#374151', fontSize: '13px', boxShadow: '0 2px 4px rgba(0,0,0,0.06)', border: !isMe ? '1px solid #f1f5f9' : 'none' }}>
+                            <div style={{ padding: msg.content.includes('__FILE__') ? '6px' : '9px 13px', borderRadius: isMe ? '16px 4px 16px 16px' : '4px 16px 16px 16px', background: isMe ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#fff', color: isMe ? '#fff' : '#374151', fontSize: '13px', boxShadow: '0 2px 4px rgba(0,0,0,0.06)', border: !isMe ? '1px solid #f1f5f9' : 'none' }}>
                               {msg.content.includes('__FILE__') ? (() => {
                                 const url = msg.content.split('__FILE__')[1]?.split('__NAME__')[0]
                                 const name = msg.content.split('__NAME__')[1]?.split('__TYPE__')[0]
@@ -294,7 +294,7 @@ export default function MessagesPage() {
                                 <button onClick={(e) => { e.stopPropagation(); setMsgMenuId(msgMenuId === msg.id ? null : msg.id) }}
                                   style={{ background: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#64748b', padding: '2px 7px', fontWeight: '700' }}>⋯</button>
                                 {msgMenuId === msg.id && (
-                                  <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #f1f5f9', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
+                                  <div style={{ position: 'absolute', bottom: '20px', right: 0, background: '#fff', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #E5E7EB', zIndex: 100, minWidth: '160px', overflow: 'hidden' }}>
                                     {isMe && (
                                       <>
                                         <button onClick={(e) => { e.stopPropagation(); deleteForEveryone(msg.id); setMsgMenuId(null) }}
@@ -313,7 +313,7 @@ export default function MessagesPage() {
                               </div>
                             </div>
                           </div>
-                          {isMe && <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#0a66c2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>ME</div>}
+                          {isMe && <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>ME</div>}
                         </div>
                       )
                     })}
@@ -343,7 +343,7 @@ export default function MessagesPage() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()} placeholder="Type a message..."
                         style={{ flex: 1, padding: '10px 14px', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '14px', outline: 'none', minWidth: 0 }} />
-                      <button onClick={sendMessage} disabled={!input.trim()} style={{ background: '#0a66c2', border: 'none', borderRadius: '12px', padding: '10px 16px', cursor: 'pointer', color: '#fff', fontSize: '18px', opacity: !input.trim() ? 0.5 : 1, flexShrink: 0 }}>➤</button>
+                      <button onClick={sendMessage} disabled={!input.trim()} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 16px', cursor: 'pointer', color: '#fff', fontSize: '18px', opacity: !input.trim() ? 0.5 : 1, flexShrink: 0 }}>➤</button>
                     </div>
                   </div>
                 </>
