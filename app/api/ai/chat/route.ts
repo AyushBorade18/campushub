@@ -193,6 +193,24 @@ NOTE: If RAG conflicts with marks/module/fees data below, the data below wins.
     prompt += `
 === OFFICIAL FY B.TECH MARKS STRUCTURE (A-24 Pattern, AY 2025-26) ===
 IMPORTANT: Show FULL conversion detail. NEVER say just "25 marks" — always say "30 marks paper converted to 25".
+NEVER invent question-type breakdowns (MCQ counts, long/short question splits) UNLESS the exact pattern below is provided.
+
+=== OFFICIAL PAPER PATTERN (for theory subjects with Mid-Sem) ===
+MID-SEM PAPER PATTERN (30 marks → converted to 25):
+  - 3 main questions, 15 marks each
+  - Each question has 4 sub-questions of 5 marks each
+  - 3 out of 4 sub-questions are compulsory (attempt any 3)
+  - Questions are from chapters 1, 2, and 3 respectively
+
+END-SEM PAPER PATTERN (60 marks → converted to 50):
+  - 4 main questions total
+  - Q1: 3 compulsory sub-questions (5 marks each = 15 marks)
+  - Q2, Q3, Q4: from chapters 4, 5, 6 respectively
+  - Each of Q2/Q3/Q4 has 4 sub-questions of 5 marks (attempt any 3 = 15 marks each)
+  - Total = Q1(15) + Q2(15) + Q3(15) + Q4(15) = 60 marks
+
+This pattern applies to: Linear Algebra, Calculus, COA, Electronic Circuits, PSP, Python, Applied Electromechanics
+Lab/project subjects (Web Dev, Data Analysis, DLD) do NOT have this written paper pattern.
 
 BSE MATHS — Linear Algebra (HS1084) / Calculus (HS1085) — 4 credits:
   Mid-Sem Written Exam: 30 marks paper → 25 marks counted
@@ -232,14 +250,16 @@ BSE/VSEC — Web Development / Data Analysis / DLD / Engineering Graphics — 2 
   TOTAL = 100 marks
 
 IKS — Indian Knowledge System (HS1073) — 2 credits:
-  End-Sem Online MCQ Examination = 60 marks → 100 marks counted (no Mid-Sem)
+  End-Sem Online MCQ Examination: 60 marks paper → 100 marks counted (no Mid-Sem)
+  TOTAL = 100 marks
 
 UHV — Universal Human Values (HS1077) — 2 credits:
-  End-Sem Online MCQ Examination = 60 marks → 100 marks counted (no Mid-Sem)
+  End-Sem Online MCQ Examination: 60 marks paper → 100 marks counted (no Mid-Sem)
+  TOTAL = 100 marks
 
 Environmental Studies (HS1082) — 1 credit:
-  End-Sem MCQ: 60 marks → 50 marks counted
-  PPT Presentation (In-Semester): 50 marks
+  End-Sem Online MCQ: 60 marks paper → 50 marks counted
+  PPT Presentation (In-Semester): 100 marks → 50 marks counted
   TOTAL = 100 marks
 
 Student Activity (HS1083) — 1 credit:
@@ -252,7 +272,13 @@ GP — General Proficiency 1 & 2 (HS1074/HS1080) — 1 credit each:
   Activity Presentation and Internal Review (End-Sem) = 100 marks
 
 RAD — Reasoning and Aptitude Development 1 & 2 (HS1072/HS1079) — 1 credit each:
-  Activity Presentation and Internal Review (End-Sem) = 100 marks
+  Assessed ONLY by AAMCAT Exam (300 marks total → converted to 100):
+    English Ability: 100 marks → 30 marks counted
+    Logical Ability: 100 marks → 30 marks counted
+    Quantitative Ability: 100 marks → 30 marks counted
+    Automata Fix: 100 marks → 5 marks counted
+    Automata Pro: 100 marks → 5 marks counted
+  TOTAL RAD = 100 marks (via AAMCAT only — NOT internal review or attendance)
 
 ASEP — Applied Science & Engineering Project 1 & 2 (XX1011/XX1014) — 2 credits each:
   Mid-Sem Review: 50 marks → 30 marks counted
