@@ -148,7 +148,7 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
   const wantsFees     = /fee|fees|tuition|cost|pay|amount|lakh|rupee|cap|acap|management|nri|quota|caste|sc|st|obc|sebc|ebc|ews|tfws|nt|sbc|ciwgc|pio|oci/i.test(message)
   const wantsHoliday  = /holiday|leave|off|vacation|bridge|break|long weekend/i.test(message)
   const wantsMarks    = /mark|marks|marking|scheme|assessment|exam pattern|viva|mid.?sem|end.?sem|project|assignment|credit|sgpa|cgpa|grade|scoring|weightage|distribution/i.test(message)
-  const wantsModule   = /module|subject|syllabus|coa|psp|web dev|calculus|python|data analysis|linear algebra|electro|dld|iks|uhv|asep|rad|gp|srm|environmental|student activity/i.test(message)
+  const wantsModule   = /module|subject|syllabus|topic|topics|important|unit|chapter|coa|psp|web.?dev|web development|calculus|python|data analysis|linear algebra|applied electro|dld|iks|uhv|asep|rad|gp|srm|environmental|student activity|bootstrap|jquery|javascript|html|css/i.test(message)
   const wantsClubs    = /club|society|ieee|gdsc|microsoft|robotics|coding|technical|co.?curr|mlsc|trf|griffin|veloce|endurance|gedit|innovsphere|catalyst|reality spectra/i.test(message)
   const wantsExam     = /exam rule|exam instruction|online exam|offline exam|portal|vierp|camera|tab switch|mcq exam|proctored/i.test(message)
   const wantsTimetable = /timetable|schedule|today|tomorrow|yesterday|free|slot|class|lecture|when do i|what do i have|monday|tuesday|wednesday|thursday|friday|saturday/i.test(message)
@@ -167,6 +167,14 @@ function buildSystemPrompt(profile: any, ragContext: string, marketplaceData: st
 USER: ${userName} | Branch: ${userBranch} | Year: ${userYear} | ${userModule ? `Module: ${userModule}` : 'Module: not set'}
 Off days: ${offDayNames.join(' & ')} | Date: ${today.toLocaleDateString('en-GB', {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'})}
 Sem II in progress | Start: 09/02/2026 | Mid-Sem: 15–18 Apr 2026 | Lab/Project Exams: 18–30 May 2026 | Remedial: 05–06 Jun 2026 | End-Sem: 08–24 Jun 2026 | Min attendance: 75%
+
+=== CRITICAL ANTI-HALLUCINATION RULES ===
+1. Web Development syllabus at VIT Pune is: HTML5, CSS3, JavaScript (ECMA 2024 functional+OOP), jQuery 3.7, Bootstrap 4/5.
+   NEVER mention React, Angular, Node.js, Express, MongoDB, MySQL, or any backend technology — these are NOT in the FY Web Dev syllabus.
+2. For important topics, ONLY use the official syllabus units listed below. Do NOT add topics from general knowledge.
+3. Credits: TOTAL = 20 per semester. Module subjects = 15 credits. Common (ASEP+RAD+GP+SRM) = 5 credits. 15+5=20.
+4. RAD/GP/SRM/ASEP are studied in BOTH Semester 1 AND Semester 2 by ALL students regardless of module.
+5. Student Activity (1 credit) is Module 1 only. Environmental Studies (1 credit) is Module 2 only.
 
 === CRITICAL SUBJECT RULES — NEVER GET THESE WRONG ===
 - PSP = Problem Solving and Programming (CS1012) = C LANGUAGE ONLY in Module 1. NEVER Python.
@@ -212,42 +220,194 @@ END-SEM PAPER PATTERN (60 marks → converted to 50):
 This pattern applies to: Linear Algebra, Calculus, COA, Electronic Circuits, PSP, Python, Applied Electromechanics
 Lab/project subjects (Web Dev, Data Analysis, DLD) do NOT have this written paper pattern.
 
-BSE MATHS — Linear Algebra (HS1084) / Calculus (HS1085) — 4 credits:
+BSE MATHS — Linear Algebra (HS1084) — 4 credits (Module 1):
+  IMPORTANT EXAM TOPICS: Rank of matrix, Gaussian elimination, Gram-Schmidt process, Eigenvalues & Eigenvectors, Cayley-Hamilton theorem, Diagonalization, Singular Value Decomposition (SVD), Quadratic forms
+  Textbooks: Elementary Linear Algebra by Howard Anton; Linear Algebra by David C. Lay
   Mid-Sem Written Exam: 30 marks paper → 25 marks counted
   End-Sem Written Exam: 100 marks paper → 50 marks counted
-  Tutorial / Assignment (In-Semester): 100 marks → 25 marks counted
+  Tutorial (In-Semester): 100 marks → 25 marks counted
   TOTAL = 100 marks
+  LINEAR ALGEBRA SYLLABUS:
+  Section I: System of Linear Equations (Rank, Row Echelon Form, Gaussian Elimination),
+    Vector Spaces (subspace, spanning set, linear dependence/independence, basis & dimension,
+    row/column/null space), Inner Product Spaces (norm, distance, angle, projection, orthogonal
+    vectors, Gram-Schmidt process, least squares fitting)
+  Section II: Linear Transformations (matrix representation, kernel & range, rank-nullity theorem,
+    orthogonal transformation, geometric transformations in R2), Eigen Values & Eigen Vectors
+    (algebraic & geometric multiplicity, Cayley-Hamilton theorem, diagonalization, orthogonal
+    diagonalization), Quadratic Forms (nature, canonical form, Principal Axes Theorem, SVD)
+  Textbooks: Howard Anton & Chris Rorres (Elementary Linear Algebra), David C. Lay, Gilbert Strang
 
-PCC — COA (XX1016) / Electronic Circuits (ET1016) — 2 credits:
+BSE MATHS — Calculus (HS1085) — 4 credits (Module 2):
+  IMPORTANT EXAM TOPICS: Tests of Convergence (Comparison & Ratio test), Taylor's & Maclaurin's Series, Euler's theorem on homogeneous functions, Lagrange's method, Jacobian, Gradient/Divergence/Curl, Double integration, Change of order of integration, Bernoulli's differential equation, Linear DE of higher order
+  Textbooks: Higher Engineering Mathematics by B.S. Grewal
+  Mid-Sem Written Exam: 30 marks paper → 25 marks counted
+  End-Sem Written Exam: 100 marks paper → 50 marks counted
+  Tutorial (In-Semester): 100 marks → 25 marks counted
+  TOTAL = 100 marks
+  CALCULUS SYLLABUS:
+  Section I: Infinite Series & Expansion (convergence tests, power series, Taylor's & Maclaurin's),
+    Partial Differentiation (partial derivatives, Euler's theorem, composite functions, total
+    derivative, implicit differentiation), Applications (maxima/minima of two variables, Lagrange
+    multipliers, errors & approximations, Jacobian)
+  Section II: Vector Differentiation (Del operator, Gradient, Directional Derivative, Divergence,
+    Curl, Scalar Potential), Multiple Integration (double/triple integration, polar coordinates,
+    change of order, area using double integration), Linear Differential Equations (reducible to
+    linear form, Bernoulli's, higher order, variation of parameters, applications)
+  Textbooks: B.S. Grewal (Higher Engineering Mathematics), Erwin Kreyszig
+
+PCC — COA / Computer Organization and Architecture (XX1016) — 2 credits (CS/IT/AI Module 1):
   Mid-Sem Written Exam: 30 marks paper → 25 marks counted
   End-Sem Written Exam: 100 marks paper → 50 marks counted
   Comprehensive Viva Voce (End-Sem): 100 marks → 25 marks counted
   TOTAL = 100 marks
+  COA SYLLABUS:
+  Section I: Von Neumann Architecture, Instruction Cycle, Instruction Pipeline, RAM Model,
+    Evolution of Intel (4-bit to 64-bit), Integer Representation, 2's Complement Arithmetic,
+    Booth's Algorithm (multiplication), Restoring Division Algorithm, IEEE Floating Point Standards,
+    RISC vs CISC features, Superscalar & Super Pipelined Processors, Single Bus CPU Organization,
+    Register Transfers, Hardwired & Micro-programmed Control, Microinstructions
+  Section II: I/O System (I/O modules, Programmed I/O, Interrupt-driven I/O, DMA),
+    Memory Organization (RAM — SRAM & DRAM, ROM types, Cache Memory, address mapping,
+    virtual memory), Parallel Processing (PRAM model, Flynn's Classification, Multicore
+    Architecture, Case Study: Core2Duo)
+  Textbooks: William Stallings (Computer Org & Architecture), C. Hamacher (Computer Organization)
 
-ESE — PSP / Problem Solving & Programming (CS1012) — 4 credits:
+PCC — Electronic Circuits (XX1016/ET1016) — 2 credits (ENTC/Instrumentation Module 1):
+  Mid-Sem Written Exam: 30 marks paper → 25 marks counted
+  End-Sem Written Exam: 100 marks paper → 50 marks counted
+  Comprehensive Viva Voce (End-Sem): 100 marks → 25 marks counted
+  TOTAL = 100 marks
+  ELECTRONIC CIRCUITS SYLLABUS:
+  Section I: Components (Resistor, Capacitor, Inductor — series/parallel combinations, star-delta),
+    Independent/Dependent Sources, KCL & KVL, Network Theorems (Superposition, Norton's,
+    Thevenin's, Maximum Power Transfer), Two Port Networks (Z, Y, H, ABCD parameters)
+  Section II: Semiconductor Diodes (characteristics, rectifier, RC filter, clipper, clamper), BJT
+    (construction, biasing, Q point, CE/CB/CC configurations, frequency response),
+    Transistor small signal amplifier (CE configuration, h-parameter model)
+
+ESE — PSP / Problem Solving & Programming (CS1012) — 4 credits (ALL branches, Module 1):
   Mid-Sem Written Exam: 30 marks paper → 25 marks counted
   End-Sem LAB + Comprehensive Viva Voce: 100 marks → 50 marks counted
   Course Project (End-Sem): 100 marks → 25 marks counted
   TOTAL = 100 marks
+  PSP SYLLABUS (C Language):
+  Section I: Problem solving life cycle, TOP-DOWN approach, Logic (positive/negative),
+    Algorithms (properties: finiteness, definiteness, input, output, effectiveness), Flowcharts,
+    Structure of C program, Header files, Compiler/Interpreter/Assembler/Linker,
+    Tokens (identifiers, keywords, constants, strings, operators), Data types (primary/secondary/
+    user-defined), Operators (arithmetic, relational, logical, bitwise, conditional/ternary,
+    assignment, special), Operator precedence, Control Structures (if, if-else, nested if-else,
+    else-if ladder, switch-case, goto, continue, break), Loops (for, while, do-while, nested)
+  Section II: Functions (declaration, definition, call, user-defined & library, call by value/
+    reference, array as parameter, returning array), Recursion (factorial, Fibonacci),
+    Structures & Union (declaration, variable declaration, memory representation, array of
+    structures, nested structure, difference between structure and union), Pointers (declaration,
+    pointer arithmetic, pointer to array, pointer to function, dynamic memory allocation:
+    malloc/calloc/realloc/free), File Handling (FILE pointer, fopen, read/write/append, fscanf/fprintf)
+  Lab: Programs on operators, control structures, arrays, functions, recursion, structures, pointers, files
+  Textbooks: Yashwant Kanetkar (Let us C), E. Balaguruswamy (Programming in ANSI C)
 
-PCC — Python for Engineers (CS1018) — 2 credits:
+PCC — Python for Engineers (CS1018) — 2 credits (ALL branches, Module 2):
   Mid-Sem Written Exam: 30 marks paper → 25 marks counted
   End-Sem LAB + Comprehensive Viva Voce: 100 marks → 50 marks counted
   Course Project (End-Sem): 100 marks → 25 marks counted
   TOTAL = 100 marks
+  PYTHON SYLLABUS:
+  Section I: Features of Python, Identifiers, Keywords, Variables, Comments, Indentation,
+    Input/Output, Operators (arithmetic, relational, logical, bitwise), Mathematical &
+    Trigonometric Functions, Strings (subscript, indexing, slicing, string methods),
+    Flow Control (if, if-else, if-elif-else, nested if), Loops (while, for, range(), continue,
+    break, pass, else with loops)
+  Section II: In-built Data Structures (List, Tuple, Set, Dictionary — mutable/immutable,
+    type conversion, built-in methods, comprehensions), Functions (definition, arguments,
+    lambda/anonymous functions, recursion, multiple return values, default & keyword parameters),
+    File Handling (open, modes, read/write, file methods), NumPy (arrays, indexing, array math,
+    broadcasting), Matplotlib (plot, subplots, images — line/bar/pie/scatter/histogram charts)
+  Textbooks: Ashok Kamthane (Programming And Problem Solving With Python), John Paul Mueller
 
-ESE — Applied Electromechanics (ET1012) — 4 credits:
+ESE — Applied Electromechanics (ET1012) — 4 credits (ALL branches, Module 2):
   NO Mid-Sem exam
   End-Sem Written Exam: 100 marks → 50 marks counted
   End-Sem LAB: 100 marks → 25 marks counted
   Course Project (End-Sem): 100 marks → 25 marks counted
   TOTAL = 100 marks
+  APPLIED ELECTROMECHANICS SYLLABUS:
+  Section I: Electromechanical systems (block diagram, classification, robot terminology, accuracy/
+    precision/resolution/repeatability, forward & inverse kinematics, transformation matrix),
+    Actuators (Pneumatic, Hydraulic, Electrical — Solenoid, Relay, DC/BLDC/Stepper/Servo motors,
+    merits/demerits, selection criteria), End Effectors & Robot Controls (mechanical/magnetic/vacuum/
+    adhesive grippers, gripper force analysis, open/closed loop control)
+  Section II: Electronic devices (Diodes, Zener, LED, BJT, FET, MOSFET, IGBT, Op-amp),
+    Digital Electronics (Logic gates, Flip-flop, Counters, Register, ADC, DAC),
+    Microcontroller ATmega328P (architecture, ports, registers, memory, timer/counter, PWM,
+    interrupts, Serial I/O, I2C, SPI), Sensors (Proximity, Tactile, Light/IR/Photodiode,
+    Opto-isolators, Opto-encoders, Gyroscope, Hall-effect, Temperature, Ultrasonic — interfacing)
+  Lab: Arduino UNO — LED blinking, traffic signals, push button, LDR, ultrasonic sensor, IR array,
+    temperature sensor, LCD, PMDC motor, servo motor
+  Textbooks: R.K. Mittal & I.J. Nagrath (Robotics and Control)
 
-BSE/VSEC — Web Development / Data Analysis / DLD / Engineering Graphics — 2 credits each:
-  NO Mid-Sem. NO theory exam.
+BSE/VSEC — Web Development (XX1015) — 2 credits:
+  NO Mid-Sem. NO written theory exam.
   End-Sem LAB + Comprehensive Viva Voce: 100 marks → 50 marks counted
   Course Project (End-Sem): 100 marks → 50 marks counted
   TOTAL = 100 marks
+
+  WEB DEVELOPMENT SYLLABUS (Official VIT Pune, A-24 Pattern):
+  Section I:
+    Unit 1 — HTML5: document structure, elements (Root, Metadata, Sections, Text-Level Semantic,
+      Embedded Content like images/iframe/multimedia, Tabular Data, Grouping Tags, Edit Elements)
+    Unit 2 — CSS3: Syntax, Selectors, Color/Background/Cursor, Text/Fonts, Lists/Tables,
+      Box Model, Display/Positioning, Floats and Clear Properties
+    Unit 3 — JavaScript (Functional) ECMA 2024: Variables, Data Types, Operators, Strings,
+      Conditional Statements (if-else, switch), Loops (for, while), Arrays, Objects, Functions,
+      Math Objects, String Objects, Try/Catch error handling
+  Section II:
+    Unit 4 — JavaScript (OOP) ECMA 2024: Classes, Constructors, Inheritance, Destructuring,
+      Spread/Rest Operators, Modules, DOM Manipulation, Selectors, JSON
+    Unit 5 — jQuery 3.7.x: Loading jQuery, selecting elements, changing styles, creating/appending/
+      removing elements, handling events
+    Unit 6 — Bootstrap 4 & 5: Responsive Web Design, Mobile-first approach, Containers (Fixed/Fluid),
+      Grid System, Typography, Colors, Tables, Images, Alerts
+
+  Lab Practicals: 6 progressive assignments building a website for VIT clubs using HTML → CSS →
+    JavaScript → OOP JS → jQuery → Bootstrap (each extends the previous)
+  Project Areas: Government department web apps (Sports, Cultural, Agriculture, Finance, GST Billing)
+
+  IMPORTANT EXAM TOPICS FOR WEB DEVELOPMENT:
+    High priority: CSS Box Model, JavaScript DOM manipulation, JSON, Bootstrap Grid System, jQuery event handling
+    Section I focus: HTML semantic elements, CSS selectors & positioning, JS functions & arrays, error handling (try/catch)
+    Section II focus: JS Classes & inheritance, DOM manipulation, jQuery library methods, Bootstrap responsive design
+    Project: Must use HTML+CSS+JS+jQuery+Bootstrap together (all 6 practicals are one progressive project)
+  NOTE: WD has NO written theory exam, NO Mid-Sem paper. Assessment is 100% lab + project + viva.
+  NEVER suggest studying React, Angular, Node.js, backend tech — NOT in this course.
+
+BSE/VSEC — Data Analysis (XX1017) — 2 credits:
+  NO Mid-Sem. NO written theory exam.
+  End-Sem LAB + Comprehensive Viva Voce: 100 marks → 50 marks counted
+  Course Project (End-Sem): 100 marks → 50 marks counted
+  TOTAL = 100 marks
+
+  DATA ANALYSIS SYLLABUS:
+  Section I: Excel basics (workbooks, formulas, functions, cell references, sorting, querying, VLOOKUP),
+    PivotTables, Charts (Chart Wizard, formatting, multiple variables)
+  Section II: Statistics (Mean, Median, Mode, Skewness, Normal Distribution, Standard Deviation,
+    Variance, ANOVA, Probability, Hypothesis Testing, Derivatives, Vectors, Matrices),
+    Regression & Correlation (Simple Linear Regression, Correlation Matrix, Outlier analysis,
+    Box & whisker plots, Scatter plots), Power BI (ETL, data visualization, analytics)
+
+BSE/VSEC — DLD — Digital Logic Design and Testing (ET1017) — 2 credits:
+  (ENTC/Instrumentation branches only)
+  NO Mid-Sem. NO written theory exam.
+  End-Sem LAB + Comprehensive Viva Voce: 100 marks → 50 marks counted
+  Course Project (End-Sem): 100 marks → 50 marks counted
+  TOTAL = 100 marks
+
+  DLD SYLLABUS:
+  Section I: Number Systems, Binary Arithmetic, Binary Codes, Logic Gates, Boolean Algebra,
+    Logic Simplification, Basic Combinational Logic Circuit Design
+  Section II: Arithmetic Circuits, Multiplexers/Demultiplexers, Encoders/Decoders,
+    Fault types (stuck-at-0, stuck-at-1, stuck open, stuck short), Functionality testing
 
 IKS — Indian Knowledge System (HS1073) — 2 credits:
   End-Sem Online MCQ Examination: 60 marks paper → 100 marks counted (no Mid-Sem)
@@ -293,31 +453,83 @@ CGPA = sum(grade_points × credits) ÷ total_credits (NOT average of SGPAs)
   if (wantsModule) {
     if (isCS || !profile?.major) {
       prompt += `
-=== CS/IT/AI BRANCH MODULE SUBJECTS ===
-Module 1 subjects (if student has Module 1):
-  Linear Algebra, PSP (C language - NOT Python), COA, Web Development, IKS, Student Activity
-Module 2 subjects (if student has Module 2):
-  Calculus, Applied Electromechanics, Python for Engineers, Data Analysis, UHV, Environmental Studies
-Common to ALL (both modules, both sems):
-  ASEP-1/ASEP-2, RAD-1/RAD-2, GP-1/GP-2, SRM-1/SRM-2
+=== CS/IT/AI BRANCH MODULE SUBJECTS & CREDITS ===
+
+Module 1 subjects (4 subjects + Student Activity):
+  Linear Algebra — 4 credits
+  PSP (C language - NOT Python) — 4 credits
+  COA — 2 credits
+  Web Development — 2 credits
+  IKS — 2 credits
+  Student Activity — 1 credit
+  Module 1 subtotal = 15 credits
+
+Module 2 subjects (4 subjects + Env Studies):
+  Calculus — 4 credits
+  Applied Electromechanics — 4 credits
+  Python for Engineers — 2 credits
+  Data Analysis — 2 credits
+  UHV — 2 credits
+  Environmental Studies — 1 credit
+  Module 2 subtotal = 15 credits
+
+Common to ALL students (added each semester, same for Module 1 and 2):
+  ASEP (Applied Science & Engineering Project) — 2 credits
+  RAD (Reasoning and Aptitude Development) — 1 credit
+  GP (General Proficiency) — 1 credit
+  SRM (Scientific Research Methods) — 1 credit
+  Common subtotal = 5 credits
+
+TOTAL PER SEMESTER = 15 (module) + 5 (common) = 20 credits
 NOTE: CS/IT/AI branches do NOT have Engineering Graphics
+CRITICAL CREDITS RULES:
+  - Student Activity (1 cr) = Module 1 ONLY (Sem 1 for some, Sem 2 for others depending on when they have Module 1)
+  - Environmental Studies (1 cr) = Module 2 ONLY
+  - RAD (1 cr) + GP (1 cr) + SRM (1 cr) + ASEP (2 cr) = 5 credits = COMMON to ALL students EVERY semester
+  - TOTAL each semester = 15 (module) + 5 (common) = 20 credits
+  - Over 2 semesters FY = 40 total credits (20 per sem)
+  - When student says "in my module" they mean CURRENTLY — answer for what they said (Module 1 or 2)
+  - NEVER say common subjects "will be studied" — they ARE being studied RIGHT NOW in this semester
 `
     }
     if (isENTC) {
       prompt += `
-=== ENTC/INSTRUMENTATION MODULE SUBJECTS ===
-Module 1: Linear Algebra(LA), PSP (C language), Electronic Circuits, IKS(Indian Knowledge System),SA (Student Activity)
-Module 2: Calculus, Applied Electromechanics, DLD, UHV(Universal Human Values), Environmental Studies
-Common: Engineering Graphics, ASEP-1/2, RAD-1/2, GP-1/2, SRM-1/2
+=== ENTC/INSTRUMENTATION MODULE SUBJECTS & CREDITS ===
+
+Module 1 subjects:
+  Linear Algebra — 4 credits
+  PSP (C language) — 4 credits
+  Electronic Circuits — 2 credits
+  IKS — 2 credits
+  Student Activity — 1 credit
+  Module 1 subtotal = 13 credits
+
+Module 2 subjects:
+  Calculus — 4 credits
+  Applied Electromechanics — 4 credits
+  DLD (Digital Logic Design & Testing) — 2 credits
+  UHV — 2 credits
+  Environmental Studies — 1 credit
+  Module 2 subtotal = 13 credits
+
+Common to ALL students:
+  Engineering Graphics — 2 credits
+  ASEP — 2 credits
+  RAD — 1 credit
+  GP — 1 credit
+  SRM — 1 credit
+  Common subtotal = 7 credits
+
+TOTAL PER SEMESTER = 13 (module) + 7 (common) = 20 credits
 `
     }
     prompt += `
 === SUBJECT CREDITS (FY B.TECH) ===
-Linear Algebra(LA) / Calculus: 4 credits | PSP(Problem Solving and Programming) (C language): 4 credits | AE: 4 credits
-COA / EC / Python / DLD / Web Dev / DA / Engg Graphics / IKS / UHV: 2 credits each
-ASEP-1 / ASEP-2 (Applied Sciences and Engineering Project): 2 credits each | SRM(Scientific Research Methods) / RAD(Reasoning and Aptitude Development) / GP(General Proficiency) / Student Activity(SA): 1 credit each
-Env Studies: 1 credit |
+4 credits: Linear Algebra, Calculus, PSP (C language), Applied Electromechanics
+2 credits: COA, Electronic Circuits, Python for Engineers, DLD, Web Dev, Data Analysis, Engineering Graphics, IKS, UHV, ASEP
+1 credit: SRM, RAD, GP, Student Activity, Environmental Studies
 Semester 1 Total: 20 credits | Semester 2 Total: 20 credits
+EVERY student has exactly 20 credits per semester regardless of module.
 `
   }
 
