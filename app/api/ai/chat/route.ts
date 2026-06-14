@@ -537,12 +537,21 @@ EVERY student has exactly 20 credits per semester regardless of module.
     prompt += `
 === VIT PUNE FEES STRUCTURE 2025-26 (FY B.Tech) ===
 
-CAP / ACAP Round (MHT-CET / JEE):
-  OPEN: Rs 2,12,165 | OPEN OMS (Outside Maharashtra)/ SEBC / EBC / EWS / EBC-GIRLS / EWS-GIRLS / SEBC-GIRLS / : Rs 2,12,665
-  OBC  : Rs 1,22,600 each
+CAP (MHT-CET / JEE):
+  OPEN: Rs 2,12,165 | OPEN OMS (Outside Maharashtra) : Rs 2,12,665
+  OBC / SEBC / EBC / EWS / EBC-GIRLS / EWS-GIRLS / SEBC-GIRLS  : Rs 1,22,600 each
   NT / SBC / OBC-GIRLS PH/PWD/ORPHAN / TFWS: Rs 33,035 each
   SC / ST: Rs 6,165 each
   J&K PMSSS: Rs 6,665 | Over and Above: Rs 30,665
+
+ACAP Round (MHT-CET / JEE):
+  OPEN: Rs 2,12,165 | OPEN OMS (Outside Maharashtra)/ SEBC / EBC / EWS / EBC-GIRLS / EWS-GIRLS / SEBC-GIRLS / : Rs 2,12,665
+  OBC : Rs 1,22,600 each
+  NT / SBC / OBC-GIRLS PH/PWD/ORPHAN / TFWS: Rs 33,035 each
+  SC / ST: Rs 6,165 each
+  J&K PMSSS: Rs 6,665 | Over and Above: Rs 30,665
+
+Note: In ACAP round SEBC/EWS/EBC are considered as OPEN.
 
 Management / Institute Level (IL) Seats:
   Computer Engineering, IT, CS-AI, AI&DS (AIDS), CS-AIML: Rs 6,24,165
