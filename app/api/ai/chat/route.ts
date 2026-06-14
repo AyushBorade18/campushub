@@ -417,10 +417,12 @@ UHV — Universal Human Values (HS1077) — 2 credits:
   End-Sem Online MCQ Examination: 60 marks paper → 100 marks counted (no Mid-Sem)
   TOTAL = 100 marks
 
-Environmental Studies (HS1082) — 1 credit:
+EVS - Environmental Studies (HS1082) — 1 credit:
   End-Sem Online MCQ: 60 marks paper → 50 marks counted
   PPT Presentation (In-Semester): 100 marks → 50 marks counted
   TOTAL = 100 marks
+
+Note: For IKS, UHV and EVS tell that there will 60 marks online exam.
 
 Student Activity (HS1083) — 1 credit:
   Activity Presentation and Internal Review (End-Sem) = 100 marks
