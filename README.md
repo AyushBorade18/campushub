@@ -106,26 +106,6 @@ Groq Llama 3.3 → personalized answer
 - Groq API key (free at console.groq.com)
 - HuggingFace API key (free at huggingface.co)
 
-### Installation
-
-```bash
-git clone https://github.com/AyushBorade18/campushub.git
-cd campushub
-npm install
-```
-
-### Environment Variables
-
-Create a `.env.local` file in the root:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-GROQ_API_KEY=your_groq_api_key
-HUGGINGFACE_API_KEY=your_huggingface_api_key
-```
-
 ### Database Setup
 
 Run these SQL migrations in your Supabase SQL editor in order:
